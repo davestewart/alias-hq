@@ -1,5 +1,5 @@
 const Path = require('path')
-const aliases = require('../')
+const aliases = require('../src')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // setup
@@ -43,7 +43,7 @@ describe('should convert webpack', function () {
     testWebpack(aliases.toWebpack(path))
   })
   it('with an object', function () {
-    testWebpack(aliases.toWebpack(config))
+    testWebpack(aliases.toWebpack(config, { root }))
   })
 })
 

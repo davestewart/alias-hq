@@ -137,9 +137,9 @@ However, you can also pass a relative or absolute path to the helper:
 ```js
 aliases.toWebpack(__dirname + 'some-file.json')
 ```
-Finally, you can pass in a config directly:
+Finally, you can pass in a config directly (note that for Webpack only you will need to pass in the path to the root folder): 
 ```js
-aliases.toJest(require('./tsconfig.json))
+aliases.toWebpack(require('./tsconfig.json'), { root: __dirname })
 ```
 
 The library will attempt to grab paths from `compilerOptions` or if it can't find that, will use values in the root node.

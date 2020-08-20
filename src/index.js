@@ -64,13 +64,14 @@ function convert (paths, mapper, root) {
 /**
  * Load config and convert
  *
- * @param   {undefined} value   Pass no value for to determine tsconfig.json automatically
- * @param   {string}    value   Pass an absolute path to load from alternate location
- * @param   {object}    value   Pass tsconfig directly
- * @param   {function}  mapper  The mapping function to convert each alias
- * @returns {T}                 Converted aliases as a key => path hash
+ * @param   {undefined} value     Pass no value for to determine tsconfig.json automatically
+ * @param   {string}    value     Pass an absolute path to load from alternate location
+ * @param   {object}    value     Pass tsconfig directly
+ * @param   {function}  mapper    The mapping function to convert each alias
+ * @param   {object}    options   Any additional options
+ * @returns {T}                   Converted aliases as a key => path hash
  */
-function load (value, mapper) {
+function load (value, mapper, options = {}) {
   // variables
   let paths
   let root
@@ -105,7 +106,7 @@ function load (value, mapper) {
   // variables
   root = path
     ? Path.dirname(path)
-    : __dirname
+    : options.root || __dirname
   paths = json && json.compilerOptions
       ? json.compilerOptions.paths
       : json || {}
@@ -115,6 +116,6 @@ function load (value, mapper) {
 }
 
 module.exports = {
-  toWebpack: value => load(value, toWebpack),
-  toJest: value => load(value, toJest),
+  toWebpack: (value, options) => load(value, toWebpack, options),
+  toJest: (value, options) => load(value, toJest, options),
 }
