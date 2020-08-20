@@ -1,4 +1,5 @@
 const Path = require('path')
+const fs = require('fs')
 
 /**
  * Convert to Webpack format
@@ -70,23 +71,47 @@ function convert (paths, mapper, root) {
  * @returns {T}                 Converted aliases as a key => path hash
  */
 function load (value, mapper) {
+  // variables
+  let paths
+  let root
+  let path
+  let json
+
   // object: config passed directly
   if (value && typeof value === 'object') {
-    return convert(value.compilerOptions.paths, mapper, '')
+    json = value
   }
 
-  // no value: assume tsconfig.json in root
-  if (typeof value === 'undefined') {
-    value = './tsconfig.json'
+  // string: relative or absolute path passed
+  else if (typeof value === 'string') {
+    path = Path.resolve(value)
+    json = require(path)
+  }
+
+  // no value: default config file
+  else {
+    path = Path.resolve('./aliases.config.json')
+    if (fs.existsSync(path)) {
+      json = require(path)
+    }
+    else {
+      path = Path.resolve('./tsconfig.json')
+      if (fs.existsSync(path)) {
+        json = require(path)
+      }
+    }
   }
 
   // variables
-  const path = Path.resolve(value)
-  const root = path.replace(/tsconfig.json/, '')
-  const json = require(path)
+  root = path
+    ? Path.dirname(path)
+    : __dirname
+  paths = json && json.compilerOptions
+      ? json.compilerOptions.paths
+      : json || {}
 
   // convert
-  return convert(json.compilerOptions.paths || {}, mapper, root)
+  return convert(paths, mapper, root)
 }
 
 module.exports = {

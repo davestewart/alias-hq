@@ -35,8 +35,10 @@ The problem is that:
 This library attempts to solve that by:
 
 - adopting TypeScript's [path configuration](https://www.typescriptlang.org/docs/handbook/module-resolution.html#path-mapping) format
-- using `tsconfig.json` as the "single source of truth"
+- using `tsconfig.json` or a custom configuration file as the "single source of truth"
 - providing simple functions to map to other formats such as [Webpack](https://webpack.js.org/) and [Jest](https://jestjs.io/)
+
+Note that <strong style="color:red">you don't need TypeScript to use this library</strong> - it is only the configuration format that is borrowed.
 
 ## Setup
 
@@ -52,6 +54,8 @@ yarn add -D alias-hq
 ```
 
 ### Configuration
+
+#### TypeScript projects
 
 Open your `tsconfig.json` and add aliases to the `compilerOptions.paths` node using the (rather verbose) wildcard and array format:
 
@@ -69,6 +73,22 @@ Open your `tsconfig.json` and add aliases to the `compilerOptions.paths` node us
   }
 }
 ```
+
+#### JavaScript projects
+
+Create a new file  `aliases.config.json` in your project root, and add the aliases to the root:
+
+```json
+{
+  "@api/*": "api/*",
+  "@app/*": "app/*",
+  "@config/*": "app/config/*",
+  "@shared/*": "app/shared/*",
+  "@helpers/*": "common/helpers/*"
+}
+```
+
+You should use the same general TypeScript [format](https://www.typescriptlang.org/docs/handbook/module-resolution.html#path-mapping) but you can **just add paths as strings**.
 
 ## Usage
 
@@ -108,7 +128,7 @@ The helpers will load and convert the configuration, which will look something l
 
 ## API
 
-The library will automatically find `tsconfig.json` in your project root, so should "just work":
+The library will automatically find either `tsconfig.json` or `aliases.config.json` in your project root, so should "just work":
 
 ```js
 aliases.toWebpack()
@@ -122,7 +142,7 @@ Finally, you can pass in a config directly:
 aliases.toJest(require('./tsconfig.json))
 ```
 
-The library will attempt to grab paths from `compilerOptions`.
+The library will attempt to grab paths from `compilerOptions` or if it can't find that, will use values in the root node.
 
 ## Integrations
 

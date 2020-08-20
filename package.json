@@ -1,6 +1,6 @@
 {
   "name": "alias-hq",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "description": "Manage a single set of folder aliases and convert as-needed to other formats",
   "main": "index.js",
   "scripts": {
