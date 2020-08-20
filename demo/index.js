@@ -1,8 +1,6 @@
 const aliases = require('..')
+const fixtures = require('../tests/fixtures')
 
-function log (format, aliases) {
-  console.log({ format, aliases })
-}
-
-log('Webpack', aliases.toWebpack())
-log('Jest', aliases.toJest())
+Object.keys(fixtures.plugins).forEach(format => {
+  console.log({ format, aliases: aliases.as(format) })
+})

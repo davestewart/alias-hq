@@ -5,24 +5,26 @@
   "main": "src/index.js",
   "scripts": {
     "demo": "node demo",
-    "test": "jest"
+    "test": "jest --verbose"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/davestewart/alias-manager.git"
+    "url": "git+https://github.com/davestewart/alias-hq.git"
   },
   "keywords": [
-    "typescript",
     "paths",
+    "aliases",
+    "typescript",
+    "rollup",
     "webpack",
     "jest"
   ],
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/davestewart/alias-manager/issues"
+    "url": "https://github.com/davestewart/alias-hq/issues"
   },
-  "homepage": "https://github.com/davestewart/alias-manager#readme",
+  "homepage": "https://github.com/davestewart/alias-hq#readme",
   "devDependencies": {
     "jest": "^26.4.1"
   }
