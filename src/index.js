@@ -2,79 +2,14 @@ const Path = require('path')
 const fs = require('fs')
 
 /**
- * Convert to Webpack format
+ * Load config
  *
- * @param   {string}  alias   The alias name
- * @param   {string}  path    The relative alias path
- * @param   {string}  root    The absolute root path
- * @returns {{alias: string, path: string}}
- */
-function toWebpack (alias, path, root) {
-  if (alias.endsWith('/*')) {
-    alias = alias.replace(/\/\*$/, '')
-    path = path.replace(/\*$/, '')
-  }
-  return {
-    alias,
-    path: Path.resolve(root, path),
-  }
-}
-
-/**
- * Convert to Jest format
- *
- * @param   {string}  alias   The alias name
- * @param   {string}  path    The relative alias path
- * @returns {{alias: string, path: string}}
- */
-function toJest (alias, path) {
-  path = path.replace(/^\//, '')
-  return {
-    alias: `^${alias.replace(/\*/, '(.*)')}$`,
-    path: `<rootDir>/${path.replace(/\*/, '$1')}`
-  }
-}
-
-/**
- * Convert config using mapping function
- *
- * @param   {object}    paths   The tsconfig.json paths node
- * @param   {function}  mapper  The conversion / mapping function
- * @param   {path}      root    Optional root path
- * @returns {T}
- */
-function convert (paths, mapper, root) {
-  return Object
-    .entries(paths)
-    .map(entry => {
-      const alias = entry[0];
-      const path = Array.isArray(entry[1])
-        ? entry[1][0]
-        : entry[1]
-      return mapper(alias, path, root)
-    })
-    .reduce((output, entry) => {
-      if (!output[entry.alias]) {
-        output[entry.alias] = entry.path
-      }
-      return output
-    }, {})
-}
-
-/**
- * Load config and convert
- *
- * @param   {undefined} value     Pass no value for to determine tsconfig.json automatically
+ * @param   {undefined} value     Pass no value for to determine config file automatically
  * @param   {string}    value     Pass an absolute path to load from alternate location
- * @param   {object}    value     Pass tsconfig directly
- * @param   {function}  mapper    The mapping function to convert each alias
- * @param   {object}    options   Any additional options
- * @returns {T}                   Converted aliases as a key => path hash
+ * @param   {object}    value     Pass config directly
  */
-function load (value, mapper, options = {}) {
+function load (value = undefined) {
   // variables
-  let paths
-  let root
   let path
   let json
 
@@ -86,11 +21,16 @@ function load (value, mapper, options = {}) {
   // string: relative or absolute path passed
   else if (typeof value === 'string') {
     path = Path.resolve(value)
-    json = require(path)
+    try {
+      json = require(path)
+    }
+    catch (error) {
+      throw error
+    }
   }
 
   // no value: default config file
-  else {
+  else if (typeof value === 'undefined') {
     path = Path.resolve('./aliases.config.json')
     if (fs.existsSync(path)) {
       json = require(path)
@@ -103,19 +43,71 @@ function load (value, mapper, options = {}) {
     }
   }
 
+  // any other value
+  else {
+    throw new Error('Invalid parameter "value"')
+  }
+
   // variables
   root = path
     ? Path.dirname(path)
-    : options.root || __dirname
-  paths = json && json.compilerOptions
-      ? json.compilerOptions.paths
+    : __dirname
+  paths = json && json['compilerOptions']
+      ? json['compilerOptions'].paths
       : json || {}
 
-  // convert
-  return convert(paths, mapper, root)
+  // check object has keys
+  if (Object.keys(json).length === 0) {
+    throw new Error('The loaded paths appear to be empty')
+  }
+
+  // return
+  return this
 }
 
+/**
+ * Convert paths config using a plugin or callback
+ *
+ * @param   {string}    plugin    The name of an available plugin
+ * @param   {function}  plugin    A custom function
+ * @param   {object}   [options]  Any options to pass to the plugin
+ */
+
+function as (plugin, options = {}) {
+  // load defaults if not loaded
+  if (!paths) {
+    load()
+  }
+
+  // options
+  options = { root, ...options }
+
+  // callback
+  if (typeof plugin === 'function') {
+    return plugin(paths, options)
+  }
+
+  // plugin
+  if (typeof plugin === 'string') {
+    const path = Path.resolve(__dirname, `./plugins/${plugin}.js`)
+    if (fs.existsSync(path)) {
+      plugin = require(path)
+      return plugin(paths, options)
+    }
+    throw new Error(`No such plugin "${plugin}"`)
+  }
+
+  // invalid
+  throw new Error(`Invalid "plugin" parameter`)
+}
+
+let paths
+let root
+
 module.exports = {
-  toWebpack: (value, options) => load(value, toWebpack, options),
-  toJest: (value, options) => load(value, toJest, options),
+  load,
+  paths: () => paths,
+  root: () => root,
+  to: as,
+  as,
 }
