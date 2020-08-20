@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "@api/*": ["api/*"],
+      "@app/*": ["app/*"],
+      "@config/*": ["app/config/*"],
+      "@shared/*": ["app/shared/*"],
+      "@helpers/*": ["common/helpers/*"]
+    }
+  }
+}

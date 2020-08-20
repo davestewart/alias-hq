@@ -1,0 +1,29 @@
+{
+  "name": "alias-hq",
+  "version": "1.0.0-beta.1",
+  "description": "Manage a single set of folder aliases and convert as-needed to other formats",
+  "main": "index.js",
+  "scripts": {
+    "demo": "node demo",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davestewart/alias-manager.git"
+  },
+  "keywords": [
+    "typescript",
+    "paths",
+    "webpack",
+    "jest"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/davestewart/alias-manager/issues"
+  },
+  "homepage": "https://github.com/davestewart/alias-manager#readme",
+  "devDependencies": {
+    "jest": "^26.4.1"
+  }
+}
