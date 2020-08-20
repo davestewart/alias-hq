@@ -6,6 +6,7 @@ const fixtures = require('../fixtures')
 // ---------------------------------------------------------------------------------------------------------------------
 
 describe('passing', function () {
+
   describe('a custom function', function () {
     function plugin (paths, options) {
       return Object.keys(paths).reduce((output, key) => {
