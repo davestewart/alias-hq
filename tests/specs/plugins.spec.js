@@ -22,7 +22,7 @@ describe('passing', function () {
 
   describe('a custom function', function () {
     it('should convert paths correctly', function () {
-      const received = aliases.load('aliases.config.json').as(plugin)
+      const received = aliases.load('aliases.config.json').get(plugin)
       const expected = fixtures.custom
       expect(received).toEqual(expected)
     })
@@ -30,14 +30,14 @@ describe('passing', function () {
 
   describe('an missing plugin name', function () {
     it('should throw an error', function () {
-      const received = () => aliases.as('blah')
+      const received = () => aliases.get('blah')
       expect(received).toThrowError()
     })
   })
 
   describe('an invalid plugin name', function () {
     it('should throw an error', function () {
-      const received = () => aliases.as(123)
+      const received = () => aliases.get(123)
       expect(received).toThrowError()
     })
   })
@@ -48,7 +48,7 @@ describe('custom plugins', function () {
     aliases.plugin('test', plugin)
   })
   it('should be callable', function () {
-    const received = aliases.as('test')
+    const received = aliases.get('test')
     const expected = fixtures.custom
     expect(received).toEqual(expected)
   })
@@ -58,7 +58,7 @@ describe('available plugins', function () {
   describe('should convert using defaults', function () {
     Object.keys(fixtures.plugins).forEach(key => {
       it(key, function () {
-        const received = aliases.as(key)
+        const received = aliases.get(key)
         const expected = fixtures.plugins[key]
         expect(received).toEqual(expected)
       })

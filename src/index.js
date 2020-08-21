@@ -75,7 +75,7 @@ function load (value = undefined) {
  * @param   {object}   [options]  Any options to pass to the plugin
  */
 
-function as (plugin, options = {}) {
+function get (plugin, options = {}) {
   // load defaults if not loaded
   if (!paths) {
     load()
@@ -139,11 +139,10 @@ let paths
 let root
 
 module.exports = {
+  get,
   load,
-  plugin,
-  plugins: getPlugins,
   paths: () => paths,
   root: () => root,
-  to: as,
-  as,
+  plugin,
+  plugins: getPlugins,
 }

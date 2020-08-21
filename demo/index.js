@@ -3,7 +3,7 @@ const aliases = require('..')
 // plugins
 console.log('\n\n== [ PLUGINS ] ============================================\n')
 aliases.plugins().forEach(format => {
-  console.log({ format, aliases: aliases.as(format) })
+  console.log({ format, aliases: aliases.get(format) })
 })
 
 // helpers
