@@ -1,9 +1,8 @@
 const aliases = require('..')
-const fixtures = require('../tests/fixtures')
 
 // plugins
 console.log('\n\n== [ PLUGINS ] ============================================\n')
-Object.keys(fixtures.plugins).forEach(format => {
+aliases.plugins().forEach(format => {
   console.log({ format, aliases: aliases.as(format) })
 })
 

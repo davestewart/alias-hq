@@ -7,6 +7,7 @@ const fs = require('fs')
  * @param   {undefined} value     Pass no value for to determine config file automatically
  * @param   {string}    value     Pass an absolute path to load from alternate location
  * @param   {object}    value     Pass config directly
+ * @returns {object}              The Alias HQ instance
  */
 function load (value = undefined) {
   // variables
@@ -89,6 +90,12 @@ function as (plugin, options = {}) {
 
   // plugin
   if (typeof plugin === 'string') {
+    // check plugins hash
+    if (typeof plugins[plugin] === 'function') {
+      return plugins[plugin](paths, options)
+    }
+
+    // attempt to load
     const path = Path.resolve(__dirname, `./plugins/${plugin}.js`)
     if (fs.existsSync(path)) {
       plugin = require(path)
@@ -101,11 +108,39 @@ function as (plugin, options = {}) {
   throw new Error(`Invalid "plugin" parameter`)
 }
 
+/**
+ * Add a plugin to the core setup
+ *
+ * @param   {string}    name        The plugin name
+ * @param   {function}  callback    The plugin function
+ * @returns {object}                The Alias HQ instance
+ */
+function plugin (name, callback) {
+  if (!plugins[name] && typeof callback === 'function') {
+    plugins[name] = callback
+  }
+  return this
+}
+
+function getPlugins () {
+  const path = Path.resolve(__dirname, 'plugins')
+  const items = fs.readdirSync(path).map(file => file.replace('.js', ''))
+  Object.keys(plugins).forEach(key => {
+    if (!items.includes(key)) {
+      items.push(key)
+    }
+  })
+  return items.sort()
+}
+
+const plugins = {}
 let paths
 let root
 
 module.exports = {
   load,
+  plugin,
+  plugins: getPlugins,
   paths: () => paths,
   root: () => root,
   to: as,
