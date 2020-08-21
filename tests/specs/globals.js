@@ -2,8 +2,8 @@ const Path = require('path')
 
 const root = Path.resolve(__dirname, '../../')
 const config = {
-  ts: require('../../tsconfig.json'),
-  js: require('../../aliases.config.json'),
+  ts: require('../../tsconfig.json').compilerOptions.paths,
+  js: require('../../jsconfig.json').compilerOptions.paths,
   custom: {
     'foo/*': 'bar/*'
   }

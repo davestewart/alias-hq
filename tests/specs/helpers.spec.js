@@ -9,7 +9,7 @@ describe('helpers', function () {
 
   describe('paths', function () {
     it('should load return the raw paths data', function () {
-      const received = aliases.load('aliases.config.json').paths()
+      const received = aliases.load('jsconfig.json').paths()
       const expected = config.js
       expect(received).toEqual(expected)
     })

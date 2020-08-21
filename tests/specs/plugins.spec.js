@@ -8,7 +8,7 @@ const fixtures = require('../fixtures')
 function plugin (paths, options) {
   return Object.keys(paths).reduce((output, key) => {
     const alias = key.substring(1).replace('/*', '')
-    const path = paths[key].replace('/*', '')
+    const path = paths[key][0].replace('/*', '')
     output[alias] = { path }
     return output
   }, {})
@@ -22,7 +22,7 @@ describe('passing', function () {
 
   describe('a custom function', function () {
     it('should convert paths correctly', function () {
-      const received = aliases.load('aliases.config.json').get(plugin)
+      const received = aliases.load('jsconfig.json').get(plugin)
       const expected = fixtures.custom
       expect(received).toEqual(expected)
     })

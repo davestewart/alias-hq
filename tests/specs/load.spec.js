@@ -17,7 +17,7 @@ describe('calling load and passing', function () {
 
   describe('relative filepath', function () {
     it('should load the file', function () {
-      const received = aliases.load('aliases.config.json').paths()
+      const received = aliases.load('jsconfig.json').paths()
       const expected = config.js
       expect(received).toEqual(expected)
     })
@@ -26,7 +26,7 @@ describe('calling load and passing', function () {
   describe('absolute filepath', function () {
     it('should load the file', function () {
       const received = aliases.load(root + '/tsconfig.json').paths()
-      const expected = config.ts.compilerOptions.paths
+      const expected = config.ts
       expect(received).toEqual(expected)
     })
   })

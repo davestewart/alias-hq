@@ -32,7 +32,7 @@ function load (value = undefined) {
 
   // no value: default config file
   else if (typeof value === 'undefined') {
-    path = Path.resolve('./aliases.config.json')
+    path = Path.resolve('./jsconfig.json')
     /* istanbul ignore else */
     if (fs.existsSync(path)) {
       json = require(path)
