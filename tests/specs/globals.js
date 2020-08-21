@@ -8,6 +8,7 @@ const config = {
     'foo/*': 'bar/*'
   }
 }
+config.default = config.js
 
 module.exports = {
   root,

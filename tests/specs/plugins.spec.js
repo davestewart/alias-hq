@@ -22,15 +22,22 @@ describe('passing', function () {
 
   describe('a custom function', function () {
     it('should convert paths correctly', function () {
-      const received = aliases.as(plugin)
+      const received = aliases.load('aliases.config.json').as(plugin)
       const expected = fixtures.custom
       expect(received).toEqual(expected)
     })
   })
 
-  describe('an invalid plugin name', function () {
+  describe('an missing plugin name', function () {
     it('should throw an error', function () {
       const received = () => aliases.as('blah')
+      expect(received).toThrowError()
+    })
+  })
+
+  describe('an invalid plugin name', function () {
+    it('should throw an error', function () {
+      const received = () => aliases.as(123)
       expect(received).toThrowError()
     })
   })

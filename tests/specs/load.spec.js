@@ -10,7 +10,7 @@ describe('calling load and passing', function () {
   describe('nothing', function () {
     it('should load the default file', function () {
       const received = aliases.load().paths()
-      const expected = config.js
+      const expected = config.default
       expect(received).toEqual(expected)
     })
   })

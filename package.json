@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "demo": "node demo",
-    "test": "jest --verbose"
+    "test": "jest --verbose",
+    "test:coverage": "jest --coverage"
   },
   "repository": {
     "type": "git",
