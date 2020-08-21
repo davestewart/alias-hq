@@ -1,8 +1,11 @@
 {
   "name": "alias-hq",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0",
   "description": "Manage a single set of folder aliases and convert as-needed to other formats",
   "main": "src/index.js",
+  "files": [
+    "src/*"
+  ],
   "scripts": {
     "demo": "node demo",
     "test": "jest --verbose",
@@ -16,11 +19,13 @@
     "paths",
     "aliases",
     "typescript",
+    "webstorm",
+    "vscode",
     "rollup",
     "webpack",
     "jest"
   ],
-  "author": "",
+  "author": "Dave Stewart",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/davestewart/alias-hq/issues"

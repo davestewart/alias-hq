@@ -2,7 +2,7 @@
 
 ## Intro
 
-Thanks for checking out the contributing document.
+Thanks for checking out this document.
 
 I'm guessing you're likely here because:
 
@@ -17,18 +17,18 @@ Alias HQ uses a fairly simple plugin architecture to add new functionality to th
 
 A few points:
 
-- plugins export a single function which receives the `paths` hash any an `options` hash
+- plugins export a single function which receives the `paths` and `options` hashes
 - plugins should return whatever format (Object or Array) the consuming library requires
 - plugins are placed in the `src/plugins` folder
-- plugins may use any of the utils from the `src/utils` folder
-- plugin code is not compiled, so needs to be written using Common JS format
+- plugins may use any of the utils from the `src/utils` folder or native Node functions
+- plugin code is not compiled, so file import and export need to be written in Common JS format
 
 ### Writing the plugin
 
 Check the following locations for examples of how to write a plugin:
 
-- `src/plugins/*`
-- `tests/specs/plugins.spec.js`
+- [`src/plugins/*`](https://github.com/davestewart/alias-hq/tree/master/src/plugins)
+- [`tests/specs/plugins.spec.js`](https://github.com/davestewart/alias-hq/blob/master/tests/specs/plugins.spec.js)
 
 The following example code is from the `plugins.spec.js` file:
 
@@ -36,14 +36,14 @@ The following example code is from the `plugins.spec.js` file:
 function plugin (paths, options) {
   return Object.keys(paths).reduce((output, key) => {
     const alias = key.substring(1).replace('/*', '')
-    const path = paths[key].replace('/*', '')
+    const path = paths[key][0].replace('/*', '')
     output[alias] = { path }
     return output
   }, {})
 }
 ```
 
-It converts the passed `paths` configuration into the following (hypothetical) output:
+It is a good example of converting the passed `paths` configuration into a (hypothetical) output hash:
 
 ```js
 {
@@ -57,16 +57,16 @@ It converts the passed `paths` configuration into the following (hypothetical) o
 
 ### Consuming options
 
-The `options` parameter will always be an `object` with at least a key for `root` which will be the folder path of the current configuration file.
+The passed `options` parameter will always be an `object` with at least a key for `root` (the absolute folder path of the current configuration file) which should be the user's project root.
 
-If you need this, you can use it in conjunction with the `resolve` (simply an alias to `path.resolve`) function from the `utils` folder: 
+If you need this, you can use it in conjunction with the `resolve()` utility (simply an alias to Node's `path.resolve`)  from the `utils` folder: 
 
 ```js
 const { resolve } = require('../utils')
 
 function plugin (paths, { root }) {
   return Object.keys(paths).reduce((output, key) => {
-    const path = resolve(root, paths[key])
+    const absPath = resolve(root, paths[key])
     ...
   }, {})
 }
@@ -74,17 +74,17 @@ function plugin (paths, { root }) {
 
 ### Using utilities
 
-There are additional utilities `toArray` and `toObject` which simplify the unwrapping and rewrapping of the paths config and just allow you to pass a conversion function:
+There are additional utilities `toArray` and `toObject` which simplify the unwrapping and re-wrapping of the `paths` config, allowing you to simply write a conversion function which will consume each key/value pair in turn:
 
 ```js 
 const { toArray } = require('../utils')
 
-function callback (alias, path) {
-  // your code
-  return ...
+// process a single entry
+function callback (alias, path, options) {
+  return { alias, path }
 }
 
-// returns an array
+// processes the paths hash and returns an array
 module.exports = function (paths, options) {
   return toArray(paths, callback, options)
 }
@@ -93,31 +93,31 @@ module.exports = function (paths, options) {
 
 ### Saving a plugin
 
-Once you decide what you want your plugin to do, you would need to:
+Once you have decided what you want your plugin to do, you will need to:
 
 - decide on the name of the plugin, e.g. `"custom"`
 - save it to a named file, such as `src/plugins/custom.js`
-- make it the main export via `module.exports = function () { ... }` 
+- make it the main export with `module.exports = function ...` 
 
 The plugin can then be used by users like so:
 
 ```js
-const config = aliases.to('custom')
+const config = aliases.get('custom', options)
 ```
 
 ### Automated testing
 
-You can have your plugin automatically tested by:
+You can have your plugin automatically tested during development by:
 
 - adding a fixture to the `plugins` variable in `tests/fixtures/index.js`
 - the `key` should be the `name` of the plugin
-- the `value` should be the expected transformed output of the supplied `aliases.config.json` file
+- the `value` should be the expected transformed output of the `jsconfig.json` file
 
 If you need to test for any custom `options` you should manually add tests to `tests/specs/plugins.specs.js` . 
 
 ## Scripts
 
-You can see a demo of all plugins and helpers using:
+You can see a demo of all plugins and config using:
 
 ```
 npm run demo
@@ -132,12 +132,15 @@ npm run test:coverage
 
 ## Documentation
 
-If you add a plugin, please also add a simple section to the documentation section in the main readme.
+If you add a plugin, please also update the main [readme](README.md):
 
-Follow the existing format, and include:
+- add the name of the plugin to the **Usage** section
+- add a simple example to the **Integration examples** section 
+
+For the example, follow the existing format, and include:
 
 - a simple intro sentence, with inline links to any related documentation
-- a simple code sample, showing the plugin being used, but without bloating it with unrelated parameters
+- a simple code sample, showing the plugin being used, without bloating it with unrelated setup
 
 ## Nice to have
 
