@@ -28,7 +28,7 @@ An alias is just a map of names and folder paths:
 The problem with existing alias setups is that:
 
 - tools in the JavaScript ecosystem use **completely different formats** 
-- developers need to duplicate, rewrite and maintain aliases configurations for each of the tools or frameworks in their toolchain
+- developers need to maintain seaparate configurations for each of these tools in their toolchain
 
 #### Solution
 
@@ -67,8 +67,8 @@ Open your `tsconfig.json` and add aliases to the `compilerOptions.paths` node us
       "@api/*": ["api/*"],
       "@app/*": ["app/*"],
       "@config/*": ["app/config/*"],
-      "@shared/*": ["app/shared/*"],
-      "@helpers/*": ["common/helpers/*"]
+      "@services/*": ["app/services/*"],
+      "@utils/*": ["common/utils/*"]
     }
   }
 }
@@ -85,8 +85,8 @@ Create a new file  `aliases.config.json` in your project root, and add aliases t
   "@api/*": "api/*",
   "@app/*": "app/*",
   "@config/*": "app/config/*",
-  "@shared/*": "app/shared/*",
-  "@helpers/*": "common/helpers/*"
+  "@services/*": "app/services/*",
+  "@utils/*": "common/utils/*"
 }
 ```
 
@@ -108,18 +108,18 @@ Alias HQ will automatically find the configuration files in your project root, a
 
 ```js
 {
-  '@api': '/Volumes/Projects/Path/To/Project/api',
-  '@app': '/Volumes/Projects/Path/To/Project/app',
-  '@config': '/Volumes/Projects/Path/To/Project/app/config',
-  '@shared': '/Volumes/Projects/Path/To/Project/app/shared',
-  '@helpers': '/Volumes/Projects/Path/To/Project/common/helpers'
+  '@api': '/volumes/projects/path/to/project/api',
+  '@app': '/volumes/projects/path/to/project/app',
+  '@config': '/volumes/projects/path/to/project/app/config',
+  '@services': '/volumes/projects/path/to/project/app/services',
+  '@utils': '/volumes/projects/path/to/project/common/utils'
 }
 ```
 You can convert to any of the supported formats...
 
 - Webpack
-- Jest
 - Rollup
+- Jest
 
 ...or supply your own custom functions.
 
@@ -133,7 +133,7 @@ To convert to a desired format, use the `as()` method, passing the plugin `name`
 const config = aliases.as('jest')
 ```
 
-You can also use `to` if you prefer:
+You can also use `to()` if you prefer:
 
 ```js
 const config = aliases.to('jest')
@@ -153,7 +153,7 @@ const config = aliases.to(customFormat)
 
 ### Adding custom code as plugins
 
-You can package any custom code using the `plugin` helper, passing the `name` and `callback` function:
+You can package any custom code using the `plugin()` helper, passing the `name` and `callback` function:
 
 ```js
 aliases.plugin('custom', customFormat)
@@ -227,7 +227,7 @@ module.exports = {
 
 ### Webpack
 
-If bundling using a vanilla Webpack build, you can [add the aliases](https://webpack.js.org/configuration/resolve/#resolvealias) using the `resolve.alias` configuration option:
+If bundling using Webpack, you can [add the aliases](https://webpack.js.org/configuration/resolve/#resolvealias) using the `resolve.alias` configuration option:
 
 ```js
 // build.js
@@ -278,7 +278,7 @@ module.exports = {
 
 ### Jest
 
-If running Jest, you can [configure](https://jestjs.io/docs/en/configuration#modulenamemapper-objectstring-string--arraystring) the `moduleNameMapper` option:
+If testing using Jest, you can [configure](https://jestjs.io/docs/en/configuration#modulenamemapper-objectstring-string--arraystring) the `moduleNameMapper` option:
 
 ```js
 // jest.config.js
@@ -286,7 +286,12 @@ import aliases from 'alias-hq'
 
 module.exports = {
   ...
-  moduleNameMapper: aliases.to('jest'),
+  moduleNameMapper: aliases.as('jest'),
 }
 ```
 
+## Contributing
+
+If you see a framework or library here that you would like supported check the [contributing](./CONTRIBUTING.md) document or create an [issue](https://github.com/davestewart/alias-hq/issues).
+
+Thanks.  
