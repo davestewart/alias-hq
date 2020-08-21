@@ -45,7 +45,7 @@ describe('passing', function () {
 
 describe('custom plugins', function () {
   it('should be addable', function () {
-    aliases.plugin('test', plugin)
+    aliases.plugins.add('test', plugin)
   })
   it('should be callable', function () {
     const received = aliases.get('test')

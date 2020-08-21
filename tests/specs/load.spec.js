@@ -9,7 +9,7 @@ describe('calling load and passing', function () {
 
   describe('nothing', function () {
     it('should load the default file', function () {
-      const received = aliases.load().paths()
+      const received = aliases.load().config.paths
       const expected = config.default
       expect(received).toEqual(expected)
     })
@@ -17,7 +17,7 @@ describe('calling load and passing', function () {
 
   describe('relative filepath', function () {
     it('should load the file', function () {
-      const received = aliases.load('jsconfig.json').paths()
+      const received = aliases.load('jsconfig.json').config.paths
       const expected = config.js
       expect(received).toEqual(expected)
     })
@@ -25,7 +25,7 @@ describe('calling load and passing', function () {
 
   describe('absolute filepath', function () {
     it('should load the file', function () {
-      const received = aliases.load(root + '/tsconfig.json').paths()
+      const received = aliases.load(root + '/tsconfig.json').config.paths
       const expected = config.ts
       expect(received).toEqual(expected)
     })
@@ -40,7 +40,7 @@ describe('calling load and passing', function () {
 
   describe('an object', function () {
     it('should set the object as paths', function () {
-      const received = aliases.load(config.custom).paths()
+      const received = aliases.load(config.custom).config.paths
       const expected = config.custom
       expect(received).toEqual(expected)
     })
