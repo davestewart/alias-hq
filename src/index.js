@@ -51,15 +51,15 @@ function load (value = undefined) {
   }
 
   // variables
-  root = path
+  config.root = path
     ? Path.dirname(path)
     : __dirname
-  paths = json && json['compilerOptions']
+  config.paths = json && json['compilerOptions']
       ? json['compilerOptions'].paths
       : json || {}
 
   // check object has keys
-  if (Object.keys(json).length === 0) {
+  if (Object.keys(config.paths).length === 0) {
     throw new Error('The loaded paths appear to be empty')
   }
 
@@ -74,33 +74,32 @@ function load (value = undefined) {
  * @param   {function}  plugin    A custom function
  * @param   {object}   [options]  Any options to pass to the plugin
  */
-
 function get (plugin, options = {}) {
   // load defaults if not loaded
-  if (!paths) {
+  if (!config.paths) {
     load()
   }
 
   // options
-  options = { root, ...options }
+  options = { root: config.root, ...options }
 
   // callback
   if (typeof plugin === 'function') {
-    return plugin(paths, options)
+    return plugin(config.paths, options)
   }
 
   // plugin
   if (typeof plugin === 'string') {
-    // check plugins hash
-    if (typeof plugins[plugin] === 'function') {
-      return plugins[plugin](paths, options)
+    // check for custom plugin
+    if (typeof plugins.custom[plugin] === 'function') {
+      return plugins.custom[plugin](config.paths, options)
     }
 
-    // attempt to load
+    // check for built-in plugin
     const path = Path.resolve(__dirname, `./plugins/${plugin}.js`)
     if (fs.existsSync(path)) {
       plugin = require(path)
-      return plugin(paths, options)
+      return plugin(config.paths, options)
     }
     throw new Error(`No such plugin "${plugin}"`)
   }
@@ -109,40 +108,49 @@ function get (plugin, options = {}) {
   throw new Error(`Invalid "plugin" parameter`)
 }
 
-/**
- * Add a plugin to the core setup
- *
- * @param   {string}    name        The plugin name
- * @param   {function}  callback    The plugin function
- * @returns {object}                The Alias HQ instance
- */
-function plugin (name, callback) {
-  if (!plugins[name] && typeof callback === 'function') {
-    plugins[name] = callback
-  }
-  return this
+
+const config = {
+  root: '',
+  paths: null,
 }
 
-function getPlugins () {
-  const path = Path.resolve(__dirname, 'plugins')
-  const items = fs.readdirSync(path).map(file => file.replace('.js', ''))
-  Object.keys(plugins).forEach(key => {
-    if (!items.includes(key)) {
-      items.push(key)
+const plugins = {
+  custom: {},
+
+  /**
+   * Add a plugin to the core setup
+   *
+   * @param   {string}    name        The plugin name
+   * @param   {function}  callback    The plugin function
+   * @returns {object}                The Alias HQ instance
+   */
+  add (name, callback) {
+    if (!this.custom[name] && typeof callback === 'function') {
+      this.custom[name] = callback
     }
-  })
-  return items.sort()
-}
+    return this
+  },
 
-const plugins = {}
-let paths
-let root
+  /**
+   * List available plugin names
+   *
+   * @returns {string[]}
+   */
+  get names () {
+    const path = Path.resolve(__dirname, 'plugins')
+    const items = fs.readdirSync(path).map(file => file.replace('.js', ''))
+    Object.keys(this.custom).forEach(key => {
+      if (!items.includes(key)) {
+        items.push(key)
+      }
+    })
+    return items.sort()
+  },
+}
 
 module.exports = {
   get,
   load,
-  paths: () => paths,
-  root: () => root,
-  plugin,
-  plugins: getPlugins,
+  config,
+  plugins,
 }
