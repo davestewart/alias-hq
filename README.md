@@ -10,7 +10,7 @@
 
 ### Background
 
-In any non-trivial JavaScript project, developers use path "aliases" to make imports more intuitive:
+In any non-trivial JavaScript project, developers use path "aliases":
 
 ```js
 // without aliases
@@ -21,24 +21,45 @@ import SomeService from `../../../core/services/some-service`
 import SomeService from `@services/some-service`
 ```
 
-An alias is just a map of names and folder paths:
-
-```json
-'@services': '<path to project>/src/core/services/'
-```
+The advantage of this is tider, more intuitive imports, and easier refactoring.
 
 ### Problem
 
-The problem with existing alias setups is that:
+At their simplest, aliases are just a map of names and folder paths:
 
-- tools in the JavaScript ecosystem use a variety of **completely different formats** 
-- developers need to manually maintain separate configurations for each of these tools in their toolchain
+```json
+'@app'      : './src/app/'
+'@services' : './src/app/services/'
+'@utils'    : './src/common/utils/'
+...
+```
+
+However, tools in the JavaScript ecosystem use a variety of **different** formats:
+
+```js
+// typescript, vscode
+"@services/*": ["src/app/services/*"]
+
+// webpack, eslint, etc
+'@services': '/volumes/projects/path/to/project/src/app/services'
+
+// jest
+'^@services/(.*)$': '<rootDir>/src/app/services/$1'
+
+// rollup
+{
+  find: '@services',
+  replacement: '/volumes/projects/path/to/project/src/app/services'
+}
+```
+
+This forces developers who want to use aliases to duplicate, edit and maintain **separate** configurations for each of these tools in their toolchain.
 
 ### Solution
 
-Alias HQ attempts to solve this by:
+Alias HQ solves this fragmentation by:
 
-- adopting VS Code / TypeScript's [path configuration](https://www.typescriptlang.org/docs/handbook/module-resolution.html#path-mapping) format
+- adopting TypeScript / VS Code's [configuration](https://www.typescriptlang.org/docs/handbook/module-resolution.html#path-mapping) as the de facto format
 - using your project's [tsconfig.json](https://code.visualstudio.com/docs/typescript/typescript-compiling#_tsconfigjson) or [jsconfig.json](https://code.visualstudio.com/docs/languages/jsconfig) as the "single source of truth"
 - providing a plugin architecture to map the configuration to other formats
 
@@ -80,17 +101,18 @@ Open your `tsconfig.json` and add aliases to the `compilerOptions.paths` node us
 
 Note that:
 
+- You can specify a `baseUrl` if files are in subfolders
 - The format supports multiple paths, but at this time, Alias HQ uses only the first one
 - You may add **non-TypeScript** paths (such as assets) here; TypeScript will ignore them but Alias HQ will use them
 - You don't *have* to use a `@` character, but the convention is to use one
 
 #### JavaScript projects
 
-If you don't already have one, create a new file  `jsconfig.json` in your project root, follow the instructions above for TypeScript.
+If you don't already have one, create a new file  `jsconfig.json` in your project root, and copy the format above to add aliases.
 
 ## Usage
 
-With the default configuration, usage is a one-liner:
+With the default setup, usage is a one-liner:
 
 ```js
 import aliases from 'alias-hq'
@@ -104,11 +126,11 @@ Alias HQ will automatically find the configuration files in your project root, a
 
 ```js
 {
-  '@api': '/volumes/projects/path/to/project/api',
-  '@app': '/volumes/projects/path/to/project/app',
-  '@config': '/volumes/projects/path/to/project/app/config',
-  '@services': '/volumes/projects/path/to/project/app/services',
-  '@utils': '/volumes/projects/path/to/project/common/utils'
+  '@api': '/volumes/projects/path/to/project/src/api',
+  '@app': '/volumes/projects/path/to/project/src/app',
+  '@config': '/volumes/projects/path/to/project/src/app/config',
+  '@services': '/volumes/projects/path/to/project/src/app/services',
+  '@utils': '/volumes/projects/path/to/project/src/common/utils'
 }
 ```
 You can convert to any of the [supported](https://github.com/davestewart/alias-hq/tree/master/src/plugins) formats...
@@ -117,7 +139,7 @@ You can convert to any of the [supported](https://github.com/davestewart/alias-h
 - Rollup
 - Jest
 
-...or supply your own custom functions.
+...or supply a custom transform function.
 
 ## API
 
@@ -184,10 +206,10 @@ You may also pass `json` configurations directly:
 const json = require('./build/paths.json')
 const config = aliases
   .load(json)
-  .get('webpack', { root: __dirname })
+  .get('webpack', { rootUrl: __dirname })
 ```
 
-Note that plugins which require the `root` path (e.g. Webpack and Rollup) will access it via the `options` parameter.
+Note that plugins which require the `rootUrl` path (e.g. Webpack and Rollup) will access it via the `options` parameter.
 
 ### Debugging
 
@@ -199,7 +221,8 @@ console.log(aliases.config)
 
 ```js
 {
-  root: '/volumes/projects/path/to/project',
+  rootUrl: '/volumes/projects/path/to/project',
+  baseUrl: 'src',
   paths: {
     '@api/*': [ 'api/*' ],
     '@app/*': [ 'app/*' ],

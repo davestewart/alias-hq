@@ -57,16 +57,32 @@ It is a good example of converting the passed `paths` configuration into a (hypo
 
 ### Consuming options
 
-The passed `options` parameter will always be an `object` with at least a key for `root` (the absolute folder path of the current configuration file) which should be the user's project root.
-
-If you need this, you can use it in conjunction with the `resolve()` utility (simply an alias to Node's `path.resolve`)  from the `utils` folder: 
+The passed `options` parameter will always be an `object` with the current `config` and any user options:
 
 ```js
-const { resolve } = require('../utils')
+{
+  // user options
+  foo: 'bar',
+  
+  // base config
+  rootUrl: '/volumes/projects/path/to/project',
+  baseUrl: 'src',
+  paths: {
+    '@api/*': [ 'api/*' ],
+    '@app/*': [ 'app/*' ],
+    ...
+  }
+}
+```
 
-function plugin (paths, { root }) {
+As a convenience, the `utils/` folder also exports Node's `path.resolve` and `path.join` functions:
+
+```js
+const { join, resolve } = require('../utils')
+
+function plugin (paths, { rootUrl, baseUrl }) {
   return Object.keys(paths).reduce((output, key) => {
-    const absPath = resolve(root, paths[key])
+    const absPath = resolve(rootUrl, baseUrl, paths[key])
     ...
   }, {})
 }
