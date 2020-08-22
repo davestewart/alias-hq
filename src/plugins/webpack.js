@@ -1,14 +1,15 @@
 const { toObject, resolve } = require('../utils')
 
 // @see https://webpack.js.org/configuration/resolve/#resolvealias
-function callback (alias, path, { root }) {
-  if (alias.endsWith('/*')) {
-    alias = alias.replace(/\/\*$/, '')
-    path = path.replace(/\*$/, '')
-  }
+function callback (alias, path, { root, baseUrl }) {
+  alias = alias
+    .replace(/\/\*$/, '')
+  path = path
+    .replace(/\*$/, '')
+  path = resolve(root, baseUrl, path)
   return {
     alias,
-    path: resolve(root, path),
+    path,
   }
 }
 

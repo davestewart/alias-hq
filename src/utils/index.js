@@ -44,6 +44,7 @@ function toArray (paths, callback, options) {
 
 module.exports = {
   resolve: Path.resolve,
+  join: Path.join,
   toObject,
   toArray,
 }

@@ -1,11 +1,16 @@
-const { toObject } = require('../utils')
+const { toObject, join } = require('../utils')
 
 // @see https://jestjs.io/docs/en/configuration#modulenamemapper-objectstring-string--arraystring
-function callback (alias, path) {
-  path = path.replace(/^\//, '')
+function callback (alias, path, { baseUrl }) {
+  alias = alias
+    .replace(/\*/, '(.*)')
+  path = path
+    .replace(/^\//, '')
+    .replace(/\*/, '$1')
+  path = join('<rootDir>', baseUrl, path)
   return {
-    alias: `^${alias.replace(/\*/, '(.*)')}$`,
-    path: `<rootDir>/${path.replace(/\*/, '$1')}`
+    alias: `^${alias}$`,
+    path,
   }
 }
 

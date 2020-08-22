@@ -50,15 +50,20 @@ function load (value = undefined) {
     throw new Error('Invalid parameter "value"')
   }
 
-  // variables
+  // grab config
+  const compilerOptions = json && json.compilerOptions
+  if (compilerOptions) {
+    config.baseUrl = (compilerOptions.baseUrl || '').replace(/^\.\//, '')
+    config.paths = compilerOptions.paths || {}
+  }
+  else {
+    config.paths = json || {}
+  }
   config.root = path
     ? Path.dirname(path)
     : __dirname
-  config.paths = json && json['compilerOptions']
-      ? json['compilerOptions'].paths
-      : json || {}
 
-  // check object has keys
+  // check for paths
   if (Object.keys(config.paths).length === 0) {
     throw new Error('The loaded paths appear to be empty')
   }
@@ -81,7 +86,7 @@ function get (plugin, options = {}) {
   }
 
   // options
-  options = { root: config.root, ...options }
+  options = { ...config, ...options }
 
   // callback
   if (typeof plugin === 'function') {
@@ -111,6 +116,7 @@ function get (plugin, options = {}) {
 
 const config = {
   root: '',
+  baseUrl: '',
   paths: null,
 }
 
