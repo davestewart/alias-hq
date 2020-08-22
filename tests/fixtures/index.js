@@ -3,7 +3,7 @@ const Path = require('path')
 // helpers
 const root = Path.resolve(__dirname, '../../')
 function src (path) {
-  return `${root}/${path}`
+  return `${root}/src/${path}`
 }
 
 // fixtures
@@ -17,11 +17,11 @@ const plugins = {
   },
 
   jest: {
-    '^@api/(.*)$': '<rootDir>/api/$1',
-    '^@app/(.*)$': '<rootDir>/app/$1',
-    '^@config/(.*)$': '<rootDir>/app/config/$1',
-    '^@services/(.*)$': '<rootDir>/app/services/$1',
-    '^@utils/(.*)$': '<rootDir>/common/utils/$1',
+    '^@api/(.*)$': '<rootDir>/src/api/$1',
+    '^@app/(.*)$': '<rootDir>/src/app/$1',
+    '^@config/(.*)$': '<rootDir>/src/app/config/$1',
+    '^@services/(.*)$': '<rootDir>/src/app/services/$1',
+    '^@utils/(.*)$': '<rootDir>/src/common/utils/$1',
   },
 
   rollup: [
