@@ -1,5 +1,5 @@
 const aliases = require('../../src')
-const { root, config } = require('./globals')
+const { rootUrl, config } = require('./globals')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // tests
@@ -15,10 +15,10 @@ describe('helpers', function () {
     })
   })
 
-  describe('root', function () {
-    it('should return the current folder root', function () {
-      const received = aliases.load().config.root
-      const expected = root
+  describe('rootUrl', function () {
+    it('should return the current folder rootUrl', function () {
+      const received = aliases.load().config.rootUrl
+      const expected = rootUrl
       expect(received).toEqual(expected)
     })
   })

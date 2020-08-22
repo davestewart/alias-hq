@@ -1,5 +1,5 @@
 const aliases = require('../../src')
-const { root, config } = require('./globals')
+const { rootUrl, config } = require('./globals')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // tests
@@ -25,7 +25,7 @@ describe('calling load and passing', function () {
 
   describe('absolute filepath', function () {
     it('should load the file', function () {
-      const received = aliases.load(root + '/tsconfig.json').config.paths
+      const received = aliases.load(rootUrl + '/tsconfig.json').config.paths
       const expected = config.ts
       expect(received).toEqual(expected)
     })

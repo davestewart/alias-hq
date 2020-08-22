@@ -59,7 +59,7 @@ function load (value = undefined) {
   else {
     config.paths = json || {}
   }
-  config.root = path
+  config.rootUrl = path
     ? Path.dirname(path)
     : __dirname
 
@@ -115,7 +115,7 @@ function get (plugin, options = {}) {
 
 
 const config = {
-  root: '',
+  rootUrl: '',
   baseUrl: '',
   paths: null,
 }

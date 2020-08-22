@@ -1,6 +1,6 @@
 const Path = require('path')
 
-const root = Path.resolve(__dirname, '../../')
+const rootUrl = Path.resolve(__dirname, '../../')
 const config = {
   ts: require('../../tsconfig.json').compilerOptions.paths,
   js: require('../../jsconfig.json').compilerOptions.paths,
@@ -11,6 +11,6 @@ const config = {
 config.default = config.js
 
 module.exports = {
-  root,
+  rootUrl,
   config,
 }
