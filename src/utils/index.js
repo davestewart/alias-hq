@@ -1,33 +1,5 @@
 const Path = require('path')
 
-function convert (entry, callback, options) {
-  const alias = entry[0]
-  const path = Array.isArray(entry[1])
-    ? entry[1][0]
-    : entry[1]
-  return callback(alias, path, options)
-}
-
-/**
- * Convert paths and return an hash
- *
- * @param   {object}    paths       The tsconfig.json paths node
- * @param   {function}  callback    The conversion function
- * @param   {path}      options     Optional options path
- * @returns {Object.<string, string>}
- */
-function toObject (paths, callback, options) {
-  return Object
-    .entries(paths)
-    .map(entry => convert(entry, callback, options))
-    .reduce((output, entry) => {
-      if (!output[entry.alias]) {
-        output[entry.alias] = entry.path
-      }
-      return output
-    }, {})
-}
-
 /**
  * Convert paths and return an array
  *
@@ -38,8 +10,26 @@ function toObject (paths, callback, options) {
  */
 function toArray (paths, callback, options) {
   return Object
-    .entries(paths)
-    .map(entry => convert(entry, callback, options))
+    .keys(paths)
+    .map(alias => callback(alias, paths[alias], options))
+}
+
+/**
+ * Convert paths and return an object
+ *
+ * @param   {object}    paths       The tsconfig.json paths node
+ * @param   {function}  callback    The conversion function
+ * @param   {path}      options     Optional options path
+ * @returns {Object.<string, string>}
+ */
+function toObject (paths, callback, options) {
+  return toArray(paths, callback, options)
+    .reduce((output, entry) => {
+      if (!output[entry.alias]) {
+        output[entry.alias] = entry.path
+      }
+      return output
+    }, {})
 }
 
 module.exports = {

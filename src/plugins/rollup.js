@@ -1,10 +1,10 @@
 const { toArray, resolve } = require('../utils')
 
 // @see https://github.com/rollup/plugins/tree/master/packages/alias
-function callback (alias, path, { rootUrl, baseUrl }) {
+function callback (alias, paths, { rootUrl, baseUrl }) {
   alias = alias
     .replace(/\/\*$/, '')
-  path = path
+  let path = paths[0]
     .replace(/\*$/, '')
   path = resolve(rootUrl, baseUrl, path)
   return {
