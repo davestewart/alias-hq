@@ -102,7 +102,7 @@ Open your `tsconfig.json` and add aliases to the `compilerOptions.paths` node us
 Note that:
 
 - You can specify a `baseUrl` if files are in subfolders
-- The format supports multiple paths, but at this time, Alias HQ uses only the first one
+- The format supports multiple paths (currently Jest is the only conversion format to utilse this)
 - You may add **non-TypeScript** paths (such as assets) here; TypeScript will ignore them but Alias HQ will use them
 - You don't *have* to use a `@` character, but the convention is to use one
 
@@ -323,7 +323,7 @@ module.exports = {
 
 ### Jest
 
-If testing using Jest, you can [configure](https://jestjs.io/docs/en/configuration#modulenamemapper-objectstring-string--arraystring) the `moduleNameMapper` option:
+If using Jest, you can [configure](https://jestjs.io/docs/en/configuration#modulenamemapper-objectstring-string--arraystring) the `moduleNameMapper` option:
 
 ```js
 // jest.config.js

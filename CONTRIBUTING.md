@@ -36,7 +36,7 @@ The following example code is from the `plugins.spec.js` file:
 function plugin (paths, options) {
   return Object.keys(paths).reduce((output, key) => {
     const alias = key.substring(1).replace('/*', '')
-    const path = paths[key][0].replace('/*', '')
+    const path = paths[key][0].replace('/*', '') // remember the aliases format supports multiple paths!
     output[alias] = { path }
     return output
   }, {})
@@ -82,7 +82,7 @@ const { join, resolve } = require('../utils')
 
 function plugin (paths, { rootUrl, baseUrl }) {
   return Object.keys(paths).reduce((output, key) => {
-    const absPath = resolve(rootUrl, baseUrl, paths[key])
+    const absPath = resolve(rootUrl, baseUrl, paths[key][0])
     ...
   }, {})
 }
@@ -96,8 +96,8 @@ There are additional utilities `toArray` and `toObject` which simplify the unwra
 const { toArray } = require('../utils')
 
 // process a single entry
-function callback (alias, path, options) {
-  return { alias, path }
+function callback (alias, paths, options) {
+  return { alias, path: paths[0] }
 }
 
 // processes the paths hash and returns an array

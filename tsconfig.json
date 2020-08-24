@@ -6,7 +6,10 @@
       "@app/*": ["app/*"],
       "@config/*": ["app/config/*"],
       "@services/*": ["app/services/*"],
-      "@utils/*": ["common/utils/*"]
+      "@utils/*": [
+        "common/utils/*",
+        "vendor/utils/*"
+      ]
     }
   }
 }
