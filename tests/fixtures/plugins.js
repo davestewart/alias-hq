@@ -1,4 +1,4 @@
-const root = require('app-root-path').toString()
+const root = require('../globals').rootUrl
 
 // helpers
 function rel (path) {

@@ -1,10 +1,10 @@
 const Path = require('path')
 
 function getPaths (name) {
-  return require(`../../${name}.json`).compilerOptions.paths
+  return require(`../${name}.json`).compilerOptions.paths
 }
 
-const rootUrl = Path.resolve(__dirname, '../../')
+const rootUrl = Path.resolve(__dirname, '../')
 
 const config = {
   js: getPaths('jsconfig'),

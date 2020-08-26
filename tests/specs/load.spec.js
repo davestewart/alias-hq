@@ -1,5 +1,5 @@
 const hq = require('../../src')
-const { rootUrl, config } = require('./globals')
+const { rootUrl, config } = require('../globals')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // tests
