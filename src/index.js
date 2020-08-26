@@ -10,9 +10,10 @@ function loadConfig (path) {
   // file
   const json = require(path)
 
-  // base url / paths
+  // config
   const compilerOptions = json && json.compilerOptions
   if (compilerOptions && compilerOptions.paths) {
+    config.rootUrl = Path.dirname(path)
     config.baseUrl = (compilerOptions.baseUrl || './')
     config.paths = compilerOptions.paths || {}
     return true
@@ -57,7 +58,7 @@ function load (value = undefined) {
     // attempt to load file
     while (files.length && !found) {
       let file = files.shift()
-      path = Path.resolve(config.rootUrl, file)
+      path = Path.resolve('./', file)
       if (fs.existsSync(path)) {
         found = loadConfig(path)
       }
@@ -132,7 +133,7 @@ function log (plugin, options = {}, print = true) {
 }
 
 const config = {
-  rootUrl: require('app-root-path').toString(),
+  rootUrl: '',
   baseUrl: '',
   paths: null,
 }
