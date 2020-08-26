@@ -85,7 +85,7 @@ yarn add -D alias-hq
 
 #### Background
 
-Alias HQ piggybacks the TypeScript / VS Code configuration and uses either a `tsconfig.json` or `jsconfig.js` file.
+Alias HQ piggybacks the TypeScript / VS Code configuration with either a `tsconfig.json` or `jsconfig.js` file.
 
 #### Syntax
 
@@ -216,7 +216,7 @@ const config = hq.get('custom')
 
 There might be times when you need to check what is happening under the hood.
 
-#### In code
+### In code
 
 Check the loaded configuration:
 
@@ -267,15 +267,17 @@ hq.json('jest')
 }
 ```
 
-#### Alias CLI
+### Alias CLI
 
 The above functionality is also available as an **interactive** CLI.
 
-Just run the following code in the project root, and choose the option you want:
+Run the following code in the project root...:
 
 ```bash
 node ./node_modules/alias-hq/cli
 ```
+
+...and choose the option you want:
 
 ```
   == Alias HQ ==
@@ -441,7 +443,12 @@ This short React guide is *not meant to be exhaustive*; for issues, use your com
 
 ### JSON-only configurations
 
-Use the [debugging](#debugging) options above, then copy / paste the JSON where you need it.
+For libraries or setups that require JSON, you can use the Alias CLI:
+
+- Follow the [instructions](#alias-cli) above
+- Choose "Dump plugin output (JSON)"
+- Choose the required format 
+- Copy / paste the JSON where you need it
 
 ## Contributing
 
