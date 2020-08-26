@@ -119,7 +119,7 @@ Note that:
 - You may add non-TypeScript paths (such as assets) here; TypeScript will ignore them but Alias HQ will use them
 - You don't *have* to use a `@` character, but the convention is to use one
 
-##### Auto-generation
+### Auto-generation
 
 New in 3.1, you can automatically generate the config using the [Alias CLI](#alias-cli):
 

@@ -1,8 +1,6 @@
-'use strict'
-
-const Path = require('path')
 const inquirer = require('inquirer')
 const hq = require('..')
+const Paths = require('./paths')
 
 function showConfig () {
   hq.load()
@@ -30,18 +28,8 @@ function dumpJson () {
 }
 
 function makeJson () {
-  // load config
   hq.load()
-  const { rootUrl, baseUrl } = hq.config
-  const settings = {
-    rootUrl: Path.resolve(rootUrl, baseUrl),
-    paths: hq.config.paths,
-    type: 'all',
-    prefix: '@',
-  }
-
-
-  // get info
+  const settings = Paths.makeSettings(hq.config)
   Promise.resolve()
     .then(() => {
       return inquirer
@@ -62,11 +50,11 @@ function makeJson () {
           type: 'input',
           name: 'baseUrl',
           message: 'Base URL:',
-          default: baseUrl
+          default: settings.baseUrl
         })
     })
     .then((answer) => {
-      settings.rootUrl = Path.resolve(rootUrl, answer.baseUrl)
+      settings.baseUrl = answer.baseUrl
       return inquirer
         .prompt({
           type: 'input',
@@ -85,40 +73,11 @@ function makeJson () {
         })
     })
     .then((answer) => {
-      // parse input
-      const input = answer.text
-      const rx = /"[^"]+"|\S+/g
-      let folder
-      let folders = []
-      while (folder = rx.exec(input)) {
-        folders.push(folder[0])
-      }
-
-      // create output
-      const paths = folders.reduce((output, input) => {
-        const absPath = Path.resolve(input)
-        const relPath = Path.relative(settings.rootUrl, absPath)
-        const alias = settings.prefix + Path.basename(absPath) + '/*'
-        output[alias] = [ relPath + '/*' ]
-        return output
-      }, settings.type === 'all' ? settings.paths : {})
-
-      // build
-      const config = {
-        compilerOptions: {
-          baseUrl: hq.config.baseUrl,
-          paths: paths
-        }
-      }
-
-      // log
-      const json = JSON
-        .stringify(config, null, '  ')
-        .replace(/\[\s+/g, '[')
-        .replace(/\s+\]/g, ']')
+      const folders = Paths.getFolders(answer.text)
+      const paths = Paths.makePaths(folders, settings)
+      const json = Paths.makeJson(paths, settings)
       console.log('\n' + json + '\n')
     })
-
 }
 
 function main () {
