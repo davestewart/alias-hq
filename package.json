@@ -4,10 +4,11 @@
   "description": "Manage a single set of folder aliases and convert as-needed to other formats",
   "main": "src/index.js",
   "files": [
-    "src/*"
+    "src/*",
+    "cli/*"
   ],
   "scripts": {
-    "demo": "node demo",
+    "cli": "node cli",
     "test": "jest --verbose",
     "test:coverage": "jest --coverage"
   },
