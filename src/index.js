@@ -2,70 +2,76 @@ const Path = require('path')
 const fs = require('fs')
 
 /**
+ * Load a config file
+ *
+ * @param   {string}    path      The absolute path to the config file
+ */
+function loadConfig (path) {
+  // file
+  const json = require(path)
+
+  // base url / paths
+  const compilerOptions = json && json.compilerOptions
+  if (compilerOptions && compilerOptions.paths) {
+    config.baseUrl = (compilerOptions.baseUrl || './')
+    config.paths = compilerOptions.paths || {}
+    return true
+  }
+
+  // normal file
+  config.paths = {}
+}
+
+/**
  * Load config
  *
- * @param   {undefined} value     Pass no value for to determine config file automatically
- * @param   {string}    value     Pass an absolute path to load from alternate location
- * @param   {object}    value     Pass config directly
- * @returns {object}              The Alias HQ instance
+ * @param   {undefined}         value     Pass no value for to determine config file automatically
+ * @param   {string}            value     Pass an absolute path to load from alternate location
+ * @returns {object}                      The Alias HQ instance
  */
 function load (value = undefined) {
   // variables
   let path
-  let json
-
-  // object: config passed directly
-  if (value && typeof value === 'object') {
-    json = value
-  }
 
   // string: relative or absolute path passed
-  else if (typeof value === 'string') {
+  if (typeof value === 'string') {
     path = Path.resolve(value)
-    try {
-      json = require(path)
+    if (fs.existsSync(path)) {
+      loadConfig(path)
     }
-    catch (error) {
-      throw error
+    else {
+      throw new Error(`No such file "${path}"`)
     }
   }
 
   // no value: default config file
   else if (typeof value === 'undefined') {
-    path = Path.resolve('./jsconfig.json')
-    /* istanbul ignore else */
-    if (fs.existsSync(path)) {
-      json = require(path)
-    }
-    else {
-      path = Path.resolve('./tsconfig.json')
+    // variables
+    let found = false
+    const files = [
+      'jsconfig.json',
+      'tsconfig.base.json',
+      'tsconfig.json',
+    ]
+
+    // attempt to load file
+    while (files.length && !found) {
+      let file = files.shift()
+      path = Path.resolve(config.rootUrl, file)
       if (fs.existsSync(path)) {
-        json = require(path)
+        found = loadConfig(path)
       }
+    }
+
+    // could not load file!
+    if (!found) {
+      throw new Error('No config file found')
     }
   }
 
   // any other value
   else {
     throw new Error('Invalid parameter "value"')
-  }
-
-  // grab config
-  const compilerOptions = json && json.compilerOptions
-  if (compilerOptions) {
-    config.baseUrl = (compilerOptions.baseUrl || '').replace(/^\.\//, '')
-    config.paths = compilerOptions.paths || {}
-  }
-  else {
-    config.paths = json || {}
-  }
-  config.rootUrl = path
-    ? Path.dirname(path)
-    : __dirname
-
-  // check for paths
-  if (Object.keys(config.paths).length === 0) {
-    throw new Error('The loaded paths appear to be empty')
   }
 
   // return
@@ -75,11 +81,11 @@ function load (value = undefined) {
 /**
  * Convert paths config using a plugin or callback
  *
- * @param   {string}    plugin    The name of an available plugin
- * @param   {function}  plugin    A custom function
+ * @param   {string}    format    The name of an available plugin
+ * @param   {function}  format    A custom function
  * @param   {object}   [options]  Any options to pass to the plugin
  */
-function get (plugin, options = {}) {
+function get (format, options = {}) {
   // load defaults if not loaded
   if (!config.paths) {
     load()
@@ -89,24 +95,25 @@ function get (plugin, options = {}) {
   options = { ...config, ...options }
 
   // callback
-  if (typeof plugin === 'function') {
-    return plugin(config.paths, options)
+  if (typeof format === 'function') {
+    return format(config.paths, options)
   }
 
   // plugin
-  if (typeof plugin === 'string') {
+  if (typeof format === 'string') {
     // check for custom plugin
-    if (typeof plugins.custom[plugin] === 'function') {
-      return plugins.custom[plugin](config.paths, options)
+    if (typeof plugins.custom[format] === 'function') {
+      const plugin = plugins.custom[format]
+      return plugin(config.paths, options)
     }
 
     // check for built-in plugin
-    const path = Path.resolve(__dirname, `./plugins/${plugin}.js`)
+    const path = Path.resolve(__dirname, `./plugins/${format}.js`)
     if (fs.existsSync(path)) {
-      plugin = require(path)
+      const plugin = require(path)
       return plugin(config.paths, options)
     }
-    throw new Error(`No such plugin "${plugin}"`)
+    throw new Error(`No such plugin "${format}"`)
   }
 
   // invalid
@@ -115,7 +122,7 @@ function get (plugin, options = {}) {
 
 
 const config = {
-  rootUrl: '',
+  rootUrl: require('app-root-path').toString(),
   baseUrl: '',
   paths: null,
 }

@@ -33,5 +33,9 @@
   "homepage": "https://github.com/davestewart/alias-hq#readme",
   "devDependencies": {
     "jest": "^26.4.1"
+  },
+  "dependencies": {
+    "app-root-path": "^3.0.0",
+    "inquirer": "^7.3.3"
   }
 }
