@@ -7,7 +7,7 @@ function callback (alias, paths, { rootUrl, baseUrl, format }) {
   let path = paths[0]
     .replace(/\/\*$/, '')
   path = resolve(baseUrl, path)
-  if (format === 'array') {
+  if (format === 'object') {
     return {
       find: alias,
       replacement: path,
@@ -20,7 +20,7 @@ function callback (alias, paths, { rootUrl, baseUrl, format }) {
 }
 
 module.exports = function (paths, options) {
-  return options.format === 'array'
-    ? toArray(paths, callback, options)
-    : toObject(paths, callback, options)
+  return options.format === 'object'
+    ? toObject(paths, callback, options)
+    : toArray(paths, callback, options)
 }
