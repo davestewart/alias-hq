@@ -6,7 +6,7 @@ function makeSettings (config) {
     rootUrl,
     baseUrl,
     paths,
-    type: 'all',
+    type: 'new',
     prefix: '@',
   }
 }
@@ -28,10 +28,11 @@ function makePaths (folders, settings) {
     ? settings.paths
     : {}
   return folders.reduce((output, input) => {
-    const absPath = Path.resolve(input)
-    const relPath = Path.relative(rootUrl, absPath)
-    const alias = settings.prefix + Path.basename(absPath) + '/*'
-    output[alias] = [ relPath + '/*' ]
+    const path = Path.isAbsolute(input)
+      ? Path.relative(rootUrl, input)
+      : input
+    const alias = settings.prefix + Path.basename(path) + '/*'
+    output[alias] = [ path + '/*' ]
     return output
   }, paths)
 }
