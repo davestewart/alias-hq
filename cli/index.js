@@ -11,9 +11,9 @@ function main () {
       name: 'choice',
       message: 'What do you want to do?',
       choices: [
-        'Show loaded config',
-        'List plugin names',
-        'Dump paths as json',
+        '- Show loaded config',
+        '- List plugin output',
+        '- Dump paths as json',
       ],
     })
     .then((answer) => {
@@ -25,7 +25,9 @@ function main () {
           break
 
         case 'List':
-          console.log(' - ' + hq.plugins.names.join('\n - '))
+          hq.plugins.names.forEach(format => {
+            console.log({ format, aliases: hq.get(format) })
+          })
           break
 
         case 'Dump':
@@ -34,7 +36,7 @@ function main () {
               type: 'list',
               name: 'format',
               message: 'In what format?',
-              choices: hq.plugins.names,
+              choices: hq.plugins.names.map(name => '- ' + name),
             })
             .then((answer) => {
               const choice = answer.format.match(/\w+/).shift()
