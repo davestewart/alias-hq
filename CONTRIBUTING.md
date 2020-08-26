@@ -118,18 +118,29 @@ Once you have decided what you want your plugin to do, you will need to:
 The plugin can then be used by users like so:
 
 ```js
-const config = aliases.get('custom', options)
+const config = hq.get('custom', options)
 ```
 
 ### Automated testing
 
 You can have your plugin automatically tested during development by:
 
-- adding a fixture to the `plugins` variable in `tests/fixtures/index.js`
-- the `key` should be the `name` of the plugin
-- the `value` should be the expected transformed output of the `jsconfig.json` file
+- adding one or more fixtures to  `tests/fixtures/plugins.js`
+- use the `plugin()` function to define:
+  - an `id` (defined as `name:options`, where name is the plugin `name` and `options` is a friendly identifier for the test output)
+  - the expected `config` for the current option
+  - an optional `options` hash
 
-If you need to test for any custom `options` you should manually add tests to `tests/specs/plugins.specs.js` . 
+You should see something like this when you run the tests:
+
+```
+  available plugins
+    should convert with options
+      ✓ webpack
+      ✓ jest
+      ✓ rollup:object
+      ✓ rollup:array
+```
 
 ## Scripts
 

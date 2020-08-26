@@ -21,7 +21,7 @@ import SomeService from `../../../core/services/some-service`
 import SomeService from `@services/some-service`
 ```
 
-The advantage of this is tider, more intuitive imports, and easier refactoring.
+The advantage of this is tidier, more intuitive imports, and easier refactoring.
 
 ### Problem
 
@@ -80,9 +80,13 @@ yarn add -D alias-hq
 
 ### Configuration
 
-#### TypeScript projects
+#### Background
 
-Open your `tsconfig.json` and add aliases to the `compilerOptions.paths` node using the [somewhat verbose](https://code.visualstudio.com/docs/languages/jsconfig#_using-webpack-aliases) wildcard and array format:
+Alias HQ piggybacks the TypeScript / VS Code configuration and uses either a `tsconfig.json` or `jsconfig.js` file.
+
+#### Syntax
+
+Locate (or create) the appropriate file in your project's root folder, and configure as per the example below:
 
 ```json
 {
@@ -99,30 +103,32 @@ Open your `tsconfig.json` and add aliases to the `compilerOptions.paths` node us
 }
 ```
 
+The configuration requires:
+
+- The `baseUrl` to provide a relative entry point such as  `"."` or `"src"`
+- The `paths` to be specified using a [somewhat verbose](https://code.visualstudio.com/docs/languages/jsconfig#_using-webpack-aliases) wildcard and array format
+
 Note that:
 
-- You can specify a `baseUrl` if files are in subfolders
-- The format supports multiple paths (currently Jest is the only conversion format to utilse this)
-- You may add **non-TypeScript** paths (such as assets) here; TypeScript will ignore them but Alias HQ will use them
+- All `paths` should resolve from the `baseUrl`, so something like this is fine: `../node_modules/`
+- To resolve folder content, wildcards are required in both `alias` and `path` components
+- The format supports [multiple paths](./tsconfig.json), though currently Jest is the only conversion format to utilse this
+- You may add non-TypeScript paths (such as assets) here; TypeScript will ignore them but Alias HQ will use them
 - You don't *have* to use a `@` character, but the convention is to use one
-
-#### JavaScript projects
-
-If you don't already have one, create a new file  `jsconfig.json` in your project root, and copy the format above to add aliases.
 
 ## Usage
 
-With the default setup, usage is a one-liner:
+To grab paths in the required format, call `get()` with the plugin name:
 
 ```js
-import aliases from 'alias-hq'
+import hq from 'alias-hq'
 
 const config = {
-  aliases: aliases.get('webpack') // use any available plugin name here
+  aliases: hq.get('webpack') // use any available plugin name here
 }
 ```
 
-Alias HQ will automatically find the configuration files in your project root, and will convert and return paths in the new format:
+Alias HQ will resolve and return paths in the requested format:
 
 ```js
 {
@@ -143,80 +149,62 @@ You can convert to any of the [supported](https://github.com/davestewart/alias-h
 
 ## API
 
-### Conversion to known formats
+### Get paths
 
-To convert to a desired format, use the `get()` method, passing the plugin `name`: 
+#### In supported formats
+
+To convert to a supported format, use the `get()` method, passing the plugin `name`: 
 
 ```js
-const config = aliases.get('jest')
+const config = hq.get('jest')
 ```
 
 If you need to pass custom options, pass an additional hash: 
 
 ```js
-const config = aliases.get('fancypants', { foo: 'bar' })
+const config = hq.get('rollup', { format: 'array' })
 ```
 
-You can check for available plugins using:
+#### Using a custom function
 
-```js  
-console.log(aliases.plugins.names)
-```
-
-### Conversion to custom formats
-
-If you need custom transformation, pass a function with the following signature, and return the transformed `paths` data:
+If you need custom transformation, pass a function with the following signature, transform the `paths` data, and return:
 
 ```js
 function customFormat (paths, options) {
   // your code here
   return ...
 }
-const config = aliases.get(customFormat)
+const config = hq.get(customFormat)
 ```
 
 See the [contributing](CONTRIBUTING.md) document for more information on writing custom functions.
 
-### Adding custom code as plugins
+### Plugins
 
 You can package any custom code via `plugins.add()`, passing the `name` and `callback` function:
 
 ```js
-aliases.plugins.add('custom', customFormat)
+hq.plugins.add('custom', customFormat)
 ```
 
-...then later, access the plugin by `name`: 
+Then simply `get()` the paths by passing the plugin `name`: 
 
 ```js
-const config = aliases.get('custom')
+const config = hq.get('custom')
 ```
 
-### Loading alternate configuration
+*If you want to submit a custom format as a plugin to the repository, post an issue or PR.*
 
-To load alternative configuration, pass a relative or absolute `path` to the helper, then convert using `.get()`:
+## Debugging
 
-```js
-const path = __dirname + '/build/paths.json'
-const config = aliases
-  .load(path)
-  .get('rollup')
-```
-You may also pass `json` configurations directly: 
-```js
-const json = require('./build/paths.json')
-const config = aliases
-  .load(json)
-  .get('webpack', { rootUrl: __dirname })
-```
+There might be times when you want to see what is happening under the hood.
 
-Note that plugins which require the `rootUrl` path (e.g. Webpack and Rollup) will access it via the `options` parameter.
+#### In code
 
-### Debugging
-
-You can check the configuration of Alias HQ at any time, by logging the `config` object:
+Check the loaded configuration:
 
 ```js
-console.log(aliases.config)
+console.log(hq.config)
 ```
 
 ```js
@@ -233,14 +221,65 @@ console.log(aliases.config)
 }
 ```
 
-Check available plugins via the `plugins` object:
+Check available plugin names:
 
 ```js
-console.log(aliases.plugins.names)
+console.log(hq.plugins.names)
 ```
 
 ```js
 [ 'jest', 'rollup', 'webpack' ]
+```
+
+Dump configured paths in JSON format for any plugin:
+
+```js
+hq.log('jest')
+```
+
+```json
+{
+  "^@api/(.*)$": "<rootDir>/src/api/$1",
+  "^@app/(.*)$": "<rootDir>/src/app/$1",
+  "^@config/(.*)$": "<rootDir>/src/app/config/$1",
+  "^@services/(.*)$": "<rootDir>/src/app/services/$1",
+  "^@utils/(.*)$": [
+    "<rootDir>/src/common/utils/$1",
+    "<rootDir>/src/vendor/utils/$1"
+  ]
+}
+```
+
+#### In the terminal
+
+The above functionality is also available as an **interactive** CLI.
+
+Just run the following code in the project root:
+
+```bash
+node ./node_modules/alias-hq/cli
+```
+
+```
+  == Alias HQ ==
+? What do you want to do? (Use arrow keys)
+❯ Show loaded config 
+  List plugin names 
+  Dump paths as json
+```
+
+```js
+{
+  rootUrl: '/volumes/projects/path/to/project/',
+  baseUrl: 'src',
+  paths: {
+    '@api/*': [ 'api/*' ],
+    '@app/*': [ 'app/*' ],
+    '@config/*': [ 'app/config/*' ],
+    '@services/*': [ 'app/services/*' ],
+    '@utils/*': [ 'common/utils/*', 'vendor/utils/*' ]
+  }
+}
 ```
 
 ## Integration examples
@@ -249,9 +288,7 @@ To get you up and running, here are some common framework integrations:
 
 ### VS Code
 
-Simply follow the instructions above, and VS Code should pick up your paths.
-
-See the VS Code [documentation](https://code.visualstudio.com/docs/languages/jsconfig#_using-webpack-aliases) for more information.
+Simply follow the instructions above, and VS Code should pick up your paths. See the VS Code [documentation](https://code.visualstudio.com/docs/languages/jsconfig#_using-webpack-aliases) for more information.
 
 ### WebStorm
 
@@ -261,11 +298,11 @@ Add this file to your project root, and choose it in *Preferences > Languages an
 
 ```js
 // webpack.config.js
-import aliases from 'alias-hq'
+import hq from 'alias-hq'
 
 module.exports = {
   resolve: {
-    alias: aliases.get('webpack')
+    alias: hq.get('webpack')
   }
 }
 ```
@@ -276,12 +313,12 @@ If bundling using Webpack, you can [add the aliases](https://webpack.js.org/conf
 
 ```js
 // build.js
-import aliases from 'alias-hq'
+import hq from 'alias-hq'
 
 module.exports = {
   ...
   resolve: {
-    alias: aliases.get('webpack'),
+    alias: hq.get('webpack'),
   },
 }
 ```
@@ -292,33 +329,23 @@ If bundling using Rollup and @rollup/plugin-alias, you can [add the aliases](htt
 
 ```js
 // rollup.config.js
-import aliases from 'alias-hq'
+import hq from 'alias-hq'
 import alias from '@rollup/plugin-alias';
 
 module.exports = {
   ...
   plugins: [
     alias({
-      entries: aliases.get('rollup')
+      entries: hq.get('rollup')
     })
   ]
-};
+}
 ```
 
-### Vue
-
-If using Vue CLI, you can [add the aliases](https://cli.vuejs.org/guide/webpack.html#simple-configuration) using the `configureWebpack` option:
+You can also request rollup paths in `array` or `object` (the default) format:
 
 ```js
-// vue.config.js
-import aliases from 'alias-hq'
-
-module.exports = {
-  configureWebpack: (config) => {
-    ...
-    Object.assign(config.resolve.alias, aliases.get('webpack'))
-  },
-}
+hq.get('rollup', { format: 'array' })
 ```
 
 ### Jest
@@ -327,13 +354,76 @@ If using Jest, you can [configure](https://jestjs.io/docs/en/configuration#modul
 
 ```js
 // jest.config.js
-import aliases from 'alias-hq'
+import hq from 'alias-hq'
 
 module.exports = {
   ...
-  moduleNameMapper: aliases.get('jest'),
+  moduleNameMapper: hq.get('jest'),
 }
 ```
+
+### Vue
+
+If using Vue CLI, you can [add the aliases](https://cli.vuejs.org/guide/webpack.html#simple-configuration) using the `configureWebpack` option:
+
+```js
+// vue.config.js
+import hq from 'alias-hq'
+
+module.exports = {
+  configureWebpack: (config) => {
+    ...
+    Object.assign(config.resolve.alias, hq.get('webpack'))
+  },
+}
+```
+
+### React
+
+React takes a little more work than the other options, depending on how you are using it.
+
+#### Create React App
+
+Unfortunately, [Create React App](https://create-react-app.dev/) out-of-the-box does not allow path aliases, and will [physically rewrite](https://github.com/davestewart/alias-hq/issues/1#issuecomment-680005750) your config if you attempt to use them.
+
+To work around this, at least two options are:
+
+- **[eject](https://create-react-app.dev/docs/available-scripts/#npm-run-eject) the configuration** and manually add Alias HQ to `config/webpack.config.js` *(see above)*
+- **use something like [React App Rewired](https://github.com/timarney/react-app-rewired)** to enable the webpack setup to be manually tweaked *(see below)*
+
+#### React App Rewired
+
+To prevent Create React App from rewriting your `tsconfig`:
+
+1. Rename your `tsconfig.json` file as `tsconfig.base.json`
+2. Create a new `tsconfig.json` file and save the following:
+
+```json
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {}
+}
+```
+
+To set up React App Rewired:
+
+1. Follow the [installation instructions](https://github.com/timarney/react-app-rewired#how-to-rewire-your-create-react-app-project) to install in your project
+2. Set up the ``config-overrides.js`` file as follows:
+
+```js
+const hq = require('alias-hq')
+
+module.exports = function override(config, env) {
+  Object.assign(config.resolve.alias, hq.get('webpack'))
+  return config;
+}
+```
+
+This short React guide is *not meant to be exhaustive*; for issues, use your common sense, search Google, and see the appropriate package's issues.
+
+### JSON-only configurations
+
+Use the [debugging](#) options above, then copy / paste the JSON where you need it.
 
 ## Contributing
 
