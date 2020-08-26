@@ -28,11 +28,28 @@ function makePaths (folders, settings) {
     ? settings.paths
     : {}
   return folders.reduce((output, input) => {
-    const path = Path.isAbsolute(input)
+    // path
+    let path = Path.isAbsolute(input)
       ? Path.relative(rootUrl, input)
       : input
-    const alias = settings.prefix + Path.basename(path) + '/*'
-    output[alias] = [ path + '/*' ]
+
+    // alias
+    let alias = settings.prefix + Path.basename(path)
+
+    // folder
+    const ext = Path.extname(path)
+    if (!ext) {
+      path += '/*'
+      alias += '/*'
+    }
+
+    // file
+    else {
+      alias = alias.replace(ext, '')
+    }
+
+    // assign
+    output[alias] = [ path ]
     return output
   }, paths)
 }

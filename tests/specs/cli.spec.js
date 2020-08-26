@@ -22,6 +22,7 @@ describe('path generation', function () {
     "two words"
     one_word
     ../relative_up
+    file.js
   `)
 
   const paths = makePaths(folders, settings)
@@ -35,6 +36,7 @@ describe('path generation', function () {
     '@two words/*': ['two words/*'],
     '@one_word/*': ['one_word/*'],
     '@relative_up/*': ['../relative_up/*'],
+    '@file': ['file.js'],
   }
 
   it('should convert paths to json', function () {
