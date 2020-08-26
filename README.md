@@ -1,5 +1,8 @@
 # Alias HQ 
 
+
+![tests](https://github.com/davestewart/alias-hq/workflows/tests/badge.svg)
+
 > Manage a single set of folder aliases and convert as-needed to other formats
 
 <p align="center">
