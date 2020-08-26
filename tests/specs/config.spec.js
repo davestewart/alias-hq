@@ -5,7 +5,7 @@ const { rootUrl, config } = require('../globals')
 // tests
 // ---------------------------------------------------------------------------------------------------------------------
 
-describe('helpers', function () {
+describe('config', function () {
 
   describe('paths', function () {
     it('should load return the raw paths data', function () {
