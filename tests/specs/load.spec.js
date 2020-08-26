@@ -1,4 +1,4 @@
-const aliases = require('../../src')
+const hq = require('../../src')
 const { rootUrl, config } = require('./globals')
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -9,7 +9,7 @@ describe('calling load and passing', function () {
 
   describe('nothing', function () {
     it('should load the default file', function () {
-      const received = aliases.load().config.paths
+      const received = hq.load().config.paths
       const expected = config.default
       expect(received).toEqual(expected)
     })
@@ -17,7 +17,7 @@ describe('calling load and passing', function () {
 
   describe('relative filepath', function () {
     it('should load the file', function () {
-      const received = aliases.load('jsconfig.json').config.paths
+      const received = hq.load('tsconfig.base.json').config.paths
       const expected = config.js
       expect(received).toEqual(expected)
     })
@@ -25,7 +25,7 @@ describe('calling load and passing', function () {
 
   describe('absolute filepath', function () {
     it('should load the file', function () {
-      const received = aliases.load(rootUrl + '/tsconfig.json').config.paths
+      const received = hq.load(rootUrl + '/tsconfig.base.json').config.paths
       const expected = config.ts
       expect(received).toEqual(expected)
     })
@@ -33,34 +33,26 @@ describe('calling load and passing', function () {
 
   describe('invalid filepath', function () {
     it('should throw an error', function () {
-      const received = () => aliases.load('xxx')
+      const received = () => hq.load('xxx')
       expect(received).toThrowError()
-    })
-  })
-
-  describe('an object', function () {
-    it('should set the object as paths', function () {
-      const received = aliases.load(config.custom).config.paths
-      const expected = config.custom
-      expect(received).toEqual(expected)
     })
   })
 
   describe('any other value', function () {
     it('null should throw an error', function () {
-      const received = () => aliases.load(null)
+      const received = () => hq.load(null)
       expect(received).toThrowError()
     })
     it('a number should throw an error', function () {
-      const received = () => aliases.load(100)
+      const received = () => hq.load(100)
       expect(received).toThrowError()
     })
     it('a Date should throw an error', function () {
-      const received = () => aliases.load(new Date())
+      const received = () => hq.load(new Date())
       expect(received).toThrowError()
     })
-    it('an empty object should throw an error', function () {
-      const received = () => aliases.load({})
+    it('an object should throw an error', function () {
+      const received = () => hq.load({})
       expect(received).toThrowError()
     })
   })

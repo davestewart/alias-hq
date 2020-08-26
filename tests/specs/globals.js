@@ -1,12 +1,14 @@
 const Path = require('path')
 
+function getPaths (name) {
+  return require(`../../${name}.json`).compilerOptions.paths
+}
+
 const rootUrl = Path.resolve(__dirname, '../../')
+
 const config = {
-  ts: require('../../tsconfig.json').compilerOptions.paths,
-  js: require('../../jsconfig.json').compilerOptions.paths,
-  custom: {
-    'foo/*': 'bar/*'
-  }
+  js: getPaths('jsconfig'),
+  ts: getPaths('tsconfig.base'),
 }
 config.default = config.js
 

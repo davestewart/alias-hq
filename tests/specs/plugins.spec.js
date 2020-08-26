@@ -1,11 +1,11 @@
-const aliases = require('../../src')
+const hq = require('../../src')
 const fixtures = require('../fixtures')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // setup
 // ---------------------------------------------------------------------------------------------------------------------
 
-function plugin (paths, options) {
+function customPlugin (paths, options) {
   return Object.keys(paths).reduce((output, key) => {
     const alias = key.substring(1).replace('/*', '')
     const path = paths[key][0].replace('/*', '')
@@ -22,22 +22,22 @@ describe('passing', function () {
 
   describe('a custom function', function () {
     it('should convert paths correctly', function () {
-      const received = aliases.load('jsconfig.json').get(plugin)
+      const received = hq.load('jsconfig.json').get(customPlugin)
       const expected = fixtures.custom
       expect(received).toEqual(expected)
     })
   })
 
-  describe('an missing plugin name', function () {
+  describe('a missing plugin name', function () {
     it('should throw an error', function () {
-      const received = () => aliases.get('blah')
+      const received = () => hq.get('blah')
       expect(received).toThrowError()
     })
   })
 
   describe('an invalid plugin name', function () {
     it('should throw an error', function () {
-      const received = () => aliases.get(123)
+      const received = () => hq.get(123)
       expect(received).toThrowError()
     })
   })
@@ -45,21 +45,22 @@ describe('passing', function () {
 
 describe('custom plugins', function () {
   it('should be addable', function () {
-    aliases.plugins.add('test', plugin)
+    hq.plugins.add('test', customPlugin)
   })
   it('should be callable', function () {
-    const received = aliases.get('test')
+    const received = hq.get('test')
     const expected = fixtures.custom
     expect(received).toEqual(expected)
   })
 })
 
 describe('available plugins', function () {
-  describe('should convert using defaults', function () {
-    Object.keys(fixtures.plugins).forEach(key => {
-      it(key, function () {
-        const received = aliases.get(key)
-        const expected = fixtures.plugins[key]
+  describe('should convert with options', function () {
+    fixtures.plugins.forEach(plugin => {
+      const { id, name, config, options } = plugin
+      it(id, function () {
+        const received = hq.get(name, options)
+        const expected = config
         expect(received).toEqual(expected)
       })
     })
