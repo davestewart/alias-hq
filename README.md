@@ -162,7 +162,7 @@ const config = hq.get('jest')
 If you need to pass custom options, pass an additional hash: 
 
 ```js
-const config = hq.get('rollup', { format: 'array' })
+const config = hq.get('rollup', { format: 'object' })
 ```
 
 #### Using a custom function
@@ -197,7 +197,7 @@ const config = hq.get('custom')
 
 ## Debugging
 
-There might be times when you want to see what is happening under the hood.
+There might be times when you need to check what is happening under the hood.
 
 #### In code
 
@@ -263,9 +263,9 @@ node ./node_modules/alias-hq/cli
 ```
   == Alias HQ ==
 ? What do you want to do? (Use arrow keys)
-❯ Show loaded config 
-  List plugin names 
-  Dump paths as json
+❯ - Show loaded config 
+  - List plugin output 
+  - Dump paths as json 
 ```
 
 ```js
@@ -342,10 +342,10 @@ module.exports = {
 }
 ```
 
-You can also request rollup paths in `array` or `object` (the default) format:
+You can request rollup paths in `object` or  `array` (the default) format:
 
 ```js
-hq.get('rollup', { format: 'array' })
+hq.get('rollup', { format: 'object' })
 ```
 
 ### Jest
@@ -423,7 +423,7 @@ This short React guide is *not meant to be exhaustive*; for issues, use your com
 
 ### JSON-only configurations
 
-Use the [debugging](#) options above, then copy / paste the JSON where you need it.
+Use the [debugging](#debugging) options above, then copy / paste the JSON where you need it.
 
 ## Contributing
 
