@@ -9,13 +9,13 @@ function callback (alias, paths, { rootUrl, baseUrl, format }) {
   path = resolve(baseUrl, path)
   if (format === 'object') {
     return {
-      find: alias,
-      replacement: path,
+      alias,
+      path,
     }
   }
   return {
-    alias,
-    path,
+    find: alias,
+    replacement: path,
   }
 }
 
