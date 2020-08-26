@@ -120,6 +120,16 @@ function get (format, options = {}) {
   throw new Error(`Invalid "plugin" parameter`)
 }
 
+/**
+ * Convert and log paths config using a plugin or callback
+ */
+function log (plugin, options = {}, print = true) {
+  let json = JSON.stringify(get(plugin, options), null, '  ')
+  if (print) {
+    console.log(json)
+  }
+  return json
+}
 
 const config = {
   rootUrl: require('app-root-path').toString(),
@@ -163,6 +173,7 @@ const plugins = {
 
 module.exports = {
   get,
+  log,
   load,
   config,
   plugins,
