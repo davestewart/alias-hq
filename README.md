@@ -234,7 +234,7 @@ console.log(hq.plugins.names)
 Dump configured paths in JSON format for any plugin:
 
 ```js
-hq.log('jest')
+hq.json('jest')
 ```
 
 ```json

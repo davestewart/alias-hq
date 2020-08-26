@@ -124,7 +124,7 @@ function get (format, options = {}) {
 /**
  * Convert and log paths config using a plugin or callback
  */
-function log (plugin, options = {}, print = true) {
+function json (plugin, options = {}, print = true) {
   let json = JSON.stringify(get(plugin, options), null, '  ')
   if (print) {
     console.log(json)
@@ -174,7 +174,7 @@ const plugins = {
 
 module.exports = {
   get,
-  log,
+  json,
   load,
   config,
   plugins,

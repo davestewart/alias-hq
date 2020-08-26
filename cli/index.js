@@ -40,7 +40,7 @@ function main () {
             })
             .then((answer) => {
               const choice = answer.format.match(/\w+/).shift()
-              hq.log(choice)
+              hq.json(choice)
             })
           break
       }
