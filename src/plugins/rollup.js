@@ -1,18 +1,26 @@
-const { toArray, resolve } = require('../utils')
+const { toArray, toObject, resolve, join } = require('../utils')
 
 // @see https://github.com/rollup/plugins/tree/master/packages/alias
-function callback (alias, paths, { rootUrl, baseUrl }) {
+function callback (alias, paths, { rootUrl, baseUrl, format }) {
   alias = alias
     .replace(/\/\*$/, '')
   let path = paths[0]
-    .replace(/\*$/, '')
-  path = resolve(rootUrl, baseUrl, path)
+    .replace(/\/\*$/, '')
+  path = resolve(baseUrl, path)
+  if (format === 'array') {
+    return {
+      find: alias,
+      replacement: path,
+    }
+  }
   return {
-    find: alias,
-    replacement: path,
+    alias,
+    path,
   }
 }
 
 module.exports = function (paths, options) {
-  return toArray(paths, callback, options)
+  return options.format === 'array'
+    ? toArray(paths, callback, options)
+    : toObject(paths, callback, options)
 }
