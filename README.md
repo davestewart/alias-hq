@@ -116,6 +116,20 @@ Note that:
 - You may add non-TypeScript paths (such as assets) here; TypeScript will ignore them but Alias HQ will use them
 - You don't *have* to use a `@` character, but the convention is to use one
 
+##### Auto-generation
+
+New in 3.1, you can automatically generate the config using the [Alias CLI](#alias-cli):
+
+![alias cli](./docs/cli.png)
+
+From your project root:
+
+- Run `node ./node_modules/alias-hq/cli` in the terminal
+- Choose "Make paths JSON"
+- Choose the prompts that suit you
+- Drag in folders from Finder / Explorer
+- Copy the resulting JSON to the config file
+
 ## Usage
 
 To grab paths in the required format, call `get()` with the plugin name:
@@ -250,11 +264,11 @@ hq.json('jest')
 }
 ```
 
-#### In the terminal
+#### Alias CLI
 
 The above functionality is also available as an **interactive** CLI.
 
-Just run the following code in the project root:
+Just run the following code in the project root, and choose the option you want:
 
 ```bash
 node ./node_modules/alias-hq/cli
@@ -263,9 +277,10 @@ node ./node_modules/alias-hq/cli
 ```
   == Alias HQ ==
 ? What do you want to do? (Use arrow keys)
-❯ - Show loaded config 
-  - List plugin output 
-  - Dump paths as json 
+❯ - Show loaded config
+  - List plugins output (JS)
+  - Dump plugin output (JSON)
+  - Make paths JSON
 ```
 
 ```js
