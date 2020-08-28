@@ -1,4 +1,4 @@
-const { makePaths, getFolders } = require('../../cli/paths')
+const { makePaths, getFolders } = require('../../cli/modules/make-paths')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // tests
