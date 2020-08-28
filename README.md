@@ -83,13 +83,9 @@ yarn add -D alias-hq
 
 ### Configuration
 
-#### Background
-
-Alias HQ piggybacks the TypeScript / VS Code configuration with either a `tsconfig.json` or `jsconfig.js` file.
-
 #### Syntax
 
-Locate (or create) the appropriate file in your project's root folder, and configure as per the example below:
+Locate (or create) your `tsconfig.json` or `jsconfig.js`  in your project's root folder, and configure using the example below as a guide:
 
 ```json
 {
@@ -121,17 +117,19 @@ Note that:
 
 ### Auto-generation
 
-New in 3.1, you can automatically generate the config using the [Alias CLI](#alias-cli):
+New in 3.1, you can automatically generate the config using the [Alias CLI](#cli):
 
 ![alias cli](./docs/cli.png)
 
-From your project root:
+In the terminal:
 
-- Run `node ./node_modules/alias-hq/cli` in the terminal
+- From your project root, type and run `alias-hq`
 - Choose "Make paths JSON"
 - Choose the prompts that suit you
-- Drag in folders from Finder / Explorer
+- Drag in folders from Finder / Explorer (or manually type relative paths, separating with spaces)
 - Copy the resulting JSON to the config file
+
+See the [CLI](#cli) section for more info / troubleshooting.
 
 ## Usage
 
@@ -162,7 +160,7 @@ You can convert to any of the [supported](https://github.com/davestewart/alias-h
 - Rollup
 - Jest
 
-...or supply a custom transform function.
+...or supply a [custom](#using-a-custom-function) transform function.
 
 ## API
 
@@ -212,11 +210,9 @@ const config = hq.get('custom')
 
 *If you want to submit a custom format as a plugin to the repository, post an issue or PR.*
 
-## Debugging
+### Debugging
 
 There might be times when you need to check what is happening under the hood.
-
-### In code
 
 Check the loaded configuration:
 
@@ -267,17 +263,33 @@ hq.json('jest')
 }
 ```
 
-### Alias CLI
+## CLI
 
-The above functionality is also available as an **interactive** CLI.
+The CLI allows you to check configuration, plus a few tools.
 
-Run the following code in the project root...:
+### Running
+
+In the terminal, from your project root, type:
+
+```bash
+alias-hq
+```
+
+If this doesn't work, ensure that local `node_modules` executables are in your `~/.bash_profile` or equivalent: 
+
+```bash
+export PATH=./node_modules/.bin:$PATH
+```
+
+Or just call the CLI directly:
 
 ```bash
 node ./node_modules/alias-hq/cli
 ```
 
-...and choose the option you want:
+### Options
+
+You can then choose from the available options:
 
 ```
   == Alias HQ ==
@@ -287,6 +299,8 @@ node ./node_modules/alias-hq/cli
   - Dump plugin output (JSON)
   - Make paths JSON
 ```
+
+For example, this is your current config, as viewed by Alias HQ:
 
 ```js
 {
@@ -445,7 +459,7 @@ This short React guide is *not meant to be exhaustive*; for issues, use your com
 
 For libraries or setups that require JSON, you can use the Alias CLI:
 
-- Follow the [instructions](#alias-cli) above
+- Follow the [instructions](#cli) above
 - Choose "Dump plugin output (JSON)"
 - Choose the required format 
 - Copy / paste the JSON where you need it
