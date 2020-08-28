@@ -1,4 +1,4 @@
-const { toObject, resolve } = require('../utils')
+const { toObject, resolve } = require('../../utils/plugin')
 
 // @see https://webpack.js.org/configuration/resolve/#resolvealias
 function callback (alias, paths, { rootUrl, baseUrl }) {

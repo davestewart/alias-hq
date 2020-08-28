@@ -82,11 +82,11 @@ function load (value = undefined) {
 /**
  * Convert paths config using a plugin or callback
  *
- * @param   {string}    format    The name of an available plugin
- * @param   {function}  format    A custom function
+ * @param   {string}    plugin    The name of an available plugin
+ * @param   {function}  plugin    A custom function
  * @param   {object}   [options]  Any options to pass to the plugin
  */
-function get (format, options = {}) {
+function get (plugin, options = {}) {
   // load defaults if not loaded
   if (!config.paths) {
     load()
@@ -96,25 +96,25 @@ function get (format, options = {}) {
   options = { ...config, ...options }
 
   // callback
-  if (typeof format === 'function') {
-    return format(config.paths, options)
+  if (typeof plugin === 'function') {
+    return plugin(config.paths, options)
   }
 
   // plugin
-  if (typeof format === 'string') {
+  if (typeof plugin === 'string') {
     // check for custom plugin
-    if (typeof plugins.custom[format] === 'function') {
-      const plugin = plugins.custom[format]
-      return plugin(config.paths, options)
+    if (typeof plugins.custom[plugin] === 'function') {
+      const callback = plugins.custom[plugin]
+      return callback(config.paths, options)
     }
 
     // check for built-in plugin
-    const path = Path.resolve(__dirname, `./plugins/${format}.js`)
+    const path = Path.resolve(__dirname, `./plugins/${plugin}/index.js`)
     if (fs.existsSync(path)) {
-      const plugin = require(path)
-      return plugin(config.paths, options)
+      const callback = require(path)
+      return callback(config.paths, options)
     }
-    throw new Error(`No such plugin "${format}"`)
+    throw new Error(`No such plugin "${plugin}"`)
   }
 
   // invalid
