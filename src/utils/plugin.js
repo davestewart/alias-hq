@@ -1,4 +1,3 @@
-const Path = require('path')
 
 /**
  * Convert paths and return an array
@@ -33,8 +32,6 @@ function toObject (paths, callback, options) {
 }
 
 module.exports = {
-  resolve: Path.resolve,
-  join: Path.join,
   toObject,
   toArray,
 }

@@ -1,4 +1,4 @@
-const { toArray, toObject, resolve, join } = require('../../utils/plugin')
+const { toArray, toObject, resolve, join } = require('../../utils')
 
 // @see https://github.com/rollup/plugins/tree/master/packages/alias
 function callback (alias, paths, { rootUrl, baseUrl, format }) {

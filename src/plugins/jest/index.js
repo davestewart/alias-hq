@@ -1,4 +1,4 @@
-const { toObject, join } = require('../../utils/plugin')
+const { toObject, join } = require('../../utils')
 
 // @see https://jestjs.io/docs/en/configuration#modulenamemapper-objectstring-string--arraystring
 function callback (alias, paths, { baseUrl }) {
