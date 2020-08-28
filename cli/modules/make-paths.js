@@ -1,4 +1,6 @@
+const inquirer = require('inquirer')
 const Path = require('path')
+const hq = require('../../src')
 
 function makeSettings (config) {
   const { rootUrl, baseUrl, paths } = config
@@ -67,9 +69,64 @@ function makeJson (paths, settings) {
     .replace(/\s+\]/g, ']')
 }
 
+function run () {
+  hq.load()
+  const settings = makeSettings(hq.config)
+  return Promise.resolve()
+    .then(() => {
+      return inquirer
+        .prompt({
+          type: 'list',
+          name: 'type',
+          message: 'Generate:',
+          choices: [
+            '- new aliases',
+            '- all aliases',
+          ],
+        })
+    })
+    .then((answer) => {
+      settings.type = answer.type.match(/\w+/).toString()
+      return inquirer
+        .prompt({
+          type: 'input',
+          name: 'baseUrl',
+          message: 'Base URL:',
+          default: settings.baseUrl
+        })
+    })
+    .then((answer) => {
+      settings.baseUrl = answer.baseUrl
+      return inquirer
+        .prompt({
+          type: 'input',
+          name: 'prefix',
+          message: 'Alias prefix:',
+          default: settings.prefix
+        })
+    })
+    .then((answer) => {
+      settings.prefix = answer.prefix
+      return inquirer
+        .prompt({
+          type: 'input',
+          name: 'text',
+          message: 'Folders (drag here, or type paths):',
+        })
+    })
+    .then((answer) => {
+      const folders = getFolders(answer.text)
+      const paths = makePaths(folders, settings)
+      const json = makeJson(paths, settings)
+      console.log('\n' + json + '\n')
+    })
+}
+
+
 module.exports = {
   makeSettings,
   getFolders,
   makePaths,
   makeJson,
+  run,
 }
