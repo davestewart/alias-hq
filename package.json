@@ -3,9 +3,11 @@
   "version": "3.1.4",
   "description": "Manage a single set of folder aliases and convert as-needed to other formats",
   "main": "src/index.js",
+  "bin": "bin/alias-hq",
   "files": [
     "src/*",
-    "cli/*"
+    "cli/*",
+    "bin/*"
   ],
   "scripts": {
     "cli": "node cli",

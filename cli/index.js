@@ -69,7 +69,7 @@ function makeJson () {
         .prompt({
           type: 'input',
           name: 'text',
-          message: 'Folders (drag here):',
+          message: 'Folders (drag here, or type paths):',
         })
     })
     .then((answer) => {
