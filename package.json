@@ -1,6 +1,6 @@
 {
   "name": "alias-hq",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "Manage a single set of folder aliases and convert as-needed to other formats",
   "main": "src/index.js",
   "bin": "bin/alias-hq",
@@ -12,6 +12,7 @@
   "scripts": {
     "cli": "node cli",
     "test": "jest --verbose",
+    "test:plugins": "jest --watch -f plugins.spec.js -t 'available plugins:'",
     "test:coverage": "jest --coverage"
   },
   "repository": {

@@ -11,29 +11,31 @@ I'm guessing you're likely here because:
 
 ## Plugins
 
-Alias HQ uses a fairly simple plugin architecture to add new functionality to the library.
-
 ### Overview
 
-A few points:
+Alias HQ uses a plugin architecture to add new functionality:
 
-- plugins export a single function which receives the `paths` and `options` hashes
-- plugins should return whatever format (Object or Array) the consuming library requires
-- plugins are placed in the `src/plugins` folder
-- plugins may use any of the utils from the `src/utils` folder or native Node functions
-- plugin code is not compiled, so file import and export need to be written in Common JS format
+- plugins live in named folders
+- each folder contains
+  - the `index` plugin file which handles path conversion 
+  - a `tests` file which provides both tests and CLI options
+- all code is **uncompiled** so written in Common JS style
 
 ### Writing the plugin
 
-Check the following locations for examples of how to write a plugin:
+Decide upon a folder name, and add the files as below:
 
-- [`src/plugins/*`](https://github.com/davestewart/alias-hq/tree/master/src/plugins)
-- [`tests/specs/plugins.spec.js`](https://github.com/davestewart/alias-hq/blob/master/tests/specs/plugins.spec.js)
+```
++- plugins
+    +- <plugin_name>
+        +- index.js         // the plugin file itself
+        +- tests.js         // tests and options
+```
 
-The following example code is from the `plugins.spec.js` file:
+Add the conversion code to the `index.js` file (as per the example code from the `custom.spec.js` file):
 
 ```js
-function plugin (paths, options) {
+module.exports = function (paths, options) {
   return Object.keys(paths).reduce((output, key) => {
     const alias = key.substring(1).replace('/*', '')
     const path = paths[key][0].replace('/*', '') // remember the aliases format supports multiple paths!
@@ -43,7 +45,7 @@ function plugin (paths, options) {
 }
 ```
 
-It is a good example of converting the passed `paths` configuration into a (hypothetical) output hash:
+It is a basic example of converting the passed `paths` configuration into a (hypothetical) output hash:
 
 ```js
 {
@@ -57,7 +59,7 @@ It is a good example of converting the passed `paths` configuration into a (hypo
 
 ### Consuming options
 
-The passed `options` parameter will always be an `object` with the current `config` and any user options:
+Your plugin will always receive an `options` object, with the current `config` and any user options mixed in:
 
 ```js
 {
@@ -75,12 +77,70 @@ The passed `options` parameter will always be an `object` with the current `conf
 }
 ```
 
-As a convenience, the `utils/` folder also exports Node's `path.resolve` and `path.join` functions:
+### Testing the plugin
+
+Plugins are **required** to have tests with them; the project's tests enforce there is at least one test, and that path conversion succeeds.
+
+The `tests.js` file should export an `array` of **at least** one function:
 
 ```js
-const { join, resolve } = require('../utils')
+module.exports = [
+	function () { ... }
+]
+```
 
-function plugin (paths, { rootUrl, baseUrl }) {
+Each test function should return an `object` with **at least** the `expected` node which should be the expected converted paths for the plugin called with the supplied options:
+
+```js
+function test () {
+  return {
+    // optional
+    label: 'foo bar',
+    options: { foo: 'bar' },
+    
+    // required
+    expected: {
+      '@api': abs('api'),
+      ...
+    }
+  }
+}
+```
+
+Note:
+
+-  the `label` and `options` values are **only** required if you need to test multiple configurations (as does the [Rollup](./src/plugins/rollup/tests.js) plugin).
+- any returned options will be used in both **tests** and relevant **CLI** commands.
+
+Successful tests should output:
+
+```
+  available plugins...
+    plugin: <your_plugin>
+      ✓ should have at least one test
+      each test...
+        test: foo bar
+          ✓ should return an object
+          ✓ should receive a "expected" value
+          ✓ should correctly convert example paths
+```
+
+You can view the actual test code in [`tests/specs/plugins.spec.js`](https://github.com/davestewart/alias-hq/blob/master/tests/specs/plugins.spec.js).
+
+### Using utilities
+
+The `utils/` folder exports various useful functions for use in your plugin and test code.
+
+#### Path utilities
+
+As a convenience, Node's `path.resolve` and `path.join` functions are made available.
+
+This makes it easier to wrangle paths, and defends against errors across various platforms and systems:
+
+```js
+const { join, resolve } = require('../../utils')
+
+module.exports = function (paths, { rootUrl, baseUrl }) {
   return Object.keys(paths).reduce((output, key) => {
     const absPath = resolve(rootUrl, baseUrl, paths[key][0])
     ...
@@ -88,12 +148,14 @@ function plugin (paths, { rootUrl, baseUrl }) {
 }
 ```
 
-### Using utilities
+#### Plugin utilities
 
-There are additional utilities `toArray` and `toObject` which simplify the unwrapping and re-wrapping of the `paths` config, allowing you to simply write a conversion function which will consume each key/value pair in turn:
+The `toArray` and `toObject` utilities simplify the unwrapping and re-wrapping of the `paths` config.
+
+This simplifies the writing of the overall conversion function, allowing you to concentrate on each key/value pair in turn:
 
 ```js 
-const { toArray } = require('../utils')
+const { toArray } = require('../../utils')
 
 // process a single entry
 function callback (alias, paths, options) {
@@ -104,56 +166,48 @@ function callback (alias, paths, options) {
 module.exports = function (paths, options) {
   return toArray(paths, callback, options)
 }
-
 ```
 
-### Saving a plugin
+#### Test utilities
 
-Once you have decided what you want your plugin to do, you will need to:
+For testing against the project's example `jsconfig.json` there are two functions `abs()` and `rel()`.
 
-- decide on the name of the plugin, e.g. `"custom"`
-- save it to a named file, such as `src/plugins/custom.js`
-- make it the main export with `module.exports = function ...` 
-
-The plugin can then be used by users like so:
+These return absolute and relative paths to the project's `src/` folder making it simple to write the automated tests:
 
 ```js
-const config = hq.get('custom', options)
+const { abs } = require('../../utils')
+
+module.exports = [
+  function () {
+    const expected = {
+      '@api': abs('api'),
+      ...
+    }
+    return { expected }
+  },
+]
 ```
 
-### Automated testing
-
-You can have your plugin automatically tested during development by:
-
-- adding one or more fixtures to  `tests/fixtures/plugins.js`
-- use the `plugin()` function to define:
-  - an `id` (defined as `name:options`, where name is the plugin `name` and `options` is a friendly identifier for the test output)
-  - the expected `config` for the current option
-  - an optional `options` hash
-
-You should see something like this when you run the tests:
-
-```
-  available plugins
-    should convert with options
-      ✓ webpack
-      ✓ jest
-      ✓ rollup:object
-      ✓ rollup:array
-```
+Please do use the utilities rather than reinventing the wheel!  
 
 ## Scripts
 
-You can see a demo of all plugins and config using:
+You can see a demo of all plugins and their example options using the CLI and choosing "List plugins output (JS)":
 
 ```
-npm run demo
+npm run cli
 ```
 
 You can run the tests with:
 
-```
+```bash
+# run all tests
 npm run test
+
+# run only the plugins test in watch mode
+npm run test:plugins
+
+# run test coverage
 npm run test:coverage
 ```
 
