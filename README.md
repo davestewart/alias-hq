@@ -16,7 +16,7 @@ Alias HQ makes the management, creation and use of path aliases easy.
 import { SomeService } from '@services'
 ```
 
-It uses your `js/tsconfig.json` file as the single source of truth:
+It [uses](./docs/setup.md) your `js/tsconfig.json` as the single source of truth:
 
 ```text
 {
@@ -61,7 +61,7 @@ No more wrangling multiple incompatible configuration files:
 }
 ```
 
-Alias configuration is now just a simple import and one-liner conversion.
+Alias configuration is just a simple import and one-liner conversion.
 
 ## Integrations and tooling
 

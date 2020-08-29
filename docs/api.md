@@ -25,18 +25,23 @@ const config = hq.get('rollup', { format: 'object' })
 If you need custom transformation:
 
 - pass a function with the following signature
-- transform the `paths` data
+- transform the loaded config
 - return the result
 
 ```js
-function fooify (paths, options) {
-  // your code here
+function fooify (config, options) {
+  const { rootUrl, baseUrl, paths } = config
+  // transform config.paths ...
   return ...
 }
 const config = hq.get(fooify)
 ```
 
-See the [plugins](plugins.md) document for detailed information on writing custom transforms.
+See:
+
+- the [debugging](#log-config) section below for an example `config` object.
+
+- the [plugins](plugins.md) document for detailed information on writing custom transforms
 
 ## Plugins
 
