@@ -18,7 +18,7 @@ import { SomeService } from '@services'
 
 It uses your `js/tsconfig.json` file as the single source of truth:
 
-```json
+```text
 {
   "compilerOptions": {
     "baseUrl": "src",
@@ -72,6 +72,8 @@ Aliases are supported by [VSCode](docs/integrations.md#vs-code) and [Webstorm](d
 Finally, an accompanying [CLI](docs/cli.md) makes it super simple to create, inspect, debug and convert paths:
 
 ![cli](docs/assets/cli.png)
+
+See [here](https://twitter.com/i/status/1298592287266611205) for video :)
 
 ## Get started
 
