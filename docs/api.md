@@ -4,7 +4,7 @@
 
 ## Get paths
 
-#### Using available plugins
+### Using available plugins
 
 To grab paths using available formats / plugins, call `get()` with the plugin name:
 
@@ -20,7 +20,7 @@ If you need to pass custom options, pass an additional hash:
 const config = hq.get('rollup', { format: 'object' })
 ```
 
-#### As a custom format
+### As a custom format
 
 If you need custom transformation:
 
@@ -63,7 +63,7 @@ const config = hq.get('foo')
 
 There might be times when you need to check what is happening under the hood.
 
-#### Log config
+### Log config
 
 Check the loaded configuration:
 
@@ -85,7 +85,7 @@ console.log(hq.config)
 }
 ```
 
-#### Get plugin names
+### Get plugin names
 
 Check available plugin names:
 
@@ -97,7 +97,7 @@ console.log(hq.plugins.names)
 [ 'jest', 'rollup', 'webpack' ]
 ```
 
-#### Grab plugin output as JSON
+### Grab plugin output as JSON
 
 Dump configured paths in JSON format for any plugin:
 

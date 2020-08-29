@@ -4,7 +4,7 @@
 
 ## Overview
 
-Whilst writing a [conversion function](./api#as-a-custom-format) is fairly simple, packaging it as a plugin takes a little more work.
+Whilst writing a [conversion function](./api.md#as-a-custom-format) is fairly simple, packaging it as a plugin takes a little more work.
 
 Alias HQ uses a simple plugin architecture:
 
@@ -26,7 +26,7 @@ Start your plugin by:
 
 ## Writing the plugin
 
-#### Plugin function
+### Plugin function
 
 The `index.js` file should export a single function.
 
@@ -46,7 +46,7 @@ module.exports = function (config, options = null) {
 
 Note that all code is **uncompiled** so must be written in [Common JS](https://www.sitepoint.com/understanding-module-exports-exports-node-js/) format.
 
-#### Plugin config
+### Plugin config
 
 Your plugin will always receive the loaded `config` as the first parameter:
 
@@ -62,7 +62,7 @@ Your plugin will always receive the loaded `config` as the first parameter:
 }
 ```
 
-#### Plugin options
+### Plugin options
 
 Your plugin may receive user options (which can be any JavaScript type) with which you can decide how to customise the transformation:
 
@@ -74,7 +74,7 @@ function (config, options = 'bar') {
 }
 ```
 
-#### Plugin output
+### Plugin output
 
 The function should transform and return paths in whatever format the consuming library requires.
 
@@ -92,14 +92,14 @@ The example above outputs the following (hypothetical) object:
 
 ## Testing the plugin
 
-#### Overview
+### Overview
 
 Plugins are **required** to have tests with them; the project's tests enforce:
 
 - there is at least one test
 - each test converts the example `jsconfig.json` file correctly 
 
-#### File structure
+### File structure
 
 The `tests.js` file should export an `array` of **at least** one function:
 
@@ -110,7 +110,7 @@ module.exports = [
 ]
 ```
 
-#### Function format
+### Function format
 
 Each function should be of the format:
 
@@ -143,7 +143,7 @@ Note:
 -  the `label` and `options` values are required **only** if you need to test multiple configurations (as per the [Rollup](./src/plugins/rollup/tests.js) plugin).
 - any returned `options` will be used in both **tests** and relevant **CLI** commands.
 
-#### Running the tests
+### Running the tests
 
 The project's test suite will run the payload of each test function against the plugin, passing:
 
@@ -169,7 +169,7 @@ You can view the actual test code in [`tests/specs/plugins.spec.js`](https://git
 
 The `utils/` folder exports various useful functions for use in your plugin and test code.
 
-#### Path utilities
+### Path utilities
 
 As a convenience, Node's `path.resolve` and `path.join` functions are made available.
 
@@ -187,7 +187,7 @@ module.exports = function (config) {
 }
 ```
 
-#### Plugin utilities
+### Plugin utilities
 
 The `toArray` and `toObject` utilities simplify the unwrapping and re-wrapping of the `paths` config.
 
@@ -213,7 +213,7 @@ module.exports = function (config, options) {
 
 Note that `callback` functions MUST return an object of the form `{ alias: '', path: * }` in order to be correctly mapped into arrays or objects. 
 
-#### Test utilities
+### Test utilities
 
 For testing against the project's example `jsconfig.json` there are two functions `abs()` and `rel()`.
 

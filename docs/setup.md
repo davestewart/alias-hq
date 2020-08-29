@@ -15,9 +15,7 @@ yarn add -D alias-hq
 
 ## Configuration
 
-Alias HQ piggybacks `tsconfig.json` and `jsconfig.js` which are Microsoft-designed configuration files, that can be used in your project **whether or not** you are running VS Code or TypeScript. 
-
-### Syntax
+> Alias HQ piggybacks `tsconfig.json` and `jsconfig.js` which are Microsoft-designed configuration files, that can be used in your project **whether or not** you are running VS Code or TypeScript. 
 
 Locate (or create) your `tsconfig.json` or `jsconfig.js` in your project's root folder, and configure using the example below as a guide:
 
