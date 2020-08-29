@@ -21,6 +21,7 @@ function main () {
         '- List plugins output (JS)',
         '- Dump plugin output (JSON)',
         '- Make paths JSON',
+        '- Exit',
       ],
     })
     .then((answer) => {
@@ -42,6 +43,10 @@ function main () {
 
         case 'Make':
           result = Paths.run()
+          break
+
+        case 'Exit':
+          process.exit()
           break
       }
 

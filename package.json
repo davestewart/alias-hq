@@ -1,7 +1,7 @@
 {
   "name": "alias-hq",
-  "version": "3.3.0",
-  "description": "Manage a single set of folder aliases and convert as-needed to other formats",
+  "version": "3.3.1",
+  "description": "Manage a single set of folder aliases and convert on-the-fly to other formats",
   "main": "src/index.js",
   "bin": "bin/alias-hq",
   "files": [

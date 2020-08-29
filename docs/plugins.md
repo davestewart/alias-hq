@@ -1,17 +1,19 @@
-# Contributing
+# Plugins
 
-## Intro
+> Package path transforms as a plugin to more easily convert to a specific format
 
-Thanks for checking out this document.
+## Overview
 
-I'm guessing you're likely here because:
+This document is designed for developers who:
 
-- you want to contribute a [plugin](#plugins)
-- you want to improve the project's [code quality](#nice-to-have)
+- want more information about the transformation routine
+- want to contribute a new transformation format by way of a plugin
 
-## Plugins
+## Writing the plugin
 
 ### Overview
+
+Whilst writing a transformation function is reasonably straightforward, packaging it as a plugin takes a little more work.
 
 Alias HQ uses a plugin architecture to add new functionality:
 
@@ -21,9 +23,11 @@ Alias HQ uses a plugin architecture to add new functionality:
   - a `tests` file which provides both tests and CLI options
 - all code is **uncompiled** so written in Common JS style
 
-### Writing the plugin
+### Get started
 
-Decide upon a folder name, and add the files as below:
+Fork the repository, then clone locally.
+
+Decide upon a plugin folder name, and add the files as below:
 
 ```
 +- plugins
@@ -31,6 +35,8 @@ Decide upon a folder name, and add the files as below:
         +- index.js         // the plugin file itself
         +- tests.js         // tests and options
 ```
+
+### Main plugin function
 
 Add the conversion code to the `index.js` file (as per the example code from the `custom.spec.js` file):
 
@@ -77,7 +83,7 @@ Your plugin will always receive an `options` object, with the current `config` a
 }
 ```
 
-### Testing the plugin
+## Testing the plugin
 
 Plugins are **required** to have tests with them; the project's tests enforce there is at least one test, and that path conversion succeeds.
 
@@ -115,19 +121,19 @@ Note:
 Successful tests should output:
 
 ```
-  available plugins...
-    plugin: <your_plugin>
-      ✓ should have at least one test
-      each test...
-        test: foo bar
-          ✓ should return an object
-          ✓ should receive a "expected" value
-          ✓ should correctly convert example paths
+available plugins...
+  plugin: <your_plugin>
+    ✓ should have at least one test
+    each test...
+      test: foo bar
+        ✓ should return an object
+        ✓ should receive a "expected" value
+        ✓ should correctly convert example paths
 ```
 
 You can view the actual test code in [`tests/specs/plugins.spec.js`](https://github.com/davestewart/alias-hq/blob/master/tests/specs/plugins.spec.js).
 
-### Using utilities
+## Using utilities
 
 The `utils/` folder exports various useful functions for use in your plugin and test code.
 
@@ -168,6 +174,8 @@ module.exports = function (paths, options) {
 }
 ```
 
+Note that callback functions MUST return an object of the form `{ alias: '', path: '' }`. 
+
 #### Test utilities
 
 For testing against the project's example `jsconfig.json` there are two functions `abs()` and `rel()`.
@@ -192,7 +200,7 @@ Please do use the utilities rather than reinventing the wheel!
 
 ## Scripts
 
-You can see a demo of all plugins and their example options using the CLI and choosing "List plugins output (JS)":
+You can use the CLI to check the output of all plugins at any time by choosing "List plugins output (JS)":
 
 ```
 npm run cli
@@ -223,14 +231,10 @@ For the example, follow the existing format, and include:
 - a simple intro sentence, with inline links to any related documentation
 - a simple code sample, showing the plugin being used, without bloating it with unrelated setup
 
-## Nice to have
+## Submitting
 
-A few things I'd like to add to the project, but have not got round to / don't know how to:
+To save some work, create an issue to discuss the plugin idea first.
 
-- Linting (Standard style used throughout)
-- Git hooks such as `lint-staged`
-- CI (run tests during pull requests)
-- Badges
+If it looks like it's a good idea, fork the library, update the code and submit a PR.
 
-If you can help, please give me a shout!
-
+Thanks :)
