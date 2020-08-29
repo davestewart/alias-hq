@@ -5,8 +5,9 @@
 > Manage a single set of folder aliases and convert on-the-fly to other formats
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/davestewart/alias-hq/master/docs/logo.png" alt="Alias HQ logo">
+  <img src="https://raw.githubusercontent.com/davestewart/alias-hq/master/docs/assets/logo.png" alt="Alias HQ logo">
 </p>
+
 ## Abstract
 
 Alias HQ makes the management, creation and use of path aliases easy.

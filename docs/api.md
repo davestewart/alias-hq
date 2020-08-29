@@ -1,4 +1,4 @@
-#API
+# API
 
 > Manage configured aliases using JavaScript code 
 
