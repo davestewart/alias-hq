@@ -91,20 +91,22 @@ The `tests.js` file should export an `array` of **at least** one function:
 
 ```js
 module.exports = [
-	function () { ... }
+  function () { ... }
 ]
 ```
 
-Each test function should return an `object` with **at least** the `expected` node which should be the expected converted paths for the plugin called with the supplied options:
+Each function should be of the format:
 
 ```js
 function test () {
   return {
-    // optional
+    // [optional] label for tests and CLI
     label: 'foo bar',
+    
+    // [optional] user options
     options: { foo: 'bar' },
     
-    // required
+    // [required] expected converted paths for the above options
     expected: {
       '@api': abs('api'),
       ...
@@ -113,9 +115,20 @@ function test () {
 }
 ```
 
+The project's test suite will run the payload of each function against the plugin, passing:
+
+- paths from the sample `jsconfig.json` file in the package root
+- the supplied `options` from the test function
+
+The function should:
+
+- return an `object` 
+- with **at least** the `expected` node
+- which should match the plugin output for the supplied `options`
+
 Note:
 
--  the `label` and `options` values are **only** required if you need to test multiple configurations (as does the [Rollup](./src/plugins/rollup/tests.js) plugin).
+-  the `label` and `options` values are **only** required if you need to test multiple configurations (as per the [Rollup](./src/plugins/rollup/tests.js) plugin).
 - any returned options will be used in both **tests** and relevant **CLI** commands.
 
 Successful tests should output:

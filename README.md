@@ -38,7 +38,7 @@ import hq from 'alias-hq'
 
 module.exports = {
   resolve: {
-    alias: hq.get('webpack')
+    alias: hq.get('webpack') // or jest, rollup, or your own transform...
   }
 }
 ```
