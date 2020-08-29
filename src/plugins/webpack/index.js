@@ -1,7 +1,8 @@
 const { toObject, resolve } = require('../../utils')
 
 // @see https://webpack.js.org/configuration/resolve/#resolvealias
-function callback (alias, paths, { rootUrl, baseUrl }) {
+function callback (alias, config) {
+  const { rootUrl, baseUrl, paths } = config
   alias = alias
     .replace(/\/\*$/, '')
   let path = paths[0]
@@ -13,6 +14,6 @@ function callback (alias, paths, { rootUrl, baseUrl }) {
   }
 }
 
-module.exports = function (paths, options) {
-  return toObject(paths, callback, options)
+module.exports = function (config, options) {
+  return toObject(callback, config, options)
 }

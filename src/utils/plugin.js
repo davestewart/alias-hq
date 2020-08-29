@@ -2,27 +2,33 @@
 /**
  * Convert paths and return an array
  *
- * @param   {object}    paths       The tsconfig.json paths node
  * @param   {function}  callback    The conversion function
- * @param   {path}      options     Optional options path
+ * @param   {object}    config      The loaded config, containing rootUrl, baseUrl and paths properties
+ * @param   {*}        [options]    Optional user options
  * @returns {{alias: string, path: string}[]}
  */
-function toArray (paths, callback, options) {
+function toArray (callback, config, options) {
   return Object
-    .keys(paths)
-    .map(alias => callback(alias, paths[alias], options))
+    .keys(config.paths)
+    .map(key => {
+      return callback(key, {
+        rootUrl: config.rootUrl,
+        baseUrl: config.baseUrl,
+        paths: config.paths[key],
+      }, options)
+    })
 }
 
 /**
  * Convert paths and return an object
  *
- * @param   {object}    paths       The tsconfig.json paths node
  * @param   {function}  callback    The conversion function
- * @param   {path}      options     Optional options path
+ * @param   {object}    config      The loaded config, containing rootUrl, baseUrl and paths properties
+ * @param   {*}        [options]    Optional user options
  * @returns {Object.<string, string>}
  */
-function toObject (paths, callback, options) {
-  return toArray(paths, callback, options)
+function toObject (callback, config, options) {
+  return toArray(callback, config, options)
     .reduce((output, entry) => {
       if (!output[entry.alias]) {
         output[entry.alias] = entry.path

@@ -92,12 +92,9 @@ function get (plugin, options = {}) {
     load()
   }
 
-  // options
-  options = { ...config, ...options }
-
   // callback
   if (typeof plugin === 'function') {
-    return plugin(config.paths, options)
+    return plugin(config, options)
   }
 
   // plugin
@@ -105,14 +102,14 @@ function get (plugin, options = {}) {
     // check for custom plugin
     if (typeof plugins.custom[plugin] === 'function') {
       const callback = plugins.custom[plugin]
-      return callback(config.paths, options)
+      return callback(config, options)
     }
 
     // check for built-in plugin
     const path = Path.resolve(__dirname, `./plugins/${plugin}/index.js`)
     if (fs.existsSync(path)) {
       const callback = require(path)
-      return callback(config.paths, options)
+      return callback(config, options)
     }
     throw new Error(`No such plugin "${plugin}"`)
   }
