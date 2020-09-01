@@ -1,14 +1,17 @@
 const inquirer = require('inquirer')
+const hq = require('../src')
 
 // modules
 const Plugins = require('./modules/list-plugins')
 const Config = require('./modules/show-config')
 const Paths = require('./modules/make-paths')
 const Json = require('./modules/dump-json')
+const Fix = require('./modules/fix-code')
 
 let previousChoice
 
 function main () {
+  hq.load()
   console.log('\n  == Alias HQ ==')
   inquirer
     .prompt({
@@ -21,6 +24,7 @@ function main () {
         '- List plugins output (JS)',
         '- Dump plugin output (JSON)',
         '- Make paths JSON',
+        '- Auto-fix source code',
         '- Exit',
       ],
     })
@@ -43,6 +47,10 @@ function main () {
 
         case 'Make':
           result = Paths.run()
+          break
+
+        case 'Auto':
+          result = Fix.run()
           break
 
         case 'Exit':

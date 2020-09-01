@@ -1,5 +1,36 @@
 const hq = require('..')
 
+
+/**
+ * Utility function to get the max length of a series of strings
+ *
+ * @param {array<string|object>}  items   An array or strings or objects
+ * @param {string}               [prop]   An optional sub-property to grab
+ * @returns {number}
+ */
+function getLongestStringLength (items, prop) {
+  return Math.max(...items.map(item => (prop ? item[prop] : item).length))
+}
+
+/**
+ * Convert a string of text containing folders to an array of folders
+ *
+ * Handles quotes, spaces, etc
+ *
+ * @param input
+ * @returns {[]}
+ */
+function parsePathsFromText (input) {
+  const rx = /(["'])(.+?)\1|(\S+)/g
+  let match
+  let folders = []
+  while(match = rx.exec(input)) {
+    const folder = match[1] ? match[2] : match[0]
+    folders.push(folder)
+  }
+  return folders
+}
+
 /**
  * Returns all plugins as a 2D hash of plugins and their options
  *
@@ -32,5 +63,7 @@ function getPlugins () {
 }
 
 module.exports = {
-  getPlugins
+  getLongestStringLength,
+  parsePathsFromText,
+  getPlugins,
 }

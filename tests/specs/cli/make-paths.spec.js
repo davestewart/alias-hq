@@ -1,4 +1,5 @@
-const { makePaths, getFolders } = require('../../cli/modules/make-paths')
+const { parsePathsFromText } = require('../../../cli/utils')
+const { makePaths } = require('../../../cli/modules/make-paths')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // tests
@@ -13,7 +14,7 @@ describe('path generation', function () {
     type: 'new',
   }
 
-  const folders = getFolders(`
+  const folders = parsePathsFromText(`
     /projects/project/absolute_up/
     /projects/project/src/one/
     /projects/project/src/one/two/

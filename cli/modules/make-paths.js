@@ -1,6 +1,7 @@
 const inquirer = require('inquirer')
 const Path = require('path')
 const hq = require('../../src')
+const { parsePathsFromText } = require('../utils')
 
 function makeSettings (config) {
   const { rootUrl, baseUrl, paths } = config
@@ -11,17 +12,6 @@ function makeSettings (config) {
     type: 'new',
     prefix: '@',
   }
-}
-
-function getFolders (input) {
-  const rx = /(["'])(.+?)\1|(\S+)/g
-  let match
-  let folders = []
-  while(match = rx.exec(input)) {
-    const folder = match[1] ? match[2] : match[0]
-    folders.push(folder)
-  }
-  return folders
 }
 
 function makePaths (folders, settings) {
@@ -70,7 +60,6 @@ function makeJson (paths, settings) {
 }
 
 function run () {
-  hq.load()
   const settings = makeSettings(hq.config)
   return Promise.resolve()
     .then(() => {
@@ -115,7 +104,7 @@ function run () {
         })
     })
     .then((answer) => {
-      const folders = getFolders(answer.text)
+      const folders = parsePathsFromText(answer.text)
       const paths = makePaths(folders, settings)
       const json = makeJson(paths, settings)
       console.log('\n' + json + '\n')
@@ -125,7 +114,6 @@ function run () {
 
 module.exports = {
   makeSettings,
-  getFolders,
   makePaths,
   makeJson,
   run,

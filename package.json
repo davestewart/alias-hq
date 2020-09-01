@@ -39,6 +39,8 @@
     "jest": "^26.4.1"
   },
   "dependencies": {
-    "inquirer": "^7.3.3"
+    "colors": "^1.4.0",
+    "inquirer": "^7.3.3",
+    "jscodeshift": "^0.10.0"
   }
 }
