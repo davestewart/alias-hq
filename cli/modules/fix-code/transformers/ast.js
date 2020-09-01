@@ -62,5 +62,8 @@ module.exports = function (fileInfo, api, options) {
   // debug
   // console.log(root.toSource())
 
-  // return root.toSource()
+  if (updates) {
+    return root.toSource()
+  }
+
 }
