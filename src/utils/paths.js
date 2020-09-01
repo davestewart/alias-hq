@@ -1,6 +1,15 @@
 const Path = require('path')
 
+/**
+ * Slightly more robust version of resolve
+ *
+ * Prevents issue where only / is returned if passed in one segment
+ */
+function resolve (...pathSegments) {
+  return Path.resolve(Path.join(...pathSegments))
+}
+
 module.exports = {
-  resolve: Path.resolve,
   join: Path.join,
+  resolve,
 }

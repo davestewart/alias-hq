@@ -15,11 +15,13 @@ function plugin (config, options = null) {
 }
 
 const expected = {
-  'api': { path: 'api' },
+  '': { path: '' },
+  'packages': { path: '../packages' },
+  'classes': { path: 'classes' },
   'app': { path: 'app' },
-  'config': { path: 'app/config' },
+  'data': { path: 'app/data' },
   'services': { path: 'app/services' },
-  'utils': { path: 'common/utils' },
+  'views': { path: 'app/views' },
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

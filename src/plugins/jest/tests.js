@@ -1,14 +1,16 @@
 module.exports = [
   function () {
     const expected = {
-      '^@api/(.*)$': '<rootDir>/src/api/$1',
-      '^@app/(.*)$': '<rootDir>/src/app/$1',
-      '^@config/(.*)$': '<rootDir>/src/app/config/$1',
-      '^@services/(.*)$': '<rootDir>/src/app/services/$1',
-      '^@utils/(.*)$': [
-        '<rootDir>/src/common/utils/$1',
-        '<rootDir>/src/vendor/utils/$1',
+      '^@/(.*)$': '<rootDir>/demo/src/$1',
+      '^@packages/(.*)$': '<rootDir>/demo/packages/$1',
+      '^@classes/(.*)$': '<rootDir>/demo/src/classes/$1',
+      '^@app/(.*)$': '<rootDir>/demo/src/app/$1',
+      '^@data/(.*)$': '<rootDir>/demo/src/app/data/$1',
+      '^@services/(.*)$': [
+        '<rootDir>/demo/src/app/services/$1',
+        '<rootDir>/demo/packages/services/$1',
       ],
+      '^@views/(.*)$': '<rootDir>/demo/src/app/views/$1'
     }
     return { expected }
   },

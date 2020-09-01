@@ -1,13 +1,13 @@
-const Path = require('path')
+const { resolve } = require('./paths')
 
-const rootUrl = Path.resolve(__dirname, '../../')
+const rootUrl = resolve(__dirname, '../../')
 
-function rel (path) {
-  return `./src/${path}`
+function rel (path = '') {
+  return `./demo/src/${path}`.replace(/\/$/, '')
 }
 
-function abs (path) {
-  return `${rootUrl}/src/${path}`
+function abs (path = '') {
+  return resolve(rootUrl, 'demo/src/', path)
 }
 
 module.exports = {

@@ -1,15 +1,17 @@
 {
   "compilerOptions": {
-    "baseUrl": "src",
+    "baseUrl": "demo/src",
     "paths": {
-      "@api/*": ["api/*"],
+      "@/*": ["/*"],
+      "@packages/*": ["../packages/*"],
+      "@classes/*": ["classes/*"],
       "@app/*": ["app/*"],
-      "@config/*": ["app/config/*"],
-      "@services/*": ["app/services/*"],
-      "@utils/*": [
-        "common/utils/*",
-        "vendor/utils/*"
-      ]
+      "@data/*": ["app/data/*"],
+      "@services/*": [
+        "app/services/*",
+        "../packages/services/*"
+      ],
+      "@views/*": ["app/views/*"]
     }
   }
 }

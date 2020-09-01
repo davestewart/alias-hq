@@ -7,11 +7,13 @@ module.exports = [
       format: 'object'
     }
     const expected = {
-      '@api': abs('api'),
+      '@': abs(''),
+      '@packages': abs('../packages'),
+      '@classes': abs('classes'),
       '@app': abs('app'),
-      '@config': abs('app/config'),
+      '@data': abs('app/data'),
       '@services': abs('app/services'),
-      '@utils': abs('common/utils'),
+      '@views': abs('app/views'),
     }
     return { label, options, expected }
   },
@@ -23,25 +25,33 @@ module.exports = [
     }
     const expected = [
       {
-        find: '@api',
-        replacement: abs('api'),
+        find: '@',
+        replacement: abs(''),
+      },
+      {
+        find: '@packages',
+        replacement: abs('../packages'),
+      },
+      {
+        find: '@classes',
+        replacement: abs('classes')
       },
       {
         find: '@app',
-        replacement: abs('app'),
+        replacement: abs('app')
       },
       {
-        find: '@config',
-        replacement: abs('app/config'),
+        find: '@data',
+        replacement: abs('app/data')
       },
       {
         find: '@services',
-        replacement: abs('app/services'),
+        replacement: abs('app/services')
       },
       {
-        find: '@utils',
-        replacement: abs('common/utils'),
-      }
+        find: '@views',
+        replacement: abs('app/views')
+      },
     ]
     return { label, options, expected }
   },
