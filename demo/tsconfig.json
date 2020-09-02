@@ -1,0 +1,4 @@
+{
+  "extends": "demo/tsconfig.base.json",
+  "compilerOptions": {}
+}

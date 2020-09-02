@@ -37,7 +37,7 @@ describe('custom plugins', function () {
     expect(received).toEqual(expected)
   })
   it('should convert paths correctly', function () {
-    const received = hq.load('jsconfig.json').get(plugin)
+    const received = hq.load('demo/jsconfig.json').get(plugin)
     expect(received).toEqual(expected)
   })
 })

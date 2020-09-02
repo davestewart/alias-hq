@@ -2,7 +2,7 @@ const Path = require('path')
 const fs = require('fs')
 
 /**
- * Load a config file
+ * Load js/tsconfig.json file
  *
  * @param   {string}    path      The absolute path to the config file
  */
@@ -24,6 +24,27 @@ function loadConfig (path) {
 }
 
 /**
+ * Load user settings from package.json
+ */
+function loadSettings () {
+  try {
+    const json = JSON.parse(fs.readFileSync('package.json', 'utf8'))
+    const data = json['alias-hq']
+    if (data) {
+      if (data.root) {
+        config.rootUrl = Path.resolve(data.root)
+      }
+      settings.folders = data.folders || []
+      settings.modules = data.modules || []
+      return true
+    }
+  }
+  catch (err) {
+    return false
+  }
+}
+
+/**
  * Load config
  *
  * @param   {undefined}         value     Pass no value for to determine config file automatically
@@ -31,12 +52,12 @@ function loadConfig (path) {
  * @returns {object}                      The Alias HQ instance
  */
 function load (value = undefined) {
-  // variables
-  let path
+  // load settings
+  loadSettings()
 
   // string: relative or absolute path passed
   if (typeof value === 'string') {
-    path = Path.resolve(value)
+    const path = Path.resolve(value)
     if (fs.existsSync(path)) {
       loadConfig(path)
     }
@@ -45,7 +66,7 @@ function load (value = undefined) {
     }
   }
 
-  // no value: default config file
+  // no value: default or configured config file
   else if (typeof value === 'undefined') {
     // variables
     let found = false
@@ -57,8 +78,9 @@ function load (value = undefined) {
 
     // attempt to load file
     while (files.length && !found) {
-      let file = files.shift()
-      path = Path.resolve('./', file)
+      const file = files.shift()
+      // config.rootUrl will be an absolute folder path if loaded from package.json
+      const path = Path.resolve(config.rootUrl, file)
       if (fs.existsSync(path)) {
         found = loadConfig(path)
       }
@@ -66,7 +88,7 @@ function load (value = undefined) {
 
     // could not load file!
     if (!found) {
-      throw new Error('No config file found')
+      throw new Error('Alias HQ could not find a "ts/jsconfig.json" file')
     }
   }
 
@@ -135,6 +157,11 @@ const config = {
   paths: null,
 }
 
+const settings = {
+  folders: [],
+  modules: []
+}
+
 const plugins = {
   custom: {},
 
@@ -175,4 +202,5 @@ module.exports = {
   load,
   config,
   plugins,
+  settings,
 }

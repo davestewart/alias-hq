@@ -11,7 +11,7 @@ const { parsePathsFromText } = require('../../../utils')
  * @returns {{valid: (boolean|boolean), path: string, absPath: string, relPath: string}}
  */
 function getPathInfo (path, rootUrl) {
-  const absPath = Path.resolve(path)
+  const absPath = Path.resolve(rootUrl, path)
   const relPath = Path.relative(rootUrl, absPath)
   const exists = Fs.existsSync(absPath)
   const valid = !relPath.startsWith('..')

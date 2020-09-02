@@ -28,14 +28,23 @@ function run () {
 
     // paths
     .then(() => {
+      const defaults = hq.settings.folders.length
+        ? hq.settings.folders.map(folder => {
+          return folder.includes(' ')
+            ? `'${folder}'`
+            : folder
+        }).join(' ')
+        : hq. config.baseUrl
       return inquirer
         .prompt({
           type: 'input',
           name: 'paths',
           message: 'Paths:',
-          default: hq.config.baseUrl
+          default: defaults
         })
-        .then(answer => getPathsInfo(answer.paths, rootUrl))
+        .then(answer => {
+          return getPathsInfo(answer.paths, rootUrl)
+        })
         .then(folders => {
           answers.paths = folders
         })
@@ -49,12 +58,17 @@ function run () {
           const label = alias + ' '.repeat(maxLength - alias.length)
           return label + '  ' + `- ${folder}`.grey
         })
+        const defaults = hq.settings.modules
+          .map(folder => {
+            return choices.find(choice => choice.startsWith(folder + ' '))
+          })
         return inquirer
           .prompt({
             type: 'checkbox',
             name: 'modules',
             message: `Module roots:`,
             choices: choices,
+            default: defaults,
           })
           .then(answer => {
             answers.modules = answer.modules

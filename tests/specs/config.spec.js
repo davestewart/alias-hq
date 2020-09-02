@@ -9,7 +9,7 @@ describe('config', function () {
 
   describe('paths', function () {
     it('should load return the raw paths data', function () {
-      const received = hq.load('jsconfig.json').config.paths
+      const received = hq.load('demo/jsconfig.json').config.paths
       const expected = config.js
       expect(received).toEqual(expected)
     })

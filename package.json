@@ -42,5 +42,15 @@
     "colors": "^1.4.0",
     "inquirer": "^7.3.3",
     "jscodeshift": "^0.10.0"
+  },
+  "alias-hq": {
+    "root": "./demo",
+    "folders": [
+      "src",
+      "packages"
+    ],
+    "modules": [
+      "@packages"
+    ]
   }
 }

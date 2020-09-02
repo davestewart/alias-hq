@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": "demo/src",
+    "baseUrl": "src",
     "paths": {
       "@/*": ["/*"],
       "@packages/*": ["../packages/*"],
