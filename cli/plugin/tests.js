@@ -1,4 +1,4 @@
-const { abs } = require('../../utils')
+const { abs } = require('../../src/utils')
 
 module.exports = [
   function () {

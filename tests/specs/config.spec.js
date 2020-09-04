@@ -27,7 +27,7 @@ describe('config', function () {
     it('should return plugin names', function () {
       hq.plugins.add('xyz', function () {})
       const received = hq.plugins.names
-      const expected = ['jest', 'lookup', 'rollup', 'webpack', 'xyz']
+      const expected = ['jest', 'rollup', 'webpack', 'xyz']
       expect(received).toEqual(expected)
     })
   })

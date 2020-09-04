@@ -1,4 +1,4 @@
-const { toArray, resolve, join } = require('../../utils')
+const { toArray, resolve, join } = require('../../src/utils')
 
 // used in cli fix code
 function callback (alias, config) {
