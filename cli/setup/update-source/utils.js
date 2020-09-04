@@ -1,4 +1,3 @@
-// const { inspect } = require('../../../../src/utils')
 const Path = require('path')
 
 /**
@@ -32,8 +31,8 @@ function getPath (source, rel, { aliases, modules }) {
     target = Path.resolve(source, rel)
   }
 
-  // >> anything else
-  //    could be a package, @namespaced package, or existing @alias
+    // >> anything else
+    //    could be a package, @namespaced package, or existing @alias
   //    need to check what kind of path it is
   else {
     // get first segment
@@ -48,8 +47,8 @@ function getPath (source, rel, { aliases, modules }) {
       target = Path.join(path, ...segments)
     }
 
-    // >> not an alias
-    //    probably an npm package
+      // >> not an alias
+      //    probably an npm package
     //    don't replace
     else {
       return
@@ -100,8 +99,8 @@ function getPath (source, rel, { aliases, modules }) {
       }
     }
 
-    // >> short downstream paths
-    //    would be simpler to use it
+      // >> short downstream paths
+      //    would be simpler to use it
     //    don't replace
     else if (rel.startsWith('.') && isShort) {
       return

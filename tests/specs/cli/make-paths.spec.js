@@ -1,5 +1,5 @@
-const { parsePathsFromText } = require('../../../cli/utils')
-const { makePaths } = require('../../../cli/modules/make-paths')
+const { parsePathsFromText } = require('../../../cli/utils/paths')
+const { makePaths } = require('../../../cli/setup/update-config')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // tests

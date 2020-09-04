@@ -1,5 +1,5 @@
 const Path = require('path')
-const { getPathsInfo } = require('../../../cli/modules/fix-code/utils/setup')
+const { getPathsInfo } = require('../../../cli/utils/paths')
 
 describe('cli utils', function () {
   it('getPathsInfo should dedupe paths', function () {

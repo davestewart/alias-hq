@@ -11,6 +11,7 @@
   ],
   "scripts": {
     "cli": "node cli",
+    "setup": "node cli -- setup",
     "test": "jest --verbose",
     "test:plugins": "jest --watch -f plugins.spec.js -t 'available plugins:'",
     "test:coverage": "jest --coverage"
@@ -41,15 +42,21 @@
   "dependencies": {
     "colors": "^1.4.0",
     "inquirer": "^7.3.3",
-    "jscodeshift": "^0.10.0"
+    "jscodeshift": "^0.10.0",
+    "node-fetch": "^2.6.0",
+    "opn": "^6.0.0"
   },
   "alias-hq": {
     "root": "./demo",
+    "prefix": "@",
+    "extensions": "js jsx",
     "folders": [
-      "src",
-      "packages"
+      "packages",
+      "src"
     ],
     "modules": [
+      "@services",
+      "@data",
       "@packages"
     ]
   }

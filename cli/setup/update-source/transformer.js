@@ -1,7 +1,5 @@
-const Path = require('path')
-const colors = require('colors')
-const { inspect } = require('../../../../src/utils')
-const { getPath } = require('../utils/paths')
+require('colors')
+const { getPath } = require('./utils')
 
 module.exports = function (fileInfo, api, options) {
   // variables
@@ -11,9 +9,6 @@ module.exports = function (fileInfo, api, options) {
 
   // debug
   function log (from, to) {
-    if (!to) {
-      to = `${from} (no change)`.gray
-    }
     updates.push({ from, to })
   }
 
@@ -29,10 +24,12 @@ module.exports = function (fileInfo, api, options) {
     // requires
     requires.forEach(p => {
       const oldPath = p.value.arguments[0].value
-      const newPath = getPath(path, oldPath, options)
-      log(oldPath, newPath)
-      if (newPath) {
-        p.value.arguments[0].value = newPath
+      if (oldPath) {
+        const newPath = getPath(path, oldPath, options)
+        log(oldPath, newPath)
+        if (newPath) {
+          p.value.arguments[0].value = newPath
+        }
       }
     })
 
@@ -50,10 +47,13 @@ module.exports = function (fileInfo, api, options) {
     if (updates.length) {
       // NOTE for some reason, logs seem to be asynchronous
       //      so we need to buffer the output before logging
-      let text = `> ${path}\n\n`
+      let text = `\n${path.grey}\n\n`
       text += updates.map(update => {
         const { from, to } = update
-        return [` › ${from}`, ` › ${(to || '').cyan}`].join('\n') + '\n'
+        if (!to) {
+          return `  › ` + `${from} ${'(no change)'.grey}` + '\n'
+        }
+        return [`  › ${from}`, `  › ${(to || '').cyan}`].join('\n') + '\n'
       }).join('\n')
       console.log(text)
     }
@@ -65,5 +65,4 @@ module.exports = function (fileInfo, api, options) {
   if (updates) {
     return root.toSource()
   }
-
 }

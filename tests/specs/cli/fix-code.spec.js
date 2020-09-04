@@ -1,6 +1,6 @@
 const { abs, inspect } = require('../../../src/utils')
-const { getAliases } = require('../../../cli/modules/fix-code/utils/setup')
-const { getPath } = require('../../../cli/modules/fix-code/utils/paths')
+const { getAliases } = require('../../../cli/setup/update-source')
+const { getPath } = require('../../../cli/setup/update-source/utils')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // helpers

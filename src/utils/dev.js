@@ -1,12 +1,17 @@
 const inspect = require('util').inspect
 
 module.exports = {
-  inspect (values, depth) {
+  inspect (values, depth, indent = 0) {
     let options = {
       depth,
       breakLength: 1,
       colors: true
     }
-    console.log(inspect(values, options))
+    let text = inspect(values, options)
+    if (indent) {
+      const padding = ' '.repeat(indent)
+      text = text.replace(/^/gm, padding)
+    }
+    console.log(text)
   }
 }
