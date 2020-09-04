@@ -1,3 +1,5 @@
+require('colors')
+
 /**
  * Utility function to get the max length of a series of strings
  *
@@ -17,6 +19,10 @@ function makeColumns (rows, maxLength = 0) {
     const label = text + ' '.repeat(maxLength - text.length)
     return label + '  ' + `- ${col2[index]}`.grey
   })
+}
+
+function makeHeader (text) {
+  console.log(`\n  -- ${text.cyan} --\n`)
 }
 
 function plural (num, single, plural = single + 's') {
@@ -86,6 +92,7 @@ function makeJson (data, colorize = false, compact = false) {
 module.exports = {
   getLongestStringLength,
   makeColumns,
+  makeHeader,
   makeBullet,
   makeJson,
   bullets,

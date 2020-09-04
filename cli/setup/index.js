@@ -1,8 +1,8 @@
 require('colors')
 const inquirer = require('inquirer')
 const hq = require('../../src')
-const { bullets, para, indent, makeBullet } = require('../utils/text')
-const { makeChoices, makeMenuHeader } = require('../utils/inquirer')
+const { makeHeader, para, indent, makeBullet } = require('../utils/text')
+const { makeChoices } = require('../utils/inquirer')
 
 // modules
 const { showConfig } = require('./show-config')
@@ -53,12 +53,12 @@ function run () {
   }
 
   // start
-  console.log()
+  makeHeader('Setup Menu')
   return inquirer
     .prompt({
       type: 'list',
       name: 'choice',
-      message: makeMenuHeader('Setup Menu'),
+      message: 'What do you want to do?',
       default: previous.choice,
       choices: makeChoices(choices),
     })

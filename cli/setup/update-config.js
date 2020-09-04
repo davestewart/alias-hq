@@ -1,3 +1,4 @@
+require('colors')
 const inquirer = require('inquirer')
 const Path = require('path')
 const Fs = require('fs')

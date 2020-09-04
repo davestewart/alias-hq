@@ -1,7 +1,8 @@
 const inquirer = require('inquirer')
 const hq = require('../../src')
 
-const { makeChoices, makeMenuHeader } = require('../utils/inquirer')
+const { makeHeader } = require('../utils/text')
+const { makeChoices } = require('../utils/inquirer')
 const { numAliases } = require('../utils/config')
 
 // modules
@@ -34,12 +35,12 @@ function run () {
     choices.make = 'Make paths JSON'
   }
 
-  console.log()
+  makeHeader('Integrations Menu')
   return inquirer
     .prompt({
       type: 'list',
       name: 'choice',
-      message: makeMenuHeader('Debug Menu'),
+      message: 'What do you want to do?',
       default: previous.choice,
       choices: makeChoices(choices),
     })

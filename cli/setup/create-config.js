@@ -1,3 +1,4 @@
+require('colors')
 const inquirer = require('inquirer')
 const Path = require('path')
 const Fs = require('fs')
@@ -5,7 +6,7 @@ const hq = require('../../src')
 const { getPathInfo } = require('../utils/paths')
 const { makeBullet } = require('../utils/text')
 const { loadJson } = require('../utils/config')
-const { inspect } = require('../utils/inquirer')
+const { makeChoices } = require('../utils/inquirer')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // actions
@@ -14,10 +15,10 @@ const { inspect } = require('../utils/inquirer')
 const actions = {
   getChoices: () => {
     // choices
-    const choices = [
-      { name: '- JavaScript', value: 'jsconfig.json' },
-      { name: '- TypeScript', value: 'tsconfig.json' },
-    ]
+    const choices = {
+      'jsconfig.json': 'JavaScript',
+      'tsconfig.json': 'TypeScript',
+    }
 
     // prompt
     return inquirer
@@ -26,11 +27,11 @@ const actions = {
         name: 'file',
         message: 'Language:',
         default: previous.file,
-        choices,
+        choices: makeChoices(choices, true),
       })
       .then(answer => {
-        previous.file = choices.find(choice => choice.value === answer.file).name
-        settings.file = answer.file
+        previous.file = answer.file
+        answers.file = answer.file
       })
   },
 
@@ -47,7 +48,7 @@ const actions = {
       })
       .then(answer => {
         previous.baseUrl = answer.baseUrl
-        settings.baseUrl = answer.baseUrl
+        answers.baseUrl = answer.baseUrl
       })
   },
 
@@ -61,14 +62,14 @@ const actions = {
     }
 
     // helper
-    const fileInfo = getPathInfo(settings.file, hq.config.rootUrl)
-    const srcInfo = getPathInfo(settings.baseUrl, hq.config.rootUrl)
+    const fileInfo = getPathInfo(answers.file, hq.config.rootUrl)
+    const srcInfo = getPathInfo(answers.baseUrl, hq.config.rootUrl)
 
     // path
-    settings.path = fileInfo.absPath
+    answers.path = fileInfo.absPath
 
     // json
-    const json = settings.json = {
+    const json = answers.json = {
       compilerOptions: {
         baseUrl: './src',
         paths: {}
@@ -100,11 +101,11 @@ const actions = {
         }
 
         // data
-        const data = JSON.stringify(settings.json, null, '  ')
+        const data = JSON.stringify(answers.json, null, '  ')
 
         // write
         try {
-          return Fs.writeFileSync(settings.path, data, 'utf8')
+          return Fs.writeFileSync(answers.path, data, 'utf8')
         } catch (err) {
           return err.message
         }
@@ -117,7 +118,7 @@ const actions = {
 // ---------------------------------------------------------------------------------------------------------------------
 
 const previous = {}
-const settings = {
+const answers = {
   file: '',
   path: '',
   baseUrl: '',

@@ -1,41 +1,36 @@
 const inquirer = require('inquirer')
-const inspect = require('../../src/utils').inspect
 
-function makeChoice (key, label) {
-  const text = label || key
-  const name = '- ' + text
+function makeChoice (text = '', value = undefined) {
   return {
-    name,
-    value: { key, label, name },
+    name: text
+      ? '- ' + text
+      : new inquirer.Separator(' '),
+    short: text.replace(/\s+-.+/, ''),
+    value: value || text,
   }
 }
 
 /**
  * Utility function for better inquirer choices
  */
-function makeChoices (choices) {
+function makeChoices (choices, valueAsKey = false) {
   return Object
     .keys(choices)
-    .map(key => {
-      let value = choices[key]
-      return {
-        name: value
-          ? '- ' + value
-          : new inquirer.Separator(' '),
-        short: value.replace(/\s+-.+/, ''),
-        value,
-      }
-    })
+    .map(key => makeChoice(choices[key], valueAsKey ? key : undefined))
 }
 
-function makeMenuHeader (text) {
-  // text = ` ${text} `
-  const underline = '='.repeat(text.length)
-  return `${text.cyan}\n\n  What do you want to do?`
+function getAnswer (choices, text) {
+  const choice = Object
+    .entries(choices)
+    .find(entry => entry[1] === text)
+  return choice
+    ? choice[0]
+    : undefined
+
 }
 
 module.exports = {
-  makeMenuHeader,
   makeChoices,
-  inspect,
+  makeChoice,
+  getAnswer,
 }

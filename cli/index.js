@@ -1,8 +1,9 @@
+require('colors')
 const inquirer = require('inquirer')
 const hq = require('../src')
 
-const { para } = require('./utils/text')
-const { makeMenuHeader, makeChoices } = require('./utils/inquirer')
+const { para, makeHeader } = require('./utils/text')
+const { makeChoices } = require('./utils/inquirer')
 const { numAliases } = require('./utils/config')
 
 const setup = require('./setup')
@@ -20,26 +21,27 @@ function index () {
 
   // options
   const choices = {
-    setup: 'Setup' + '         - update config and source code'.grey,
+    setup: 'Setup        ' + ' - update config and source code'.grey,
+    debug: 'Integrations ' + ' - configure and debug integrations'.grey,
+    exit: 'Exit',
   }
-  if (numAliases()) {
-    choices.debug = 'Integrations ' + ' - configure and debug integrations'.grey
+
+  if (!numAliases()) {
+    delete choices.debug
   }
-  choices.exit = 'Exit'
 
   // questions
-  console.log()
+  makeHeader('Main Menu')
   inquirer
     .prompt({
       type: 'list',
       name: 'choice',
-      message: makeMenuHeader('Main Menu'),
+      message: 'What do you want to do?',
       default: previous.choice,
       choices: makeChoices(choices),
     })
     .then((answer) => {
       previous.choice = answer.choice
-      let result
       switch (answer.choice) {
         case choices.setup:
           return setup()
