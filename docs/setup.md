@@ -43,13 +43,13 @@ Note that:
 
 - All `paths` should resolve from the `baseUrl`, so something like this is fine: `../node_modules/`
 - To resolve folder content, wildcards are required in both `alias` and `path` components
-- The format supports [multiple paths](./tsconfig.json), though currently Jest is the only conversion format to utilise this
+- The format supports [multiple paths](https://www.typescriptlang.org/tsconfig#paths), though currently Jest is the only conversion format to utilise this
 - You may add non-TypeScript paths (such as assets) here; TypeScript will ignore them but Alias HQ will use them
 - You don't *have* to use a `@` character, but the convention is to use one
 
 ## Auto-generation
 
-New in 3.1, you can automatically generate the config using the [Alias CLI](#cli):
+New in 3.1, you can automatically generate the config using the [Alias CLI](./cli.md):
 
 ![alias cli](./assets/cli.png)
 
@@ -61,4 +61,4 @@ In the terminal:
 - Drag in folders from Finder / Explorer (or manually type relative paths, separating with spaces)
 - Copy the resulting JSON to the config file
 
-See the [CLI](#cli) section for more info / troubleshooting.
+See the [CLI](./cli.md) document for more info / troubleshooting.

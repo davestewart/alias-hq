@@ -1,12 +1,12 @@
 # Plugins
 
-> Package path transforms as a plugin to more easily convert to a specific format
+> Package custom transforms as plugins to easily convert to specific formats
 
 ## Overview
 
-Whilst writing a [conversion function](./api.md#as-a-custom-format) is fairly simple, packaging it as a plugin takes a little more work.
+Whilst writing a [conversion function](./api.md#as-a-custom-format) is fairly simple, packaging it as a plugin takes just a little more work.
 
-Alias HQ uses a simple plugin architecture:
+Alias HQ uses a simple plugin architecture, where:
 
 - plugins live in named folders
 - folders contain plugin and test files: 
@@ -18,7 +18,7 @@ Alias HQ uses a simple plugin architecture:
         +- tests.js         // tests and options
 ```
 
-Start your plugin by:
+Begin your plugin by:
 
 - deciding on a plugin folder name
 - creating the above folder and file structure
@@ -64,13 +64,13 @@ Your plugin will always receive the loaded `config` as the first parameter:
 
 ### Plugin options
 
-Your plugin may receive user options (which can be any JavaScript type) with which you can decide how to customise the transformation:
+Your plugin may receive user options (in a format of your choosing) with which you can decide how to customise the transformation:
 
 ```js
 function (config, options = 'bar') {
   return options.format === 'foo'
-  	? fooify(config.paths)
-  	: barify(config.paths)
+    ? fooify(config.paths)
+    : barify(config.paths)
 }
 ```
 
@@ -94,10 +94,10 @@ The example above outputs the following (hypothetical) object:
 
 ### Overview
 
-Plugins are **required** to have tests with them; the project's tests enforce:
+Plugins are **required** to have tests with them, and the project's tests enforce:
 
 - there is at least one test
-- each test converts the example `jsconfig.json` file correctly 
+- each test converts the `demo/jsconfig.json` file correctly 
 
 ### File structure
 
@@ -140,14 +140,14 @@ The function MUST:
 
 Note:
 
--  the `label` and `options` values are required **only** if you need to test multiple configurations (as per the [Rollup](./src/plugins/rollup/tests.js) plugin).
-- any returned `options` will be used in both **tests** and relevant **CLI** commands.
+-  the `label` and `options` values are required **only** if you need to test multiple configurations (see the [Rollup](./src/plugins/rollup/tests.js) plugin for an example).
+- any returned `options` will be used in both **tests** and relevant [CLI](./cli.md) commands.
 
 ### Running the tests
 
 The project's test suite will run the payload of each test function against the plugin, passing:
 
-- the loaded `config` based on the sample `jsconfig.json` file in the package root
+- the loaded `config` based on the sample `demo/jsconfig.json` file
 - the supplied `options` from the test function
 
 Successful tests should print to the terminal:
@@ -171,7 +171,7 @@ The `utils/` folder exports various useful functions for use in your plugin and 
 
 ### Path utilities
 
-As a convenience, Node's `path.resolve` and `path.join` functions are made available.
+As a convenience, versions of Node's `path.resolve` and `path.join` functions are made available.
 
 This makes it easier to wrangle paths, and defends against errors across various platforms and systems:
 
@@ -198,7 +198,7 @@ const { toArray } = require('../../utils')
 
 // process a single `alias => paths` entry
 function callback (alias, config, options) {
-  const { rootUrl, baseUrl, paths } = config // note, these are the paths for the alias!
+  const { rootUrl, baseUrl, paths } = config // note, these are the *alias* paths!
   return {
     alias: alias.replace('/*', ''),
     path: paths[0].replace('/*', '')
@@ -211,13 +211,13 @@ module.exports = function (config, options) {
 }
 ```
 
-Note that `callback` functions MUST return an object of the form `{ alias: '', path: * }` in order to be correctly mapped into arrays or objects. 
+Note that `callback` functions MUST return an object of the form `{ alias: '', path: * }` in order to be correctly mapped back into arrays or objects. 
 
 ### Test utilities
 
-For testing against the project's example `jsconfig.json` there are two functions `abs()` and `rel()`.
+For testing against the project's `demo/jsconfig.json` there are two functions `abs()` and `rel()`.
 
-These return absolute and relative paths to the project's `src/` folder making it simple to write the automated tests:
+These return absolute and relative paths to the project's `demo/src/` folder making it simple to write the automated tests:
 
 ```js
 const { abs } = require('../../utils')

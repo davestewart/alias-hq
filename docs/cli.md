@@ -1,12 +1,20 @@
 # CLI
 
-> Command line tool to check configuration and run various tasks
+> Command line tool to generate configuration, rewrite source code, and debug plugins
 
 ![alias cli](./assets/cli.png)
 
 ## Overview
 
-The CLI provides a prompt-driven interface to run various development tasks:
+The CLI provides a prompt-driven interface to run various development tasks.
+
+Run the following code:
+
+```bash
+alias-hq
+```
+
+The choose from the available options:
 
 ```
   == Alias HQ ==
@@ -15,6 +23,7 @@ The CLI provides a prompt-driven interface to run various development tasks:
   - List plugins output (JS)
   - Dump plugin output (JSON)
   - Make paths JSON
+  - Auto-fix source code
 ```
 
 For example, view current config, as loaded by Alias HQ:
@@ -33,13 +42,7 @@ For example, view current config, as loaded by Alias HQ:
 }
 ```
 
-## Running
-
-In the terminal, from your project root, type:
-
-```bash
-alias-hq
-```
+## Troubleshooting
 
 If this doesn't work, ensure that local `node_modules` executables are in your `~/.bash_profile` or equivalent: 
 
