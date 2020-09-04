@@ -1,5 +1,5 @@
 const Path = require('path')
-const fs = require('fs')
+const Fs = require('fs')
 
 /**
  * Load js/tsconfig.json file
@@ -7,15 +7,28 @@ const fs = require('fs')
  * @param   {string}    path      The absolute path to the config file
  */
 function loadConfig (path) {
-  // file
-  const json = require(path)
+  // load
+  let json
+  const text = Fs.readFileSync(path, 'utf8')
+  if (text) {
+    try { json = JSON.parse(text) }
+    catch (err) {}
+  }
 
   // config
   const compilerOptions = json && json.compilerOptions
   if (compilerOptions && compilerOptions.paths) {
+    // config
     config.rootUrl = Path.dirname(path)
-    config.baseUrl = (compilerOptions.baseUrl || './')
+    config.baseUrl = (compilerOptions.baseUrl || './src')
     config.paths = compilerOptions.paths || {}
+
+    // settings
+    const file = Path.basename(path)
+    settings.config = file
+    settings.language = file.substr(0, 2)
+
+    // done
     return true
   }
 
@@ -28,12 +41,13 @@ function loadConfig (path) {
  */
 function loadSettings () {
   try {
-    const json = JSON.parse(fs.readFileSync('package.json', 'utf8'))
+    const json = JSON.parse(Fs.readFileSync('package.json', 'utf8'))
     const data = json['alias-hq']
     if (data) {
       if (data.root) {
         config.rootUrl = Path.resolve(data.root)
       }
+      settings.prefix = data.prefix || '@'
       settings.folders = data.folders || []
       settings.modules = data.modules || []
       return true
@@ -58,7 +72,7 @@ function load (value = undefined) {
   // string: relative or absolute path passed
   if (typeof value === 'string') {
     const path = Path.resolve(value)
-    if (fs.existsSync(path)) {
+    if (Fs.existsSync(path)) {
       loadConfig(path)
     }
     else {
@@ -81,14 +95,14 @@ function load (value = undefined) {
       const file = files.shift()
       // config.rootUrl will be an absolute folder path if loaded from package.json
       const path = Path.resolve(config.rootUrl, file)
-      if (fs.existsSync(path)) {
+      if (Fs.existsSync(path)) {
         found = loadConfig(path)
       }
     }
 
     // could not load file!
     if (!found) {
-      throw new Error('Alias HQ could not find a "ts/jsconfig.json" file')
+      config.paths = {}
     }
   }
 
@@ -129,7 +143,7 @@ function get (plugin, options = {}) {
 
     // check for built-in plugin
     const path = Path.resolve(__dirname, `./plugins/${plugin}/index.js`)
-    if (fs.existsSync(path)) {
+    if (Fs.existsSync(path)) {
       const callback = require(path)
       return callback(config, options)
     }
@@ -158,6 +172,9 @@ const config = {
 }
 
 const settings = {
+  config: '',
+  language: '',
+  prefix: '@',
   folders: [],
   modules: []
 }
@@ -186,7 +203,7 @@ const plugins = {
    */
   get names () {
     const path = Path.resolve(__dirname, 'plugins')
-    const items = fs.readdirSync(path).map(file => file.replace('.js', ''))
+    const items = Fs.readdirSync(path).map(file => file.replace('.js', ''))
     Object.keys(this.custom).forEach(key => {
       if (!items.includes(key)) {
         items.push(key)
