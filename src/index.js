@@ -1,6 +1,53 @@
 const Path = require('path')
 const Fs = require('fs')
 
+// ---------------------------------------------------------------------------------------------------------------------
+// factories
+// ---------------------------------------------------------------------------------------------------------------------
+
+function makeSettings () {
+  return {
+    root: '',
+    configFile: '',
+    prefix: '@',
+    folders: [],
+    modules: []
+  }
+}
+
+function makeConfig () {
+  const root = settings.root || ''
+  return {
+    rootUrl: Path.resolve('./', root),
+    baseUrl: '',
+    paths: {},
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// loaders
+// ---------------------------------------------------------------------------------------------------------------------
+
+/**
+ * Load user settings from package.json
+ */
+function loadSettings () {
+  try {
+    const json = JSON.parse(Fs.readFileSync('package.json', 'utf8'))
+    const data = json['alias-hq']
+    if (data) {
+      if (data.root) {
+        config.rootUrl = Path.resolve(data.root)
+      }
+      Object.assign(settings, makeSettings(), data)
+      return true
+    }
+  }
+  catch (err) {
+    return false
+  }
+}
+
 /**
  * Load js/tsconfig.json file
  *
@@ -20,13 +67,11 @@ function loadConfig (path) {
   if (compilerOptions && compilerOptions.paths) {
     // config
     config.rootUrl = Path.dirname(path)
-    config.baseUrl = (compilerOptions.baseUrl || './src')
+    config.baseUrl = compilerOptions.baseUrl || ''
     config.paths = compilerOptions.paths || {}
 
     // settings
-    const file = Path.basename(path)
-    settings.config = file
-    settings.language = file.substr(0, 2)
+    settings.configFile = path
 
     // done
     return true
@@ -36,27 +81,9 @@ function loadConfig (path) {
   config.paths = {}
 }
 
-/**
- * Load user settings from package.json
- */
-function loadSettings () {
-  try {
-    const json = JSON.parse(Fs.readFileSync('package.json', 'utf8'))
-    const data = json['alias-hq']
-    if (data) {
-      if (data.root) {
-        config.rootUrl = Path.resolve(data.root)
-      }
-      settings.prefix = data.prefix || '@'
-      settings.folders = data.folders || []
-      settings.modules = data.modules || []
-      return true
-    }
-  }
-  catch (err) {
-    return false
-  }
-}
+// ---------------------------------------------------------------------------------------------------------------------
+// api
+// ---------------------------------------------------------------------------------------------------------------------
 
 /**
  * Load config
@@ -102,7 +129,7 @@ function load (value = undefined) {
 
     // could not load file!
     if (!found) {
-      config.paths = {}
+      Object.assign(config, makeConfig())
     }
   }
 
@@ -154,30 +181,13 @@ function get (plugin, options = {}) {
   throw new Error(`Invalid "plugin" parameter`)
 }
 
-/**
- * Convert and log paths config using a plugin or callback
- */
-function json (plugin, options = {}, print = true) {
-  let json = JSON.stringify(get(plugin, options), null, '  ')
-  if (print) {
-    console.log(json)
-  }
-  return json
-}
+// ---------------------------------------------------------------------------------------------------------------------
+// members
+// ---------------------------------------------------------------------------------------------------------------------
 
-const config = {
-  rootUrl: '',
-  baseUrl: '',
-  paths: null,
-}
+const settings = makeSettings()
 
-const settings = {
-  config: '',
-  language: '',
-  prefix: '@',
-  folders: [],
-  modules: []
-}
+const config = makeConfig()
 
 const plugins = {
   custom: {},
@@ -215,7 +225,6 @@ const plugins = {
 
 module.exports = {
   get,
-  json,
   load,
   config,
   plugins,
