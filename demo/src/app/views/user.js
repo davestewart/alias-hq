@@ -1,4 +1,4 @@
-import { user } from '@/app/data/models/user'
+import { user } from '../data/models/user'
 import settings from '../settings'
 import profile from './elements/profile'
 
