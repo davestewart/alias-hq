@@ -1,8 +1,12 @@
-const hq = require('../../src')
+const hq = require('../../../src')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // tests
 // ---------------------------------------------------------------------------------------------------------------------
+
+beforeAll(function () {
+  hq.load()
+})
 
 describe('a missing plugin name', function () {
   it('should throw an error', function () {
@@ -18,13 +22,13 @@ describe('an invalid plugin name', function () {
   })
 })
 
-describe('available plugins:', function () {
+describe('core plugins:', function () {
 
   // setup
   const plugins = hq.plugins.names.map(name => {
     return {
       name,
-      tests: require(`../../src/plugins/${name}/tests.js`)
+      tests: require(`../../../src/plugins/${name}/tests.js`)
     }
   })
 

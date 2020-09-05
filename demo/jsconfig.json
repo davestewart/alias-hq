@@ -4,8 +4,8 @@
     "paths": {
       "@/*": ["/*"],
       "@packages/*": ["../packages/*"],
+      "@classes/*": ["classes/*"],
       "@app/*": ["app/*"],
-      "@classes/*": ["app/classes/*"],
       "@data/*": ["app/data/*"],
       "@services/*": [
         "app/services/*",

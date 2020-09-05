@@ -1,3 +1,4 @@
+const hq = require('../../../src')
 const { abs, inspect } = require('../../../src/utils')
 const { getAliases } = require('../../../cli/setup/update-source')
 const { getPath } = require('../../../cli/setup/update-source/utils')
@@ -34,6 +35,10 @@ function test (file, rel, expected = undefined) {
 // ---------------------------------------------------------------------------------------------------------------------
 // tests
 // ---------------------------------------------------------------------------------------------------------------------
+
+beforeAll(function () {
+  hq.load()
+})
 
 describe('core transforms', function () {
   describe('relative paths', function () {

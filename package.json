@@ -49,14 +49,11 @@
   "alias-hq": {
     "root": "./demo",
     "prefix": "@",
-    "extensions": "js jsx",
     "folders": [
       "packages",
       "src"
     ],
     "modules": [
-      "@services",
-      "@data",
       "@packages"
     ]
   }

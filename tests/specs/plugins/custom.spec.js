@@ -1,4 +1,4 @@
-const hq = require('../../src')
+const hq = require('../../../src')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // setup
@@ -28,11 +28,16 @@ const expected = {
 // tests
 // ---------------------------------------------------------------------------------------------------------------------
 
+beforeAll(function () {
+  hq.load()
+})
+
 describe('custom plugins', function () {
   it('should be addable', function () {
     hq.plugins.add('test', plugin)
   })
   it('should be callable', function () {
+    hq.plugins.add('test', plugin)
     const received = hq.get('test')
     expect(received).toEqual(expected)
   })
