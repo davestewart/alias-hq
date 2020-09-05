@@ -4,8 +4,7 @@ const Path = require('path')
 const Fs = require('fs')
 const hq = require('../../src')
 const { getPathInfo } = require('../utils/paths')
-const { makeBullet } = require('../utils/text')
-const { loadJson } = require('../utils/config')
+const { makeJson, makeFileBullet, indent } = require('../utils/text')
 const { makeChoices } = require('../utils/inquirer')
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -35,35 +34,8 @@ const actions = {
       })
   },
 
-  getBaseUrl () {
-    const baseUrl = Fs.existsSync('./src')
-      ? './src'
-      : ''
-    return inquirer
-      .prompt({
-        type: 'input',
-        name: 'baseUrl',
-        message: 'Base URL:',
-        default: previous.baseUrl || baseUrl
-      })
-      .then(answer => {
-        previous.baseUrl = answer.baseUrl
-        answers.baseUrl = answer.baseUrl
-      })
-  },
-
   showConfig () {
-    // helper
-    function makeFileBullet (config, state) {
-      const { path, absPath } = config
-      const label = path.cyan
-      const info = `- ${absPath}`.gray.italic
-      return makeBullet(`${label} ${info}`, state)
-    }
-
-    // helper
-    const fileInfo = getPathInfo(answers.file, hq.config.rootUrl)
-    const srcInfo = getPathInfo(answers.baseUrl, hq.config.rootUrl)
+    const fileInfo = getPathInfo(hq.config.rootUrl, answers.file)
 
     // path
     answers.path = fileInfo.absPath
@@ -71,29 +43,24 @@ const actions = {
     // json
     const json = answers.json = {
       compilerOptions: {
-        baseUrl: './src',
+        baseUrl: '',
         paths: {}
       }
     }
-    const text = JSON
-      .stringify(json, null, '  ')
-      .replace(/^/gm, '    ')
 
     // output
     console.log('')
     console.log(`  File:\n` + makeFileBullet(fileInfo, !fileInfo.exists))
-    console.log(`  Base Url:\n` + makeFileBullet(srcInfo, srcInfo.valid))
-    console.log(`  JSON:`)
-    console.log(text.cyan)
+    console.log(`  JSON:\n` + indent(makeJson(json, true, true)))
     console.log()
   },
 
-  makeFile () {
+  saveConfig () {
     return inquirer
       .prompt({
         type: 'confirm',
         name: 'confirm',
-        message: `Write file now?`,
+        message: `Save "${ Path.basename(answers.file)}" now?`.red,
       })
       .then((answer) => {
         if (!answer.confirm) {
@@ -101,13 +68,13 @@ const actions = {
         }
 
         // data
-        const data = JSON.stringify(answers.json, null, '  ')
+        const data = makeJson(answers.json)
 
         // write
         try {
           return Fs.writeFileSync(answers.path, data, 'utf8')
         } catch (err) {
-          return err.message
+          console.warn(err.message)
         }
       })
   }
@@ -121,16 +88,15 @@ const previous = {}
 const answers = {
   file: '',
   path: '',
-  baseUrl: '',
   json: '',
 }
 
 function createConfig () {
+  hq.load()
   return Promise.resolve()
     .then(actions.getChoices)
-    .then(actions.getBaseUrl)
     .then(actions.showConfig)
-    .then(actions.makeFile)
+    .then(actions.saveConfig)
 }
 
 module.exports = {

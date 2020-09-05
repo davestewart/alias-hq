@@ -33,8 +33,36 @@ function getPlugins () {
   }, {})
 }
 
-function numAliases () {
-  hq.load()
+function getAliases () {
+  const rootUrl = hq.config.rootUrl
+  const aliases = hq.get('webpack')
+  const keys = Object.keys(aliases)
+  const lookup = keys
+    .map(key => {
+      const path = aliases[key]
+      return {
+        alias: key,
+        path,
+        folder: Path.relative(rootUrl, path),
+      }
+    })
+    .sort(function (a, b) {
+      if (a.path === b.path) {
+        return 0
+      }
+      return a.path > b.path ? -1 : 1
+    })
+  return {
+    keys,
+    lookup,
+    get: key => lookup.find(item => item.alias === key)
+  }
+}
+
+function numAliases (load = false) {
+  if (load) {
+    hq.load()
+  }
   return Object.keys(hq.config.paths).length
 }
 
@@ -47,8 +75,8 @@ function loadJson (filename, asText = false) {
       : JSON.parse(text)
   }
   catch (err) {
-    console.warn('Could not load package.json')
-    return null
+    console.warn(`Could not load "${filename}"`)
+    return asText ? '' : null
   }
 }
 
@@ -57,7 +85,7 @@ function saveJson (filename, data) {
   const path = Path.resolve(filename)
 
   // get spacing
-  const text = loadJson(true) || ''
+  const text = loadJson(filename, true) || ''
   const match = text.match(/^(\s+)"\w/)
   const spacing = match ? match[1] : '  '
 
@@ -67,7 +95,7 @@ function saveJson (filename, data) {
     return Fs.writeFileSync(path, json, 'utf8')
   }
   catch (err) {
-    console.warn('Could not save package.json', err)
+    console.warn(`Could not save "${filename}"`, err)
     return null
   }
 }
@@ -93,6 +121,7 @@ function saveSettings (newSettings) {
 
 module.exports = {
   getPlugins,
+  getAliases,
   numAliases,
   loadSettings,
   saveSettings,

@@ -3,13 +3,14 @@ const Path = require('path')
 const inquirer = require('inquirer')
 const runner = require('jscodeshift/src/Runner')
 const hq = require('../../../src')
-const cliTransform = require('../../plugin')
 const { getLongestStringLength } = require('../../utils/text')
-const { numAliases, loadSettings, saveSettings } = require('../../utils/config')
+const { getAliases, numAliases, loadSettings, saveSettings } = require('../../utils/config')
 const { getPathsInfo } = require('../../utils/paths')
 const { makeBullet, para } = require('../../utils/text')
 const { makeChoices } = require('../../utils/inquirer')
+const { inspect } = require('../../utils')
 const assert = require('assert').strict
+const { showConfig, checkPaths, getItemsBullets, getPathsBullets } = require('../common')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // actions
@@ -17,41 +18,72 @@ const assert = require('assert').strict
 
 const actions = {
   getPaths () {
-    const defaults = hq.settings.folders.length
-      ? hq.settings.folders.map(folder => {
+    // defaults
+    let folders = hq.config.baseUrl
+    if (hq.settings.folders.length) {
+      folders = hq.settings.folders.map(folder => {
         return folder.includes(' ')
           ? `'${folder}'`
           : folder
       }).join(' ')
-      : hq.config.baseUrl
+    }
+
+    // question
     return inquirer
       .prompt({
         type: 'input',
-        name: 'paths',
-        message: 'Paths:',
-        default: defaults
+        name: 'folders',
+        message: 'Folders:',
+        default: folders
       })
       .then(answer => {
-        answers.paths = getPathsInfo(answer.paths, rootUrl)
+        // variables
+        const folders = answer.folders
+        const infos = checkPaths(folders)
+
+        // check paths
+        if (!infos.every(info => info.valid)) {
+          return actions.getPaths()
+        }
+
+        // continue
+        answers.paths = infos
+          .sort(function (a, b) {
+            return a.absPath < b.absPath
+              ? -1
+              : a.absPath > b.absPath
+                ? 1
+                : 0
+          })
+          .reduce((output, input) => {
+            if (!output.find(o => input.absPath.startsWith(o.absPath))) {
+              output.push(input)
+            }
+            return output
+          }, [])
       })
   },
 
   getModules () {
-    const maxLength = getLongestStringLength(aliases.names)
-    const choices = aliases.lookup
-      .reverse()
-      .map(({ alias, folder }) => {
+    // choices
+    const aliases = getAliases()
+    const maxLength = getLongestStringLength(aliases.keys)
+    const choices = aliases.keys
+      .map(key => {
+        const item = aliases.get(key)
+        const { alias, folder } = item
         const label = alias + ' '.repeat(maxLength - alias.length)
         const name = label + '  ' + `- ${folder}`.grey
         return {
           name,
-          short: alias
+          short: alias,
+          value: alias,
         }
       })
+
     const defaults = hq.settings.modules
-      .map(folder => {
-        return choices.find(choice => choice.name.startsWith(folder + ' ')).name
-      })
+
+    // question
     return inquirer
       .prompt({
         type: 'checkbox',
@@ -59,28 +91,12 @@ const actions = {
         message: `Module roots:`,
         choices: choices,
         default: defaults,
+        pageSize: 20,
       })
       .then(answer => {
         answers.modules = answer.modules
           .map(answer => answer.match(/\S+/).toString())
           .map(alias => aliases.get(alias))
-      })
-  },
-
-  getExtensions () {
-    return inquirer
-      .prompt({
-        type: 'input',
-        name: 'extensions',
-        message: 'Extensions:',
-        default: hq.settings.language === 'ts'
-          ? 'ts js tsx jsx'
-          : 'js jsx',
-      })
-      .then(answer => {
-        answers.extensions = (answer.extensions
-          .match(/\w+/g) || [])
-          .join(' ')
       })
   },
 
@@ -95,61 +111,25 @@ const actions = {
       console.log(`  ${title}:\n${answers.join('\n')}`)
     }
 
-    function getPaths (paths) {
-      const width = paths.length
-        ? getLongestStringLength(paths, 'path')
-        : 0
-
-      return paths.map(config => {
-        const { path, absPath, valid } = config
-
-        const label = path.cyan
-        const padding = ' '.repeat(width - path.length)
-        const info = `- ${absPath}`.gray.italic
-
-        return makeBullet(`${label} ${padding} ${info}`, valid)
-      }).join('\n')
-    }
-
-    function getModules (modules) {
-      const width = modules.length
-        ? getLongestStringLength(modules, 'alias')
-        : 0
-
-      return modules.map(config => {
-        const { alias, folder, path } = config
-
-        const label = alias.cyan
-        const padding = ' '.repeat(width - alias.length)
-        const info = `- ${folder}`.gray.italic
-
-        return makeBullet(`${label} ${padding} ${info}`)
-      }).join('\n')
-    }
-
-    // inspect(answers)
-
     console.log('')
-    console.log(`  ${'Paths'}:\n` + getPaths(answers.paths))
+    // console.log(`  Paths:\n` + getItemsBullets(answers.paths, 'folder', 'relPath'))
+    console.log(`  Paths:\n` + getPathsBullets(answers.paths))
     if (answers.modules.length) {
-      console.log(`  ${'Module roots'}:\n` + getModules(answers.modules))
+      console.log(`  Module roots:\n` + getItemsBullets(answers.modules, 'alias', 'folder'))
     }
-    log('Extensions', answers.extensions)
     console.log()
   },
 
-  saveOptions () {
+  saveSettings () {
     const oldSettings = {
-      // extensions: hq.settings.extensions,
       folders: hq.settings.folders,
       modules: hq.settings.modules,
     }
     const newSettings = {
-      // extensions: answers.extensions,
       folders: answers.paths.map(path => path.relPath),
       modules: answers.modules.map(alias => alias.alias),
     }
-    // inspect({oldSettings, newSettings})
+    // inspect({ oldSettings, newSettings })
 
     try {
       assert.deepEqual(oldSettings, newSettings)
@@ -159,7 +139,6 @@ const actions = {
           type: 'confirm',
           name: 'save',
           message: 'Save updated choices?',
-          default: false,
         })
         .then(answer => {
           if (answer.save) {
@@ -171,10 +150,11 @@ const actions = {
 
   process () {
     const choices = {
+      config: 'Show config',
+      restart: 'Change settings',
       preview: 'Preview updates',
-      change: 'Make changes',
-      proceed: 'Update source code ' + '- no further confirmation!'.red,
-      cancel: 'Cancel',
+      proceed: 'Update files ' + '- no further confirmation!'.red,
+      back: 'Back',
     }
     return inquirer
       .prompt({
@@ -186,51 +166,65 @@ const actions = {
       })
       .then(answer => {
         const action = answer.action
-        if (action === choices.cancel) {
+        if (action === choices.back) {
           return
         }
 
-        if (action === choices.change) {
+        if (action === choices.config) {
+          showConfig()
+          return actions.process()
+        }
+
+        if (action === choices.restart) {
           return updateSource()
         }
+
+        // aliases
+        const aliases = getAliases()
 
         // paths
         const paths = answers.paths
           .filter(config => config.valid)
           .map(config => config.absPath)
 
-        // const paths = 'demo/src src demo/packages'.split(' ')
-
         // modules
         const modules = answers.modules
           .map(module => module.alias)
+
+        // extensions
+        const defaultExtensions = Path.basename(hq.settings.configFile).startsWith('ts')
+          ? 'ts js tsx jsx'
+          : 'js jsx'
+        const extensions = (hq.settings.extensions || defaultExtensions)
+          .match(/\w+/g)
+          .join(',')
 
         // options
         const options = {
           silent: true,
           verbose: 0,
           runInBand: true,
-          extensions: answers.extensions.replace(/ /g, ', '),
+          extensions,
           dry: action === choices.preview,
         }
 
         // debug
-        // inspect({ paths, options, aliases, modules })
+        // inspect({ paths, modules, extensions })
+        // inspect({ options, paths, aliases })
 
         // do it
-        if (aliases.names.length) {
+        if (aliases.keys.length) {
           console.log()
           const file = __dirname + '/transformer.js'
           return runner
             .run(file, paths, { ...options, aliases, modules })
             .then(results => {
               console.log()
-              // inspect(results)
 
               // results
               console.log(`Results: in ${results.timeElapsed} seconds\n`)
-              console.log('  › ' + `updated    : ${results.ok}`.green)
-              console.log('  › ' + `unmodified : ${results.nochange}`.yellow)
+              console.log('  › ' + `updated    : ${results.ok}`.cyan)
+              console.log('  › ' + `unmodified : ${results.nochange}`.blue)
               console.log('  › ' + `skipped    : ${results.skip}`.grey)
               console.log('  › ' + `errors     : ${results.error}`.red)
               console.log()
@@ -247,49 +241,20 @@ const actions = {
 // setup
 // ---------------------------------------------------------------------------------------------------------------------
 
-function getAliases () {
-  const rootUrl = hq.config.rootUrl
-  const lookup = hq.get(cliTransform).map(item => {
-    return {
-      alias: item.alias,
-      path: item.path,
-      folder: Path.relative(rootUrl, item.path),
-    }
-  })
-  const names = lookup.map(path => path.alias)
-  return {
-    lookup,
-    names,
-    get (alias) {
-      return lookup.find(item => item.alias === alias)
-    },
-    getName (path) {
-      return lookup.find(item => item.path === path).alias
-    },
-    getPath (alias) {
-      return lookup.find(item => item.alias === alias).path
-    }
-  }
-}
-
 function getAnswers () {
-  return  {
-    extensions: '',
+  return {
     paths: [],
     modules: [],
   }
 }
 
 // config
-const rootUrl = hq.config.rootUrl
-let aliases = getAliases()
 let answers = getAnswers()
 
 // main function
 function updateSource () {
   // setup
   hq.load()
-  aliases = getAliases()
   answers = getAnswers()
 
   // check
@@ -302,9 +267,8 @@ function updateSource () {
   return Promise.resolve()
     .then(actions.getPaths)
     .then(actions.getModules)
-    .then(actions.getExtensions)
     .then(actions.confirmChoices)
-    .then(actions.saveOptions)
+    .then(actions.saveSettings)
     .then(actions.process)
 }
 

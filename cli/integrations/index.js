@@ -6,7 +6,7 @@ const { makeChoices } = require('../utils/inquirer')
 const { numAliases } = require('../utils/config')
 
 // modules
-const { showConfig } = require('../setup/show-config')
+const { showConfig } = require('../setup/common')
 const { configureIntegration } = require('./configure')
 const { debugConfiguration } = require('./debug')
 
@@ -20,19 +20,16 @@ function run () {
   // setup
   hq.load()
 
-  // variables
+  // choices
   const choices = {
     show: 'View config',
+    configure: 'Configure integration',
+    debug: 'Debug integration',
+    back: 'Back'
   }
-
-  if (numAliases()) {
-    Object.assign(choices, {
-      configure: 'Configure integration',
-      debug: 'Debug integration',
-      back: 'Back',
-    })
-  } else {
-    choices.make = 'Make paths JSON'
+  if (!numAliases()) {
+    delete choices.configure
+    delete choices.debug
   }
 
   makeHeader('Integrations Menu')

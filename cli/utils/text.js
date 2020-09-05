@@ -8,7 +8,18 @@ require('colors')
  * @returns {number}
  */
 function getLongestStringLength (items, prop) {
-  return Math.max(...items.map(item => (prop ? item[prop] : item).length))
+  function getStringLength (item, prop) {
+    const value = prop
+      ? item[prop]
+      : item
+    return String(value || '').length
+  }
+  if (items && items.length > 0) {
+    return items.length > 1
+      ? Math.max(...items.map(item => getStringLength(item, prop)))
+      : getStringLength(items[0], prop)
+  }
+  return 0
 }
 
 function makeColumns (rows, maxLength = 0) {
@@ -72,6 +83,13 @@ function makeBullet (text, state) {
   return `    ${bullet} ${text}`
 }
 
+function makeFileBullet (info, state) {
+  const { path, absPath } = info
+  const relText = path.cyan
+  const absText = `- ${absPath}`.gray.italic
+  return makeBullet(`${relText} ${absText}`, state)
+}
+
 function makeJson (data, colorize = false, compact = false) {
   let json = JSON
     .stringify(data, null, 2)
@@ -85,12 +103,13 @@ function makeJson (data, colorize = false, compact = false) {
       })
   }
   return colorize
-    ? json.replace(/".+?"/g, match => match.cyan)
-    : json
+    ? json.replace(/"(.+?)"/g, (matches, text) => `"${text.cyan}"`)
+    : json + '\n'
 }
 
 module.exports = {
   getLongestStringLength,
+  makeFileBullet,
   makeColumns,
   makeHeader,
   makeBullet,

@@ -1,18 +1,20 @@
 const Path = require('path')
 const Fs = require('fs')
+const hq = require('../../src')
 
 /**
- * Returns information about a path which is used to present to the user
+ * Returns information about a path relative to a root
  *
- * @param   {string}  path
  * @param   {string}  rootUrl
+ * @param   {string}  path
  */
-function getPathInfo (path, rootUrl) {
+function getPathInfo (rootUrl, path) {
+  const absRoot = hq.config.rootUrl
   const absPath = Path.resolve(rootUrl, path)
   const relPath = Path.relative(rootUrl, absPath)
   const exists = Fs.existsSync(absPath)
   const folder = Path.basename(absPath)
-  const valid = !relPath.startsWith('..')
+  const valid = !Path.relative(absRoot, absPath).startsWith('..')
 
   if (valid) {
     path = relPath
@@ -33,45 +35,14 @@ function getPathInfo (path, rootUrl) {
 }
 
 /**
- * Grab paths from input, sort and de-dupe
+ * Grab paths from input
  *
  * @param   {string}    text
  * @param   {string}    rootUrl
- * @param   {boolean}   removeNested
  */
-function getPathsInfo (text, rootUrl, removeNested = true) {
-  const paths = parsePathsFromText(text)
-    // get info
-    .map(path => getPathInfo(path, rootUrl))
-
-    // debug
-    // .map(config => {
-    //   console.log(config)
-    //   return config
-    // })
-
-    // sort
-    .sort(function (a, b) {
-      return a.absPath < b.absPath
-        ? -1
-        : a.absPath > b.absPath
-          ? 1
-          : 0
-    })
-
-  // optionally remove invalid
-  //.filter(input => all || (input.valid && input.exists))
-
-  // return
-  return !removeNested
-    ? paths
-    : paths.reduce((output, input) => {
-      if (!output.find(o => input.absPath.startsWith(o.absPath))) {
-        output.push(input)
-      }
-      return output
-    }, [])
-
+function getPathsInfo (text, rootUrl) {
+  return parsePathsFromText(text)
+    .map(path => getPathInfo(rootUrl, path))
 }
 
 /**
@@ -79,14 +50,15 @@ function getPathsInfo (text, rootUrl, removeNested = true) {
  *
  * Handles quotes, spaces, etc
  *
- * @param input
- * @returns {[]}
+ * @param   {string}  text
+ * @returns {string[]}
  */
-function parsePathsFromText (input) {
+function parsePathsFromText (text) {
+  text = text.trim()
   const rx = /(["'])(.+?)\1|(\S+)/g
   let match
   let folders = []
-  while (match = rx.exec(input)) {
+  while (match = rx.exec(text)) {
     const folder = match[1] ? match[2] : match[0]
     folders.push(folder)
   }

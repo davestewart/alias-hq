@@ -5,7 +5,7 @@ const { makeHeader, para, indent, makeBullet } = require('../utils/text')
 const { makeChoices } = require('../utils/inquirer')
 
 // modules
-const { showConfig } = require('./show-config')
+const { showConfig } = require('./common')
 const { createConfig } = require('./create-config')
 const { updateConfig } = require('./update-config')
 const { updateSource } = require('./update-source')
@@ -27,7 +27,7 @@ function run () {
   hq.load()
 
   // variables
-  const hasConfig = !!hq.settings.config
+  const hasConfig = !!hq.settings.configFile
   const numAliases = Object.keys(hq.config.paths).length
 
   // choices

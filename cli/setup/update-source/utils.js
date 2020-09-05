@@ -42,7 +42,7 @@ function getPath (source, rel, { aliases, modules }) {
     // >> existing alias
     //    this may or may not be the right alias (might just be @/)
     //    look to refine
-    if (aliases.names.includes(name)) {
+    if (aliases.keys.includes(name)) {
       const path = aliases.lookup.find(item => item.alias === name).path
       target = Path.join(path, ...segments)
     }
@@ -80,7 +80,7 @@ function getPath (source, rel, { aliases, modules }) {
     //      - if we cross move outside (sibling <module> / other @alias) use the @alias
     if (rel.startsWith('../')) {
       // variables
-      const isModule = modules.includes(sourceAlias.alias)
+      // const isModule = modules.includes(sourceAlias.alias)
       const upstream = rel.match(/^[./]+/).toString().slice(0, -1)
       const junction = Path.resolve(source, upstream)
 
