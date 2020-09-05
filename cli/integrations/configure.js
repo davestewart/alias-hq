@@ -5,13 +5,19 @@ const fetch = require('node-fetch')
 // helpers
 // ---------------------------------------------------------------------------------------------------------------------
 
+const docsUrl = 'https://github.com/davestewart/alias-hq/blob/master/docs/'
+
 const urls = {
   raw: 'https://raw.githubusercontent.com/davestewart/alias-hq/master/docs/integrations.md',
-  markdowm: 'https://github.com/davestewart/alias-hq/blob/master/docs/integrations.md',
+  markdowm: docsUrl + 'integrations.md',
 }
 
-function openUrl (hash = '') {
+function openIntegration (hash = '') {
   require('opn')(urls.markdowm + '#' + hash)
+}
+
+function openDocs (hash = '') {
+  require('opn')(docsUrl + 'cli.md')
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -34,7 +40,7 @@ const actions = {
   getChoices: () => {
     // no integrations
     if (answers.names.length === 0) {
-      return openUrl ()
+      return openIntegration ()
     }
 
     // choices
@@ -61,7 +67,7 @@ const actions = {
         const hash = answer.name
           .toLowerCase()
           .replace(/\W+/g, '-')
-        return openUrl(hash)
+        return openIntegration(hash)
       })
   },
 }
@@ -82,5 +88,7 @@ function configureIntegration () {
 }
 
 module.exports = {
-  configureIntegration
+  configureIntegration,
+  openIntegration,
+  openDocs,
 }

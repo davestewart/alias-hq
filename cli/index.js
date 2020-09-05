@@ -8,6 +8,7 @@ const { numAliases } = require('./utils/config')
 
 const setup = require('./setup')
 const debug = require('./integrations')
+const { openDocs } = require('./integrations/configure')
 
 let previous = {}
 
@@ -22,7 +23,8 @@ function index () {
   // options
   const choices = {
     setup: 'Setup        ' + ' - update config and source code'.grey,
-    debug: 'Integrations ' + ' - configure and debug integrations'.grey,
+    debug: 'Integrations ' + ' - configure and debug library integrations'.grey,
+    help: 'Help         ' + ' - read the docs'.grey,
     exit: 'Exit',
   }
 
@@ -48,6 +50,9 @@ function index () {
 
         case choices.debug:
           return debug()
+
+        case choices.help:
+          return openDocs()
 
         case choices.exit:
           return false
