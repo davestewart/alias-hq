@@ -1,89 +1,33 @@
 require('colors')
-const Path = require('path')
-const Fs = require('fs')
 const hq = require('../../src')
-const { getPathsInfo } = require('../utils/paths')
+const { getPathsInfo, isPathValid, getPathString } = require('../utils/paths')
 const { indent, makeBullet, makeJson, getLongestStringLength } = require('../utils/text')
 
-function makePaths (folders, answers) {
-  const { config } = hq
-  const rootUrl = Path.resolve(config.rootUrl, answers.baseUrl)
-  const paths = answers.action === 'add'
-    ? config.paths
-    : {}
-  return folders.reduce((output, input) => {
-    // path
-    let path = Path.isAbsolute(input)
-      ? Path.relative(rootUrl, input)
-      : input
-
-    // alias
-    let alias = answers.prefix + Path.basename(path)
-
-    // folder
-    const ext = Path.extname(path)
-    if (!ext) {
-      path += '/*'
-      alias += '/*'
-    }
-
-    // file
-    else {
-      alias = alias.replace(ext, '')
-    }
-
-    // assign
-    output[alias] = [path]
-    return output
-  }, paths)
-}
-
 /**
- * @param   {object}    answers
- * @param   {boolean}   colorize
+ * Make a single bullet item with icon, label and note
+ *
+ * @param   {string}    label
+ * @param   {string}    note
+ * @param   {boolean}   state
+ * @param   {number}    width
  * @returns {string}
  */
-function makeConfig (answers, colorize = false) {
-  // variables
-  const baseUrl = answers.baseUrl
-
-  // paths
-  let paths = answers.paths
-    .filter(info => info.valid)
-    .map(info => info.relPath)
-
-  // json
-  paths = makePaths(paths, answers)
-
-  // config
-  const config = {
-    compilerOptions: {
-      baseUrl,
-      paths
-    }
-  }
-
-  // json
-  return makeJson(config, answers, colorize, true)
-}
-
-function getNoteBullet (label, note, state = undefined, width = 0) {
+function makeNoteBullet (label, note, state = undefined, width = 0) {
   const padding = ' '.repeat(Math.max(width - label.length, 0))
   const labelText = label.cyan
   const noteText = `- ${note}`.gray.italic
   return makeBullet(`${labelText} ${padding} ${noteText}`, state)
 }
 
-function getPathsBullets (paths, prop = 'valid') {
-  const width = getLongestStringLength(paths, 'relPath')
-  return paths
-    .map(config => {
-      return getNoteBullet(config.relPath, config.absPath, config[prop], width)
-    })
-    .join('\n')
-}
-
-function getItemsBullets (items, labelProp, noteProp) {
+/**
+ * Build a bulleted list of items with icon, label and note
+ *
+ * @param   {object[]}  items
+ * @param   {string}    labelProp
+ * @param   {string}    noteProp
+ * @returns {*}
+ */
+function makeItemsBullets (items, labelProp, noteProp) {
   const width = items.length
     ? getLongestStringLength(items, labelProp)
     : 0
@@ -91,42 +35,93 @@ function getItemsBullets (items, labelProp, noteProp) {
   return items.map(item => {
     const label = item[labelProp] || ''
     const note = item[noteProp] || ''
-    return getNoteBullet(label, note, undefined, width)
+    return makeNoteBullet(label, note, undefined, width)
   }).join('\n')
 }
 
-function checkPaths (text, rootUrl = undefined) {
+/**
+ * Build a bulleted list of paths with icon, label and note
+ *
+ * @param   {PathInfo[]}    infos
+ * @param   {boolean}      [exists]
+ * @returns {string}
+ */
+function makePathsBullets (infos, exists = true) {
+  const width = getLongestStringLength(infos, 'relPath')
+  return infos
+    .map(info => {
+      const state = isPathValid(info, exists)
+      return makeNoteBullet(info.folder, info.absPath, state, width)
+    })
+    .join('\n')
+}
+
+/**
+ * Checks paths and returns useful data
+ *
+ * @param   {string}    text      The text to parse into paths
+ * @param   {string}    rootUrl   The root URL to determine paths from
+ * @param   {boolean}   exists    Whether the paths must exist
+ * @returns {{infos: PathInfo[], valid: boolean, input: string}}
+ */
+function checkPaths (text, rootUrl = undefined, exists = true) {
   // check paths
   rootUrl = rootUrl || hq.config.rootUrl
-  const paths = getPathsInfo(text, rootUrl)
+  const infos = getPathsInfo(text, rootUrl)
 
   // info
-  if (paths.length) {
+  if (infos.length) {
     console.log()
-    console.log(getPathsBullets(paths))
+    console.log(makePathsBullets(infos, exists))
     console.log()
   }
 
+  // valid
+  const clean = infos.filter(info => isPathValid(info, exists))
+
   // return
-  return paths
+  return {
+    infos,
+    valid: clean.length === infos.length,
+    input: clean.map(info => getPathString(info.relPath)).join(' '),
+  }
 }
 
-function checkPath (text, rootUrl = undefined) {
+/**
+ * Checks a single path and returns useful data
+ *
+ * @param   {string}    text      The text to parse into a path
+ * @param   {string}    rootUrl   The root URL to determine the path from
+ * @param   {boolean}   exists    Whether the path must exist
+ * @returns {{info: PathInfo, valid: boolean, input: string}}
+ */
+function checkPath (text, rootUrl = undefined, exists = true) {
   // check paths
   rootUrl = rootUrl || hq.config.rootUrl
-  const paths = getPathsInfo(text, rootUrl).slice(0, 1)
+  const infos = getPathsInfo(text, rootUrl).slice(0, 1)
 
   // info
-  if (paths.length) {
+  if (infos.length) {
     console.log()
-    console.log(getPathsBullets(paths))
+    console.log(makePathsBullets(infos, exists))
     console.log()
   }
 
+  // valid
+  const info = infos[0]
+  const valid = isPathValid(info, exists)
+
   // return
-  return paths[0]
+  return {
+    info,
+    valid,
+    input: valid ? getPathString(info.relPath) : '',
+  }
 }
 
+/**
+ * Log the current config to the terminal
+ */
 function showConfig () {
   hq.load()
   console.log()
@@ -135,9 +130,8 @@ function showConfig () {
 
 module.exports = {
   showConfig,
-  makeConfig,
-  getItemsBullets,
-  getPathsBullets,
+  makeItemsBullets,
+  makePathsBullets,
   checkPaths,
   checkPath,
 }

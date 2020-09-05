@@ -1,16 +1,16 @@
 require('colors')
 const Path = require('path')
+const assert = require('assert').strict
 const inquirer = require('inquirer')
 const runner = require('jscodeshift/src/Runner')
 const hq = require('../../../src')
+const { inspect } = require('../../utils')
 const { getLongestStringLength } = require('../../utils/text')
-const { getAliases, numAliases, loadSettings, saveSettings } = require('../../utils/config')
-const { getPathsInfo } = require('../../utils/paths')
+const { getAliases, numAliases, saveSettings } = require('../../utils/config')
+const { cleanPathsInfo } = require('../../utils/paths')
 const { makeBullet, para } = require('../../utils/text')
 const { makeChoices } = require('../../utils/inquirer')
-const { inspect } = require('../../utils')
-const assert = require('assert').strict
-const { showConfig, checkPaths, getItemsBullets, getPathsBullets } = require('../common')
+const { showConfig, checkPaths, makeItemsBullets, makePathsBullets } = require('../common')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // actions
@@ -39,28 +39,15 @@ const actions = {
       .then(answer => {
         // variables
         const folders = answer.folders
-        const infos = checkPaths(folders)
+        const { infos, valid, input } = checkPaths(folders)
 
         // check paths
-        if (!infos.every(info => info.valid)) {
+        if (!valid) {
           return actions.getPaths()
         }
 
         // continue
-        answers.paths = infos
-          .sort(function (a, b) {
-            return a.absPath < b.absPath
-              ? -1
-              : a.absPath > b.absPath
-                ? 1
-                : 0
-          })
-          .reduce((output, input) => {
-            if (!output.find(o => input.absPath.startsWith(o.absPath))) {
-              output.push(input)
-            }
-            return output
-          }, [])
+        answers.paths = cleanPathsInfo(infos)
       })
   },
 
@@ -71,9 +58,9 @@ const actions = {
     const choices = aliases.keys
       .map(key => {
         const item = aliases.get(key)
-        const { alias, folder } = item
+        const { alias, relPath } = item
         const label = alias + ' '.repeat(maxLength - alias.length)
-        const name = label + '  ' + `- ${folder}`.grey
+        const name = label + '  ' + `- ${relPath}`.grey
         return {
           name,
           short: alias,
@@ -112,10 +99,10 @@ const actions = {
     }
 
     console.log('')
-    // console.log(`  Paths:\n` + getItemsBullets(answers.paths, 'folder', 'relPath'))
-    console.log(`  Paths:\n` + getPathsBullets(answers.paths))
+    // console.log(`  Paths:\n` + makeItemsBullets(answers.paths, 'folder', 'relPath'))
+    console.log(`  Paths:\n` + makePathsBullets(answers.paths))
     if (answers.modules.length) {
-      console.log(`  Module roots:\n` + getItemsBullets(answers.modules, 'alias', 'folder'))
+      console.log(`  Module roots:\n` + makeItemsBullets(answers.modules, 'alias', 'relPath'))
     }
     console.log()
   },
@@ -241,15 +228,25 @@ const actions = {
 // setup
 // ---------------------------------------------------------------------------------------------------------------------
 
+/**
+ * @returns {Answers}
+ */
 function getAnswers () {
+  /**
+   * @typedef   {object}      Answers
+   * @property  {PathInfo[]}  paths
+   * @property  {string[]}    modules
+   */
   return {
     paths: [],
     modules: [],
   }
 }
 
-// config
-let answers = getAnswers()
+/**
+ * @type {Answers}
+ */
+let answers
 
 // main function
 function updateSource () {

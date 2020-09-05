@@ -33,24 +33,34 @@ function getPlugins () {
   }, {})
 }
 
+/**
+ * @typedef {{ alias: string, absPath: string, relPath }} Alias
+ * @typedef {{ lookup: Alias[], names: string[], get: function }} Aliases
+ */
+
+/**
+ *
+ * @returns {Aliases}
+ */
 function getAliases () {
   const rootUrl = hq.config.rootUrl
   const aliases = hq.get('webpack')
   const keys = Object.keys(aliases)
   const lookup = keys
-    .map(key => {
-      const path = aliases[key]
+    .map(alias => {
+      const absPath = aliases[alias]
+      const relPath = Path.relative(rootUrl, absPath)
       return {
-        alias: key,
-        path,
-        folder: Path.relative(rootUrl, path),
+        alias,
+        absPath,
+        relPath,
       }
     })
     .sort(function (a, b) {
-      if (a.path === b.path) {
+      if (a.absPath === b.absPath) {
         return 0
       }
-      return a.path > b.path ? -1 : 1
+      return a.absPath > b.absPath ? -1 : 1
     })
   return {
     keys,

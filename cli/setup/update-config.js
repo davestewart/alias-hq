@@ -12,25 +12,31 @@ const { checkPath, checkPaths } = require('./common')
 // helpers
 // ---------------------------------------------------------------------------------------------------------------------
 
-function makePaths (folders, answers) {
-  const { config } = hq
+/**
+ * Generate JSConfig format paths
+ *
+ * @param   {string[]}    folders
+ * @param   {HQConfig}    config
+ * @param   {Answers}     answers
+ * @returns {PathsHash}
+ */
+function makePaths (folders, config, answers) {
   const rootUrl = Path.resolve(config.rootUrl, answers.baseUrl)
   const paths = answers.action === 'add'
     ? config.paths
     : {}
   return folders.reduce((output, input) => {
     // path
-    let path = Path.isAbsolute(input)
-      ? Path.relative(rootUrl, input)
-      : input
+    let absPath = Path.resolve(rootUrl, input)
+    let relPath = Path.relative(rootUrl, absPath)
 
     // alias
-    let alias = answers.prefix + Path.basename(path)
+    let alias = answers.prefix + Path.basename(absPath)
 
     // folder
-    const ext = Path.extname(path)
+    const ext = Path.extname(absPath)
     if (!ext) {
-      path += '/*'
+      relPath += '/*'
       alias += '/*'
     }
 
@@ -40,16 +46,19 @@ function makePaths (folders, answers) {
     }
 
     // assign
-    output[alias] = [path]
+    output[alias] = [relPath]
     return output
   }, paths)
 }
 
 /**
- * @param   {boolean}  colorize
+ * Make the config to be saved to disk or shown in the terminal
+ *
+ * @param   {Answers}    answers
+ * @param   {boolean}   colorize
  * @returns {string}
  */
-function makeConfig (colorize = false) {
+function makeConfig (answers, colorize = false) {
   // variables
   const baseUrl = answers.baseUrl
 
@@ -59,7 +68,7 @@ function makeConfig (colorize = false) {
     .map(info => info.relPath)
 
   // json
-  paths = makePaths(paths, answers)
+  paths = makePaths(paths, hq.config, answers)
 
   // config
   const config = {
@@ -117,8 +126,8 @@ const actions = {
       .then(answer => {
         // variables
         const baseUrl = answer.baseUrl.trim() || '.'
-        const info = checkPath(baseUrl)
-        if (!info || !info.valid) {
+        const { info, input, valid } = checkPath(baseUrl)
+        if (!valid) {
           return actions.getBaseUrl()
         }
 
@@ -155,19 +164,11 @@ const actions = {
         // variables
         const folders = answer.folders.trim() || '.'
         const rootUrl = Path.join(hq.config.rootUrl, answers.baseUrl)
-        const infos = checkPaths(folders, rootUrl)
+        const { infos, valid, input } = checkPaths(folders, rootUrl)
 
         // if invalid paths
-        if (!infos.every(info => info.valid)) {
-          // set only valid folders as defaults
-          previous.folders = infos
-            .filter(info => info.valid)
-            .map(info => {
-              return info.path
-            })
-            .join(' ')
-
-          // ask again
+        if (!valid) {
+          previous.folders = input
           return actions.getFolders()
         }
 
@@ -193,7 +194,7 @@ const actions = {
   },
 
   showConfig () {
-    const json = makeConfig(true)
+    const json = makeConfig(answers, true)
     console.log()
     console.log(indent(json) + '\n')
   },
@@ -229,7 +230,7 @@ const actions = {
         }
 
         // data
-        const json = makeConfig()
+        const json = makeConfig(answers)
         try {
           return Fs.writeFileSync(hq.settings.configFile, json, 'utf8')
         } catch (err) {
@@ -243,6 +244,17 @@ const actions = {
 // setup
 // ---------------------------------------------------------------------------------------------------------------------
 
+/**
+ * @typedef {{baseUrl: string, prefix: string, paths: [], action: string, dry: boolean}} Answers
+ * @property  {string}      action
+ * @property  {string}      baseUrl
+ * @property  {string}      prefix
+ * @property  {PathInfo[]}  paths
+ * @property  {boolean}     dry
+ */
+/**
+ * @returns {Answers}
+ */
 function getAnswers () {
   return {
     action: '',
@@ -254,7 +266,11 @@ function getAnswers () {
 }
 
 const previous = {}
-let answers = {}
+
+/**
+ * @type {Answers}
+ */
+let answers
 
 function updateConfig () {
   // setup
