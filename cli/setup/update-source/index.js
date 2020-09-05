@@ -1,16 +1,19 @@
 require('colors')
+const Fs = require('fs')
 const Path = require('path')
 const assert = require('assert').strict
 const inquirer = require('inquirer')
 const runner = require('jscodeshift/src/Runner')
 const hq = require('../../../src')
+const { makeObjectBullets } = require('../common')
 const { inspect } = require('../../utils')
 const { getLongestStringLength } = require('../../utils/text')
 const { getAliases, numAliases, saveSettings } = require('../../utils/config')
 const { cleanPathsInfo } = require('../../utils/paths')
-const { makeBullet, para } = require('../../utils/text')
 const { makeChoices } = require('../../utils/inquirer')
+const { para } = require('../../utils/text')
 const { showConfig, checkPaths, makeItemsBullets, makePathsBullets } = require('../common')
+const stats = require('./stats')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // actions
@@ -88,22 +91,15 @@ const actions = {
   },
 
   confirmChoices () {
-    function log (title, answers) {
-      if (!Array.isArray(answers)) {
-        answers = [answers]
-      }
-      answers = answers
-        .map(answer => answer.cyan)
-        .map(answer => makeBullet(answer))
-      console.log(`  ${title}:\n${answers.join('\n')}`)
-    }
-
     console.log('')
-    // console.log(`  Paths:\n` + makeItemsBullets(answers.paths, 'folder', 'relPath'))
     console.log(`  Paths:\n` + makePathsBullets(answers.paths))
     if (answers.modules.length) {
       console.log(`  Module roots:\n` + makeItemsBullets(answers.modules, 'alias', 'relPath'))
     }
+    console.log(`  Options:\n` + makeObjectBullets({
+      extensions: options.extensions,
+      parser: options.parser || 'default',
+    }))
     console.log()
   },
 
@@ -135,7 +131,7 @@ const actions = {
     }
   },
 
-  process () {
+  getAction () {
     const choices = {
       config: 'Show config',
       restart: 'Change settings',
@@ -166,67 +162,86 @@ const actions = {
           return updateSource()
         }
 
-        // aliases
-        const aliases = getAliases()
-
-        // paths
-        const paths = answers.paths
-          .filter(config => config.valid)
-          .map(config => config.absPath)
-
-        // modules
-        const modules = answers.modules
-          .map(module => module.alias)
-
-        // extensions
-        const defaultExtensions = Path.basename(hq.settings.configFile).startsWith('ts')
-          ? 'ts js tsx jsx'
-          : 'js jsx'
-        const extensions = (hq.settings.extensions || defaultExtensions)
-          .match(/\w+/g)
-          .join(',')
-
-        // options
-        const options = {
-          silent: true,
-          verbose: 0,
-          runInBand: true,
-          extensions,
-          dry: action === choices.preview,
-        }
-
-        // debug
-        // inspect({ paths, modules, extensions })
-        // inspect({ options, paths, aliases })
-
-        // do it
-        if (aliases.keys.length) {
-          console.log()
-          const file = __dirname + '/transformer.js'
-          return runner
-            .run(file, paths, { ...options, aliases, modules })
-            .then(results => {
-              console.log()
-
-              // results
-              console.log(`Results: in ${results.timeElapsed} seconds\n`)
-              console.log('  › ' + `updated    : ${results.ok}`.cyan)
-              console.log('  › ' + `unmodified : ${results.nochange}`.blue)
-              console.log('  › ' + `skipped    : ${results.skip}`.grey)
-              console.log('  › ' + `errors     : ${results.error}`.red)
-              console.log()
-
-              // run again
-              return actions.process()
-            })
-        }
+        const dry = action === choices.preview
+        return actions.process(dry)
       })
   },
+
+  process (dry = true) {
+    // aliases
+    const aliases = getAliases()
+
+    // paths
+    const paths = answers.paths
+      .filter(config => config.valid)
+      .map(config => config.absPath)
+
+    // modules
+    const modules = answers.modules
+      .map(module => module.alias)
+
+    // options
+    const opts = {
+      ...options,
+      dry,
+    }
+
+    // debug
+    // inspect({ paths, modules, extensions })
+    // inspect({ options, paths, aliases })
+
+    // track updated
+    stats.reset()
+
+    // do it
+    if (aliases.keys.length) {
+      console.log()
+      const file = __dirname + '/transformer.js'
+      return runner
+        .run(file, paths, { ...opts, aliases, modules })
+        .then(results => {
+          stats.present(results)
+          return actions.getAction()
+        })
+    }
+  }
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // setup
 // ---------------------------------------------------------------------------------------------------------------------
+
+function getOptions () {
+  // language
+  const language = Path.basename(hq.settings.configFile).slice(0, 2)
+
+  // parser
+  const parser = Fs.existsSync('.flowconfig')
+    ? 'flow'
+    : language === 'ts'
+      ? 'tsx'
+      : undefined
+
+  // extensions
+  const defaultExtensions = language === 'ts'
+    ? 'ts js tsx jsx'
+    : 'js jsx'
+  const extensions = (hq.settings.extensions || defaultExtensions)
+    .match(/\w+/g)
+    .join(', ')
+
+  /**
+   * @typedef {object} Options
+   */
+  return {
+    dry: true,
+    silent: true,
+    verbose: 0,
+    runInBand: true,
+    extensions,
+    parser,
+  }
+}
 
 /**
  * @returns {Answers}
@@ -235,7 +250,7 @@ function getAnswers () {
   /**
    * @typedef   {object}      Answers
    * @property  {PathInfo[]}  paths
-   * @property  {string[]}    modules
+   * @property  {Alias[]}    modules
    */
   return {
     paths: [],
@@ -248,11 +263,22 @@ function getAnswers () {
  */
 let answers
 
+/**
+ * Options for JSCodeShift
+ *
+ * Need to generate these when loading, and before processing:
+ *
+ * - in case anything has changed
+ * - because they are needed in the "confirm" step
+ */
+let options
+
 // main function
 function updateSource () {
   // setup
   hq.load()
   answers = getAnswers()
+  options = getOptions()
 
   // check
   if (!numAliases()) {
@@ -266,7 +292,7 @@ function updateSource () {
     .then(actions.getModules)
     .then(actions.confirmChoices)
     .then(actions.saveSettings)
-    .then(actions.process)
+    .then(actions.getAction)
 }
 
 module.exports = {

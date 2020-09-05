@@ -22,6 +22,23 @@ function makeNoteBullet (label, note, state = undefined, width = 0) {
 /**
  * Build a bulleted list of items with icon, label and note
  *
+ * @param   {object}  item
+ * @returns {*}
+ */
+function makeObjectBullets (item) {
+  const keys = Object.keys(item)
+  const width = getLongestStringLength(keys)
+
+  return keys.map(key => {
+    const label = key
+    const note = item[key]
+    return makeNoteBullet(label, note, undefined, width)
+  }).join('\n')
+}
+
+/**
+ * Build a bulleted list of items with icon, label and note
+ *
  * @param   {object[]}  items
  * @param   {string}    labelProp
  * @param   {string}    noteProp
@@ -130,6 +147,7 @@ function showConfig () {
 
 module.exports = {
   showConfig,
+  makeObjectBullets,
   makeItemsBullets,
   makePathsBullets,
   checkPaths,

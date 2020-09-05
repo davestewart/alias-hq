@@ -28,6 +28,7 @@ function makeSettings () {
    * @typedef   {object}      HQSettings
    * @property  {string}      root
    * @property  {string}      configFile
+   * @property  {string}      extensions
    * @property  {string}      prefix
    * @property  {string[]}    folders
    * @property  {string[]}    modules
@@ -35,6 +36,7 @@ function makeSettings () {
   return {
     root: '',
     configFile: '',
+    extensions: '',
     prefix: '@',
     folders: [],
     modules: []

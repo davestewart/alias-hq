@@ -34,11 +34,6 @@ function getPlugins () {
 }
 
 /**
- * @typedef {{ alias: string, absPath: string, relPath }} Alias
- * @typedef {{ lookup: Alias[], names: string[], get: function }} Aliases
- */
-
-/**
  *
  * @returns {Aliases}
  */
@@ -46,10 +41,19 @@ function getAliases () {
   const rootUrl = hq.config.rootUrl
   const aliases = hq.get('webpack')
   const keys = Object.keys(aliases)
+
+  // lookup
   const lookup = keys
     .map(alias => {
-      const absPath = aliases[alias]
+      const absPath = String(aliases[alias])
       const relPath = Path.relative(rootUrl, absPath)
+
+      /**
+       * @typedef   {object}  Alias
+       * @property  {string}  alias
+       * @property  {string}  absPath
+       * @property  {string}  relPath
+       */
       return {
         alias,
         absPath,
@@ -62,6 +66,13 @@ function getAliases () {
       }
       return a.absPath > b.absPath ? -1 : 1
     })
+
+  /**
+   * @typedef   {object}    Aliases
+   * @property  {string[]}  keys
+   * @property  {Alias[]}   lookup
+   * @property  {(function(string): Alias)}   get
+   */
   return {
     keys,
     lookup,
