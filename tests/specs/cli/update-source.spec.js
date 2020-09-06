@@ -1,20 +1,19 @@
 const hq = require('../../../src')
 const { abs, inspect } = require('../../../src/utils')
 const { getAliases } = require('../../../cli/setup/update-source')
-const { getPath } = require('../../../cli/setup/update-source/utils')
+const { toAlias } = require('../../../cli/setup/update-source/paths')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // helpers
 // ---------------------------------------------------------------------------------------------------------------------
 
+let aliases
+let modules = [
+  '@packages'
+]
+
 function test (file, rel, expected = undefined) {
-  const options = {
-    aliases: getAliases(),
-    modules: [
-      '@packages'
-    ]
-  }
-  const actual = getPath(abs(file), rel, options)
+  const actual = toAlias(abs(file), rel, { aliases, modules })
   expect(actual).toBe(expected)
 }
 
@@ -38,6 +37,7 @@ function test (file, rel, expected = undefined) {
 
 beforeAll(function () {
   hq.load()
+  aliases = getAliases()
 })
 
 describe('core transforms', function () {

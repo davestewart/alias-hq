@@ -1,43 +1,44 @@
 const Path = require('path')
 
+function getAliases (aliases, absPath) {
+  return aliases.lookup.filter(item => absPath.startsWith(item.absPath))
+}
+
 /**
- * Resolves the source file path to a target folder
+ * Resolves a relative path to an alias path
  *
- * @param   {string}    source    The absolute source file path
- * @param   {string}    relPath   The relative path of the require or import
+ * @param   {string}    absFile    The absolute source file path
+ * @param   {string}    trgPath   The relative path of the require or import
  * @param   {Aliases}   aliases   The Aliases model with data and methods to resolve aliases
  * @param   {string[]}  modules   A list of aliases to treat as modules
- * @returns {string|void}         A folder path string if found, or void if not
+ * @returns {string|void}         An aliased path string if found, or void if not
  */
-function getPath (source, relPath, { aliases, modules }) {
-  // get all alias data for a given path
-  function getAliases (absPath) {
-    return aliases.lookup.filter(item => absPath.startsWith(item.absPath))
-  }
-
+function toAlias (absFile, trgPath, { aliases, modules }) {
   // target (folder)
-  let target
+  let absTarget
+  let absFolder
 
   // >> undefined path
   //    the `require(path)` is a variable
   //    don't process
-  if (!relPath) {
+  if (!trgPath) {
     return
   }
 
   // >> relative paths
   //    up or down from the current folder
   //    look to resolve to an existing @alias
-  if (relPath.startsWith('.')) {
-    source = Path.dirname(source)
-    target = Path.resolve(source, relPath)
+  if (trgPath.startsWith('.')) {
+    absFolder = Path.dirname(absFile)
+    absTarget = Path.resolve(absFolder, trgPath)
   }
+
   // >> anything else
   //    could be a package, @namespaced package, or existing @alias
   //    need to check what kind of path it is
   else {
     // get first segment
-    const segments = relPath.split(Path.sep)
+    const segments = trgPath.split(Path.sep)
     const name = segments.shift()
 
     // >> existing alias
@@ -45,7 +46,7 @@ function getPath (source, relPath, { aliases, modules }) {
     //    look to refine
     const alias = aliases.get(name)
     if (alias) {
-      target = Path.join(alias.absPath, ...segments)
+      absTarget = Path.join(alias.absPath, ...segments)
     }
 
     // >> not an alias
@@ -57,19 +58,19 @@ function getPath (source, relPath, { aliases, modules }) {
   }
 
   // source data
-  const sourceAliases = getAliases(source)
+  const sourceAliases = getAliases(aliases, absFile)
   const sourceAlias = sourceAliases[0]
 
   // target data
-  const targetAliases = getAliases(target)
+  const targetAliases = getAliases(aliases, absTarget)
   const targetAlias = targetAliases[0]
 
   // we have a target alias!
   if (targetAlias) {
     // variables
     const { alias, absPath } = targetAlias
-    const aliased = target.replace(absPath, alias)
-    const isShort = relPath.length < aliased.length
+    const aliased = absTarget.replace(absPath, alias)
+    const isShort = trgPath.length < aliased.length
 
     // >> upstream paths
     //    if the user has traversed up, we need to check if we crossed a module boundary
@@ -79,11 +80,11 @@ function getPath (source, relPath, { aliases, modules }) {
     //    the rules are:
     //      - inside the <module>, use relative paths
     //      - if we cross move outside (sibling <module> / other @alias) use the @alias
-    if (relPath.startsWith('../')) {
+    if (trgPath.startsWith('../')) {
       // variables
       // const isModule = modules.includes(sourceAlias.alias)
-      const upstream = relPath.match(/^[./]+/).toString().slice(0, -1)
-      const junction = Path.resolve(source, upstream)
+      const upstream = trgPath.match(/^[./]+/).toString().slice(0, -1)
+      const junction = Path.resolve(absFile, upstream)
 
       // >> junction is outside the module (@modules/<module>)
       //    and we have a module boundary set
@@ -103,14 +104,14 @@ function getPath (source, relPath, { aliases, modules }) {
       // >> short downstream paths
       //    would be simpler to use it
     //    don't replace
-    else if (relPath.startsWith('.') && isShort) {
+    else if (trgPath.startsWith('.') && isShort) {
       return
     }
 
     // >> unchanged alias
     //    if the alias is the same, it is already optimised
     //    don't return
-    if (aliased === relPath) {
+    if (aliased === trgPath) {
       return
     }
 
@@ -120,6 +121,31 @@ function getPath (source, relPath, { aliases, modules }) {
   }
 }
 
+/**
+ * Resolves an alias path to a relative path
+ *
+ * @param   {string}    absFile    The absolute source file path
+ * @param   {string}    trgPath   The relative path of the require or import
+ * @param   {Aliases}   aliases   The Aliases model with data and methods to resolve aliases
+ * @returns {string|void}         A relative path string if found, or void if not
+ */
+function toRelative (absFile, trgPath, { aliases }) {
+  // get alias
+  const key = aliases.keys.find(key => trgPath.startsWith(key))
+
+  // transform path
+  if (key) {
+    const alias = aliases.get(key)
+    const absSource = Path.dirname(absFile)
+    const absTarget = alias.absPath + trgPath.slice(key.length)
+    const relTarget = Path.relative(absSource, absTarget)
+    return relTarget.startsWith('.')
+      ? relTarget
+      : './' + relTarget
+  }
+}
+
 module.exports = {
-  getPath
+  toAlias,
+  toRelative,
 }

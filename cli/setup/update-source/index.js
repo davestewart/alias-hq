@@ -91,7 +91,12 @@ const actions = {
   },
 
   confirmChoices () {
-    console.log('')
+    if (answers.mode === 'relative') {
+      console.log('Choices\n')
+    }
+    else {
+      console.log('')
+    }
     console.log(`  Paths:\n` + makePathsBullets(answers.paths))
     if (answers.modules.length) {
       console.log(`  Module roots:\n` + makeItemsBullets(answers.modules, 'alias', 'relPath'))
@@ -183,12 +188,16 @@ const actions = {
     // options
     const opts = {
       ...options,
+      mode: answers.mode,
       dry,
     }
 
     // debug
     // inspect({ paths, modules, extensions })
     // inspect({ options, paths, aliases })
+
+    // TODO
+    // add options to process Vue files
 
     // track updated
     stats.reset()
@@ -230,6 +239,10 @@ function getOptions () {
     .match(/\w+/g)
     .join(', ')
 
+  // TODO add options to
+  // - ignore folders (node, vendor, etc)
+  // - force conversion to aliases ?
+
   /**
    * @typedef {object} Options
    */
@@ -238,28 +251,31 @@ function getOptions () {
     silent: true,
     verbose: 0,
     runInBand: true,
+    ignorePattern: 'node_modules/*',
     extensions,
     parser,
   }
 }
 
 /**
- * @returns {Answers}
+ * @returns {SourceAnswers}
  */
 function getAnswers () {
   /**
-   * @typedef   {object}      Answers
+   * @typedef   {object}      SourceAnswers
    * @property  {PathInfo[]}  paths
-   * @property  {Alias[]}    modules
+   * @property  {Alias[]}     modules
+   * @property  {string}      mode
    */
   return {
     paths: [],
     modules: [],
+    mode: 'aliased',
   }
 }
 
 /**
- * @type {Answers}
+ * @type {SourceAnswers}
  */
 let answers
 
@@ -274,7 +290,7 @@ let answers
 let options
 
 // main function
-function updateSource () {
+function updateSource (toAliases = true) {
   // setup
   hq.load()
   answers = getAnswers()
@@ -287,12 +303,22 @@ function updateSource () {
   }
 
   // actions
-  return Promise.resolve()
-    .then(actions.getPaths)
-    .then(actions.getModules)
-    .then(actions.confirmChoices)
-    .then(actions.saveSettings)
-    .then(actions.getAction)
+  if (toAliases) {
+    return Promise.resolve()
+      .then(actions.getPaths)
+      .then(actions.getModules)
+      .then(actions.confirmChoices)
+      .then(actions.saveSettings)
+      .then(actions.getAction)
+  }
+
+  else {
+    answers.mode = 'relative'
+    return Promise.resolve()
+      .then(actions.getPaths)
+      .then(actions.confirmChoices)
+      .then(actions.getAction)
+  }
 }
 
 module.exports = {

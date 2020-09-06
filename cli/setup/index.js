@@ -35,7 +35,8 @@ function run () {
     create: 'Create config',
     view: 'View config',
     configure: `Update config`,
-    source: 'Update source code',
+    update: 'Update source code',
+    revert: 'Revert source code (to relative paths)',
     back: 'Back',
   }
 
@@ -48,8 +49,16 @@ function run () {
     }
   }
 
+  // special "revert" mode shows option to rewrite project to relative paths
+  if (process.argv.includes('revert')) {
+    choices.update += ' (to aliased paths)'
+  }
+  else {
+    delete choices.revert
+  }
+
   if (numAliases === 0) {
-    delete choices.source
+    delete choices.update
   }
 
   // start
@@ -79,8 +88,12 @@ function run () {
           result = updateConfig()
           break
 
-        case choices.source:
+        case choices.update:
           result = updateSource()
+          break
+
+        case choices.revert:
+          result = updateSource(false)
           break
 
         case choices.back:

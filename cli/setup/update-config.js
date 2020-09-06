@@ -3,6 +3,7 @@ const inquirer = require('inquirer')
 const Path = require('path')
 const Fs = require('fs')
 const hq = require('../../src')
+const { inspect } = require('../utils')
 const { makeChoices } = require('../utils/inquirer')
 const { saveSettings } = require('../utils/config')
 const { indent, makeJson } = require('../utils/text')
@@ -140,7 +141,7 @@ const actions = {
   getFolders () {
     // default folders
     let folders = previous.folders
-    if (answers.action === 'replace') {
+    if (!folders && answers.action === 'replace') {
       folders = Object
         .values(hq.config.paths)
         .map(paths => {
@@ -162,7 +163,19 @@ const actions = {
       })
       .then((answer) => {
         // variables
-        const folders = answer.folders.trim() || '.'
+        const folders = answer.folders.trim()
+        if (folders === '') {
+          return actions.getFolders()
+        }
+
+        // TODO
+        // trim leading slash
+        // find way to prevent newline from stopping paste of multiple lines
+        // find way past 1024 character limit
+        // check input return is working
+        // add docs about all this
+
+        // variables
         const rootUrl = Path.join(hq.config.rootUrl, answers.baseUrl)
         const { infos, valid, input } = checkPaths(folders, rootUrl)
 
@@ -188,6 +201,13 @@ const actions = {
       })
       .then(answer => {
         const prefix = answer.prefix.trim()
+
+        // validation
+        if (/^[./\\]+/.test(prefix)) {
+          return actions.getPrefix()
+        }
+
+        // assign
         previous.prefix = prefix
         answers.prefix = prefix
       })

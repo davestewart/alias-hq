@@ -33,6 +33,12 @@ function log (from, to) {
  * @return  {boolean}
  */
 function dump (path) {
+  // title
+  const title = current.updated.length
+    ? path.cyan
+    : path.grey
+  let text = `\n${ title }\n\n`
+
   // items
   const skipped = current.skipped.map(item => {
     return `  › ` + item.from.grey
@@ -44,7 +50,6 @@ function dump (path) {
   })
 
   // text
-  let text = `\n${path.grey}\n\n`
   if (skipped.length) {
     text += skipped.join('\n') + '\n'
   }
