@@ -84,8 +84,8 @@ function makeBullet (text, state) {
 }
 
 function makeFileBullet (info, state) {
-  const { path, absPath } = info
-  const relText = path.cyan
+  const { relPath, absPath } = info
+  const relText = relPath.cyan
   const absText = `- ${absPath}`.gray.italic
   return makeBullet(`${relText} ${absText}`, state)
 }
