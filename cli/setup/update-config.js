@@ -32,7 +32,12 @@ function makePaths (folders, config, answers) {
     let relPath = Path.relative(rootUrl, absPath)
 
     // alias
-    let alias = answers.prefix + Path.basename(absPath)
+    const prefix = answers.prefix
+    let name = Path.basename(absPath)
+    if (rootUrl === absPath && prefix === '@') {
+      name = ''
+    }
+    let alias = prefix + name
 
     // folder
     const ext = Path.extname(absPath)
