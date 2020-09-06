@@ -41,10 +41,12 @@
   },
   "dependencies": {
     "colors": "^1.4.0",
+    "glob": "^7.1.6",
     "inquirer": "^7.3.3",
     "jscodeshift": "^0.10.0",
     "node-fetch": "^2.6.0",
-    "opn": "^6.0.0"
+    "opn": "^6.0.0",
+    "vue-jscodeshift-adapter": "^2.1.0"
   },
   "alias-hq": {
     "root": "./demo",

@@ -1,4 +1,5 @@
 require('colors')
+const glob = require('glob')
 const Fs = require('fs')
 const Path = require('path')
 const assert = require('assert').strict
@@ -54,6 +55,30 @@ const actions = {
       })
   },
 
+  checkForVue () {
+    // skip
+    if (hq.settings.extensions) {
+      return
+    }
+
+    // variables
+    const paths = answers.paths.map(info => info.relPath).join('|')
+    const search = `+(${paths})/**/*.vue`
+    const options = {
+      cwd: hq.config.rootUrl
+    }
+
+    // glob!
+    return new Promise(function (resolve, reject) {
+      glob(search, options, function (er, files) {
+        if (files.length) {
+          csOptions.extensions += ', vue'
+        }
+        resolve()
+      })
+    })
+  },
+
   getModules () {
     // choices
     const aliases = getAliases()
@@ -102,8 +127,8 @@ const actions = {
       console.log(`  Module roots:\n` + makeItemsBullets(answers.modules, 'alias', 'relPath'))
     }
     console.log(`  Options:\n` + makeObjectBullets({
-      extensions: options.extensions,
-      parser: options.parser || 'default',
+      extensions: csOptions.extensions,
+      parser: csOptions.parser || 'default',
     }))
     console.log()
   },
@@ -186,15 +211,15 @@ const actions = {
       .map(module => module.alias)
 
     // options
-    const opts = {
-      ...options,
+    const options = {
+      ...csOptions,
       mode: answers.mode,
       dry,
     }
 
     // debug
     // inspect({ paths, modules, extensions })
-    // inspect({ options, paths, aliases })
+    inspect({ options: csOptions, paths, aliases })
 
     // TODO
     // add options to process Vue files
@@ -207,7 +232,7 @@ const actions = {
       console.log()
       const file = __dirname + '/transformer.js'
       return runner
-        .run(file, paths, { ...opts, aliases, modules })
+        .run(file, paths, { ...options, aliases, modules })
         .then(results => {
           stats.present(results)
           return actions.getAction()
@@ -220,7 +245,7 @@ const actions = {
 // setup
 // ---------------------------------------------------------------------------------------------------------------------
 
-function getOptions () {
+function getCsOptions () {
   // language
   const language = Path.basename(hq.settings.configFile).slice(0, 2)
 
@@ -287,14 +312,14 @@ let answers
  * - in case anything has changed
  * - because they are needed in the "confirm" step
  */
-let options
+let csOptions
 
 // main function
 function updateSource (toAliases = true) {
   // setup
   hq.load()
   answers = getAnswers()
-  options = getOptions()
+  csOptions = getCsOptions()
 
   // check
   if (!numAliases()) {
@@ -306,6 +331,7 @@ function updateSource (toAliases = true) {
   if (toAliases) {
     return Promise.resolve()
       .then(actions.getPaths)
+      .then(actions.checkForVue)
       .then(actions.getModules)
       .then(actions.confirmChoices)
       .then(actions.saveSettings)
@@ -316,6 +342,7 @@ function updateSource (toAliases = true) {
     answers.mode = 'relative'
     return Promise.resolve()
       .then(actions.getPaths)
+      .then(actions.checkForVue)
       .then(actions.confirmChoices)
       .then(actions.getAction)
   }

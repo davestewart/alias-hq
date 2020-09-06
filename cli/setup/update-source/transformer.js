@@ -1,8 +1,9 @@
 require('colors')
+const adapt = require('vue-jscodeshift-adapter');
 const { toAlias, toRelative } = require('./paths')
 const stats = require('./stats')
 
-module.exports = function (fileInfo, api, options) {
+function transform (fileInfo, api, options) {
   // variables
   const { path, source } = fileInfo
   const j = api.jscodeshift
@@ -48,3 +49,5 @@ module.exports = function (fileInfo, api, options) {
     }
   }
 }
+
+module.exports = adapt(transform)
