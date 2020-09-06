@@ -219,10 +219,7 @@ const actions = {
 
     // debug
     // inspect({ paths, modules, extensions })
-    inspect({ options: csOptions, paths, aliases })
-
-    // TODO
-    // add options to process Vue files
+    // inspect({ options: csOptions, paths, aliases })
 
     // track updated
     stats.reset()

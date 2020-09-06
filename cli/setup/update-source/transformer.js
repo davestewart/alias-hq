@@ -8,9 +8,21 @@ function transform (fileInfo, api, options) {
   const { path, source } = fileInfo
   const j = api.jscodeshift
   const root = j(source)
+
+  // options
   const to = options.mode === 'relative'
     ? toRelative
     : toAlias
+
+  // quote style
+  let quote
+  const setQuote = value => {
+    if (typeof quote === 'undefined') {
+      quote = value.startsWith('"')
+        ? 'double'
+        : 'single'
+    }
+  }
 
   // find
   const requires = root.find(j.CallExpression, { callee: { name: 'require' } })
@@ -20,32 +32,34 @@ function transform (fileInfo, api, options) {
   if (requires.length || imports.length) {
     // requires
     requires.forEach(p => {
-      const oldPath = p.value.arguments[0].value
+      const argument = p.value.arguments[0]
+      const oldPath = argument.value
       if (oldPath) {
         const newPath = to(path, oldPath, options)
         stats.log(oldPath, newPath)
+        setQuote(argument.raw)
         if (newPath) {
-          p.value.arguments[0].value = newPath
+          argument.raw = newPath
         }
       }
     })
 
     // imports
     imports.forEach(p => {
-      const oldPath = p.value.source.value
+      const source = p.value.source
+      const oldPath = source.value
       const newPath = to(path, oldPath, options)
       stats.log(oldPath, newPath)
+      setQuote(source.raw)
       if (newPath) {
-        p.value.source.value = newPath
+        source.value = newPath
       }
     })
 
     // output
     const updated = stats.dump(path)
     if (updated) {
-      // TODO
-      const quote = 'single'
-      return root.toSource({ quote })
+      return root.toSource({ quote: quote || 'single' })
     }
   }
 }
