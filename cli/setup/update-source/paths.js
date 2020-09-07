@@ -84,7 +84,7 @@ function toAlias (absFile, trgPath, { aliases, modules }) {
       // variables
       // const isModule = modules.includes(sourceAlias.alias)
       const upstream = trgPath.match(/^[./]+/).toString().slice(0, -1)
-      const junction = Path.resolve(absFile, upstream)
+      const junction = Path.resolve(absFolder, upstream)
 
       // >> junction is outside the module (@modules/<module>)
       //    and we have a module boundary set
@@ -131,7 +131,9 @@ function toAlias (absFile, trgPath, { aliases, modules }) {
  */
 function toRelative (absFile, trgPath, { aliases }) {
   // get alias
-  const key = aliases.keys.find(key => trgPath.startsWith(key))
+  const key = aliases.keys
+    .sort().reverse()
+    .find(key => trgPath.startsWith(key))
 
   // transform path
   if (key) {
