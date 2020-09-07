@@ -46,7 +46,7 @@ jobs:
         id: coverage-percent
         shell: bash
         run: |
-          value=`sed -n 47p coverage/lcov-report/index.html | awk -F '>' '{print $2}' | awk -F '%' '{print $1}'`
+          value=`sed -n 47p tests/coverage/lcov-report/index.html | awk -F '>' '{print $2}' | awk -F '%' '{print $1}'`
           echo "::set-output name=coverage::$value"
           echo $value
 
