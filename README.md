@@ -2,94 +2,63 @@
 
 ![tests](https://github.com/davestewart/alias-hq/workflows/tests/badge.svg)
 
-> Manage a single set of folder aliases and convert on-the-fly to other formats
+> The end-to-end solution for configuring, refactoring, maintaining and using path aliases
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/davestewart/alias-hq/master/docs/assets/logo.png" alt="Alias HQ logo">
 </p>
 
+## TL;DR
+
+If you are *considering* using aliases:
+
+- Alias HQ **writes the config for you** then **refactors your project's imports** 
+
+if you are *already* use aliases:
+
+- Alias HQ **uses only your jsconfig** file with **one-liner conversion** to Jest, Webpack, Rollup, etc
+
 ## Abstract
 
-Alias HQ makes the management, creation and use of path aliases easy.
+Path "aliases" are `@identifiers` that simplify unwieldy or lengthy file `imports`:
 
 ```js
-import { SomeService } from '@services'
+// from this
+import { fooify } from '../../../core/services/foo' 
+
+// to this
+import { fooify } from '@services/foo' 
 ```
 
-It [uses](./docs/setup.md) your `js/tsconfig.json` as the single source of truth:
+**Using aliases in your projects makes your code easier to read and maintain.**
 
-```text
-{
-  "compilerOptions": {
-    "baseUrl": "src",
-    "paths": {
-      "@services/*": ["app/services/*"],
-      ...
-    }
-  }
-}
-```
+They are widely supported in the JavaScript ecosystem, but:
 
-And provides a simple [API](docs/api.md) to use in the rest of your toolchain:
+- libraries have incompatible formats so require separate configurations  
+- maintaining duplicate configurations is fiddly and error-prone 
+- migrating source code is laborious and long-winded
 
-```js
-// webpack.config.js
-import hq from 'alias-hq'
+Alias HQ solves these problems by:
 
-module.exports = {
-  resolve: {
-    alias: hq.get('webpack') // or jest, rollup, or your own transform...
-  }
-}
-```
+- using your project's `js/tsconfig`'s `paths` as the [single source of truth](./docs/setup.md)
+- providing a user-friendly [CLI](docs/cli.md) to generate `config` *and* refactor `src/*` code
+- providing a one-liner [API](docs//api.md) for [Webpack](docs/integrations.md#webpack), [Jest](docs/integrations.md#jest), [Rollup](docs/integrations.md#rollup) and [more](docs/plugins.md)
 
-No more wrangling multiple incompatible configuration files:
-
-```js
-// webpack, eslint, etc
-'@services': '/volumes/projects/path/to/project/src/app/services'
-```
-```js
-// jest
-'^@services/(.*)$': '<rootDir>/src/app/services/$1'
-```
-```js
-// rollup
-{
-  find: '@services',
-  replacement: '/volumes/projects/path/to/project/src/app/services'
-}
-```
-
-Alias configuration is just a simple import and one-liner conversion.
-
-## Integrations and tooling
-
-[Webpack](docs/integrations.md#webpack), [Jest](docs/integrations.md#jest) and [Rollup](docs/integrations.md#rollup) are supported out of the box, with new functionality available as [plugins](docs/plugins.md).
-
-Aliases are supported by [VSCode](docs/integrations.md#vs-code) and [Webstorm](docs/integrations.md#webstorm) so auto-completion should just work.
-
-Finally, an accompanying [CLI](docs/cli.md) makes it super simple to create, inspect, debug and convert paths:
+## Getting started
 
 ![cli](docs/assets/cli.png)
 
-See [here](https://twitter.com/i/status/1298592287266611205) for video :)
+You can configure and refactor any sized project *from scratch* in **under 30 seconds** by installing the package, running the CLI, and answering the prompts.
 
-## Get started
-
-To start using aliases in your own project:
+For more detailed instructions, see:
 
 - [Setup](docs/setup.md)
+- [CLI](docs/cli.md)
 - [Integrations](docs/integrations.md)
 
-For more information about what the package can do:
+For information about the API, see:
 
 - [API](docs/api.md)
-- [CLI](docs/cli.md)
-
-If you've an additional format you'd like to contribute:
-
 - [Plugins](docs/plugins.md)
-
 
 

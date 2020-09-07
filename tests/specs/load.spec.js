@@ -17,7 +17,7 @@ describe('calling load and passing', function () {
 
   describe('relative filepath', function () {
     it('should load the file', function () {
-      const received = hq.load('tsconfig.base.json').config.paths
+      const received = hq.load('demo/tsconfig.base.json').config.paths
       const expected = config.js
       expect(received).toEqual(expected)
     })

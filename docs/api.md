@@ -37,11 +37,7 @@ function fooify (config, options) {
 const config = hq.get(fooify)
 ```
 
-See:
-
-- the [debugging](#log-config) section below for an example `config` object.
-
-- the [plugins](plugins.md) document for detailed information on writing custom transforms
+See the [plugins](plugins.md) document for detailed information on writing custom transforms
 
 ## Plugins
 
@@ -58,65 +54,6 @@ const config = hq.get('foo')
 ```
 
 *If you want to submit a custom format as a plugin to the repository, post an issue or PR.*
-
-## Debugging
-
-There might be times when you need to check what is happening under the hood.
-
-### Log config
-
-Check the loaded configuration:
-
-```js
-console.log(hq.config)
-```
-
-```js
-{
-  rootUrl: '/volumes/projects/path/to/project',
-  baseUrl: 'src',
-  paths: {
-    '@api/*': [ 'api/*' ],
-    '@app/*': [ 'app/*' ],
-    '@config/*': [ 'app/config/*' ],
-    '@services/*': [ 'app/services/*' ],
-    '@utils/*': [ 'common/utils/*' ]
-  }
-}
-```
-
-### Get plugin names
-
-Check available plugin names:
-
-```js
-console.log(hq.plugins.names)
-```
-
-```js
-[ 'jest', 'rollup', 'webpack' ]
-```
-
-### Grab plugin output as JSON
-
-Dump configured paths in JSON format for any plugin:
-
-```js
-hq.json('jest')
-```
-
-```json
-{
-  "^@api/(.*)$": "<rootDir>/src/api/$1",
-  "^@app/(.*)$": "<rootDir>/src/app/$1",
-  "^@config/(.*)$": "<rootDir>/src/app/config/$1",
-  "^@services/(.*)$": "<rootDir>/src/app/services/$1",
-  "^@utils/(.*)$": [
-    "<rootDir>/src/common/utils/$1",
-    "<rootDir>/src/vendor/utils/$1"
-  ]
-}
-```
 
 ## CLI
 

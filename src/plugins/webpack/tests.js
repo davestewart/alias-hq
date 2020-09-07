@@ -3,11 +3,13 @@ const { abs } = require('../../utils')
 module.exports = [
   function () {
     const expected = {
-      '@api': abs('api'),
+      '@': abs(''),
+      '@packages': abs('../packages'),
+      '@classes': abs('classes'),
       '@app': abs('app'),
-      '@config': abs('app/config'),
+      '@data': abs('app/data'),
       '@services': abs('app/services'),
-      '@utils': abs('common/utils'),
+      '@views': abs('app/views')
     }
     return { expected }
   },

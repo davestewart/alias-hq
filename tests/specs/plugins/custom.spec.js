@@ -1,4 +1,4 @@
-const hq = require('../../src')
+const hq = require('../../../src')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // setup
@@ -15,27 +15,34 @@ function plugin (config, options = null) {
 }
 
 const expected = {
-  'api': { path: 'api' },
+  '': { path: '' },
+  'packages': { path: '../packages' },
+  'classes': { path: 'classes' },
   'app': { path: 'app' },
-  'config': { path: 'app/config' },
+  'data': { path: 'app/data' },
   'services': { path: 'app/services' },
-  'utils': { path: 'common/utils' },
+  'views': { path: 'app/views' },
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // tests
 // ---------------------------------------------------------------------------------------------------------------------
 
+beforeAll(function () {
+  hq.load()
+})
+
 describe('custom plugins', function () {
   it('should be addable', function () {
     hq.plugins.add('test', plugin)
   })
   it('should be callable', function () {
+    hq.plugins.add('test', plugin)
     const received = hq.get('test')
     expect(received).toEqual(expected)
   })
   it('should convert paths correctly', function () {
-    const received = hq.load('jsconfig.json').get(plugin)
+    const received = hq.load('demo/jsconfig.json').get(plugin)
     expect(received).toEqual(expected)
   })
 })

@@ -1,4 +1,5 @@
-const { makePaths, getFolders } = require('../../cli/modules/make-paths')
+const { parsePathsFromText } = require('../../../cli/utils/paths')
+const { makePaths } = require('../../../cli/setup/update-config')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // tests
@@ -6,14 +7,7 @@ const { makePaths, getFolders } = require('../../cli/modules/make-paths')
 
 describe('path generation', function () {
 
-  const settings = {
-    rootUrl: '/projects/project',
-    baseUrl: 'src',
-    prefix: '@',
-    type: 'new',
-  }
-
-  const folders = getFolders(`
+  const folders = parsePathsFromText(`
     /projects/project/absolute_up/
     /projects/project/src/one/
     /projects/project/src/one/two/
@@ -25,7 +19,17 @@ describe('path generation', function () {
     file.js
   `)
 
-  const paths = makePaths(folders, settings)
+  const config = {
+    rootUrl: '/projects/project',
+  }
+
+  const answers = {
+    baseUrl: 'src',
+    prefix: '@',
+    type: 'new',
+  }
+
+  const paths = makePaths(folders, config, answers)
 
   const expected = {
     '@absolute_up/*': ['../absolute_up/*'],

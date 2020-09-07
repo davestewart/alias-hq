@@ -139,7 +139,7 @@ module.exports = function override(config, env) {
 
 This short React guide is *not meant to be exhaustive*; for issues, use your common sense, search Google, and see the appropriate package's issues.
 
-## JSON-only configurations
+## JSON-only
 
 For libraries or setups that require JSON, you can use the [CLI](./cli.md):
 

@@ -1,27 +1,131 @@
 const Path = require('path')
-const fs = require('fs')
+const Fs = require('fs')
+const { resolve } = require('./utils')
+
+// ---------------------------------------------------------------------------------------------------------------------
+// typedefs
+// ---------------------------------------------------------------------------------------------------------------------
 
 /**
- * Load a config file
+ * The JSConfig hash of paths
+ *
+ * @typedef {Object.<string, string[]>} PathsHash
+ */
+
+// ---------------------------------------------------------------------------------------------------------------------
+// factories
+// ---------------------------------------------------------------------------------------------------------------------
+
+/**
+ * Make a fresh Settings object
+ *
+ * @returns {HQSettings}
+ */
+function makeSettings () {
+  /**
+   * The Alias HQ user settings; loaded and saved from package.json
+   *
+   * @typedef   {object}      HQSettings
+   * @property  {string}      root
+   * @property  {string}      configFile
+   * @property  {string}      extensions
+   * @property  {string}      prefix
+   * @property  {string[]}    folders
+   * @property  {string[]}    modules
+   */
+  return {
+    root: '',
+    configFile: '',
+    extensions: '',
+    prefix: '@',
+    folders: [],
+    modules: []
+  }
+}
+
+/**
+ * Make a fresh Config object
+ *
+ * @returns {HQConfig}
+ */
+function makeConfig () {
+  const root = settings.root || ''
+
+  /**
+   * The core Alias HQ config; passed to plugins
+   *
+   * @typedef   {object}      HQConfig
+   * @property  {string}      rootUrl   The absolute path to the config file folder
+   * @property  {string}      baseUrl   The relative path to the JSConfig base folder
+   * @property  {PathsHash}   paths     The loaded aliases
+   */
+  return {
+    rootUrl: resolve(root),
+    baseUrl: '',
+    paths: {},
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// loaders
+// ---------------------------------------------------------------------------------------------------------------------
+
+/**
+ * Load user settings from package.json
+ */
+function loadSettings () {
+  try {
+    const json = JSON.parse(Fs.readFileSync('package.json', 'utf8'))
+    const data = json['alias-hq']
+    if (data) {
+      if (data.root) {
+        config.rootUrl = Path.resolve(data.root)
+      }
+      Object.assign(settings, makeSettings(), data)
+      return true
+    }
+  }
+  catch (err) {
+    return false
+  }
+}
+
+/**
+ * Load js/tsconfig.json file
  *
  * @param   {string}    path      The absolute path to the config file
  */
 function loadConfig (path) {
-  // file
-  const json = require(path)
+  // load
+  let json
+  const text = Fs.readFileSync(path, 'utf8')
+  if (text) {
+    try { json = JSON.parse(text) }
+    catch (err) {}
+  }
 
   // config
   const compilerOptions = json && json.compilerOptions
   if (compilerOptions && compilerOptions.paths) {
+    // config
     config.rootUrl = Path.dirname(path)
-    config.baseUrl = (compilerOptions.baseUrl || './')
+    config.baseUrl = compilerOptions.baseUrl || ''
     config.paths = compilerOptions.paths || {}
+
+    // settings
+    settings.configFile = path
+
+    // done
     return true
   }
 
   // normal file
   config.paths = {}
 }
+
+// ---------------------------------------------------------------------------------------------------------------------
+// api
+// ---------------------------------------------------------------------------------------------------------------------
 
 /**
  * Load config
@@ -31,13 +135,13 @@ function loadConfig (path) {
  * @returns {object}                      The Alias HQ instance
  */
 function load (value = undefined) {
-  // variables
-  let path
+  // load settings
+  loadSettings()
 
   // string: relative or absolute path passed
   if (typeof value === 'string') {
-    path = Path.resolve(value)
-    if (fs.existsSync(path)) {
+    const path = Path.resolve(value)
+    if (Fs.existsSync(path)) {
       loadConfig(path)
     }
     else {
@@ -45,7 +149,7 @@ function load (value = undefined) {
     }
   }
 
-  // no value: default config file
+  // no value: default or configured config file
   else if (typeof value === 'undefined') {
     // variables
     let found = false
@@ -57,16 +161,17 @@ function load (value = undefined) {
 
     // attempt to load file
     while (files.length && !found) {
-      let file = files.shift()
-      path = Path.resolve('./', file)
-      if (fs.existsSync(path)) {
+      const file = files.shift()
+      // config.rootUrl will be an absolute folder path if loaded from package.json
+      const path = Path.resolve(config.rootUrl, file)
+      if (Fs.existsSync(path)) {
         found = loadConfig(path)
       }
     }
 
     // could not load file!
     if (!found) {
-      throw new Error('No config file found')
+      Object.assign(config, makeConfig())
     }
   }
 
@@ -107,7 +212,7 @@ function get (plugin, options = {}) {
 
     // check for built-in plugin
     const path = Path.resolve(__dirname, `./plugins/${plugin}/index.js`)
-    if (fs.existsSync(path)) {
+    if (Fs.existsSync(path)) {
       const callback = require(path)
       return callback(config, options)
     }
@@ -118,23 +223,28 @@ function get (plugin, options = {}) {
   throw new Error(`Invalid "plugin" parameter`)
 }
 
+// ---------------------------------------------------------------------------------------------------------------------
+// members
+// ---------------------------------------------------------------------------------------------------------------------
+
 /**
- * Convert and log paths config using a plugin or callback
+ * @type {HQSettings}
  */
-function json (plugin, options = {}, print = true) {
-  let json = JSON.stringify(get(plugin, options), null, '  ')
-  if (print) {
-    console.log(json)
-  }
-  return json
-}
+let settings = makeSettings()
 
-const config = {
-  rootUrl: '',
-  baseUrl: '',
-  paths: null,
-}
+/**
+ * @type {HQConfig}
+ */
+let config = makeConfig()
 
+/**
+ * The Alias HQ plugins object; used to store and load all transforms
+ *
+ * @typedef                 HQPlugins
+ * @property  {string[]}    names     The list of loaded plugin names
+ * @property  {function}    add       Method to add new plugins
+ * @property  {Object.<string,function>}      custom    The hash of plugins
+ */
 const plugins = {
   custom: {},
 
@@ -159,7 +269,7 @@ const plugins = {
    */
   get names () {
     const path = Path.resolve(__dirname, 'plugins')
-    const items = fs.readdirSync(path).map(file => file.replace('.js', ''))
+    const items = Fs.readdirSync(path).map(file => file.replace('.js', ''))
     Object.keys(this.custom).forEach(key => {
       if (!items.includes(key)) {
         items.push(key)
@@ -171,8 +281,8 @@ const plugins = {
 
 module.exports = {
   get,
-  json,
   load,
   config,
   plugins,
+  settings,
 }

@@ -1,60 +1,73 @@
+require('colors')
 const inquirer = require('inquirer')
+const hq = require('../src')
 
-// modules
-const Plugins = require('./modules/list-plugins')
-const Config = require('./modules/show-config')
-const Paths = require('./modules/make-paths')
-const Json = require('./modules/dump-json')
+const { para, makeHeader } = require('./utils/text')
+const { makeChoices } = require('./utils/inquirer')
+const { numAliases } = require('./utils/config')
 
-let previousChoice
+const setup = require('./setup')
+const debug = require('./integrations')
+const { openDocs } = require('./integrations/configure')
 
-function main () {
-  console.log('\n  == Alias HQ ==')
+let previous = {}
+
+function intro () {
+  para('== Alias HQ =='.red)
+}
+
+function index () {
+  // setup
+  hq.load()
+
+  // options
+  const choices = {
+    setup: 'Setup        ' + ' - update config and source code'.grey,
+    debug: 'Integrations ' + ' - configure and debug library integrations'.grey,
+    help: 'Help         ' + ' - read the docs'.grey,
+    exit: 'Exit',
+  }
+
+  if (!numAliases()) {
+    delete choices.debug
+  }
+
+  // questions
+  makeHeader('Main Menu')
   inquirer
     .prompt({
       type: 'list',
       name: 'choice',
       message: 'What do you want to do?',
-      default: previousChoice,
-      choices: [
-        '- Show loaded config',
-        '- List plugins output (JS)',
-        '- Dump plugin output (JSON)',
-        '- Make paths JSON',
-        '- Exit',
-      ],
+      default: previous.choice,
+      choices: makeChoices(choices),
     })
     .then((answer) => {
-      previousChoice = answer.choice
-      const choice = answer.choice.match(/\w+/).shift()
-      let result
-      switch (choice) {
-        case 'Show':
-          result = Config.run()
-          break
+      previous.choice = answer.choice
+      switch (answer.choice) {
+        case choices.setup:
+          return setup()
 
-        case 'List':
-          result = Plugins.run()
-          break
+        case choices.debug:
+          return debug()
 
-        case 'Dump':
-          result = Json.run()
-          break
+        case choices.help:
+          return openDocs()
 
-        case 'Make':
-          result = Paths.run()
-          break
-
-        case 'Exit':
-          process.exit()
-          break
+        case choices.exit:
+          return false
       }
-
-      // run again...
-      Promise
-        .resolve(result)
-        .then(main)
+    })
+    .then(result => {
+      if (result === false) {
+        console.log()
+        process.exit()
+      }
+      return index()
     })
 }
 
-main()
+intro()
+process.argv.includes('setup')
+  ? setup()
+  : index()
