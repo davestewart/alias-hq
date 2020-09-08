@@ -46,7 +46,7 @@ Alias HQ solves these problems by:
 
 ## Getting started
 
-You can configure and refactor any sized project *from scratch* in **under 30 seconds** by installing the package, running the CLI, and answering the prompts:
+You can configure and refactor any sized project in **less than a minute** by installing the package, running the CLI, and answering some prompts:
 
 ![cli](docs/assets/cli-preview.png)
 
@@ -60,11 +60,11 @@ npm i --save-dev alias-hq
 yarn add -D alias-hq
 ```
 
-For quick-start instructions, see:
+To jump in without much reading, see:
 
-- [Setup](docs/quick-start.md)
+- [Quick start](docs/quick-start.md)
 
-For full instructions, see the docs index:
+For step-by-step instructions, see the docs index:
 
 - [Documentation](docs/README.md)
 
