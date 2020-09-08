@@ -156,6 +156,7 @@ const actions = {
         .then(answer => {
           if (answer.save) {
             saveSettings(newSettings)
+            Object.assign(hq.settings, newSettings)
           }
           console.log()
         })

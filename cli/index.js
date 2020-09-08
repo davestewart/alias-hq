@@ -42,7 +42,9 @@ function index () {
 
   // special "revert" mode shows option to rewrite project to relative paths
   if (process.argv.includes('revert')) {
-    choices.update += ' (to aliased paths)'
+    if (choices.update) {
+      choices.update += ' (to aliased paths)'
+    }
   }
   else {
     delete choices.revert
