@@ -62,7 +62,7 @@ function toAlias (absSourceFile, targetPath, { aliases, modules }) {
     // variables
     const { name, absPath } = targetAlias
     const aliased = absTargetFile.replace(absPath, name)
-    const isShort = targetPath.length < aliased.length
+    const isShort = targetPath.length <= aliased.length
 
     // >> upstream paths
     //    if the user has traversed up, we need to check if we crossed a module boundary
