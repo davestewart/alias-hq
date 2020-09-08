@@ -39,7 +39,7 @@ function transform (fileInfo, api, options) {
         stats.log(oldPath, newPath)
         setQuote(argument.raw)
         if (newPath) {
-          argument.raw = newPath
+          argument.value = newPath
         }
       }
     })
