@@ -81,14 +81,14 @@ const answers = {
   names: [],
 }
 
-function configureIntegration () {
+function setupIntegration () {
   return Promise.resolve()
     .then(actions.getNames)
     .then(actions.getChoices)
 }
 
 module.exports = {
-  configureIntegration,
+  setupIntegration,
   openIntegration,
   openDocs,
 }

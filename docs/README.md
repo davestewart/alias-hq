@@ -4,29 +4,28 @@
 
 Get started:
 
-- [Setup](./setup.md)
-  <br>Configure your project's paths
+- [Quick start](quick-start.md)
+  <br>A bite-sized version of the full docs
   
-- [Integrations](./integrations.md)
-  <br>Configure your IDE, frameworks or libraries
 
 CLI:
 
-- [Setup](./cli-setup.md) 
-  <br>Detailed guide on configuration paths and updating source code
+- [Alias HQ CLI](cli/cli.md) 
+  <br>Run the CLI
 
-- [Integrations](cli-integrations.md)
-  <br>Detailed guide on debugging paths and library integrations
+- [Configure paths](cli/paths.md) 
+  <br>Configure your project's path aliases
+
+- [Setup integrations](cli/integrations.md)
+  <br>Setup and debug libraries like Webpack, Jest, Rollup, etc
+
+- [Update source code](cli/source.md)
+  <br>Refactor your source code with your shiny new aliases
 
 API:
 
-- [API](./api.md)
-  <br>Short guide to Alias HQ's simple API
+- [API](api/api.md)
+  <br>A simple guide on Alias HQ's simple API
 
-- [Plugins](./plugins.md)
-  <br>Detailed guide on transforms and packaging them as plugins
-
-Appendix:
-
-- [Troubleshooting](./troubleshooting.md)
-  <br>Tips on what to do when things go wrong
+- [Plugins](api/plugins.md)
+  <br>Detailed guide on writing path transforms and packaging them as plugins

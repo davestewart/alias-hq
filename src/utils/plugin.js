@@ -5,16 +5,16 @@
  * @param   {function}  callback    The conversion function
  * @param   {object}    config      The loaded config, containing rootUrl, baseUrl and paths properties
  * @param   {*}        [options]    Optional user options
- * @returns {{alias: string, path: string}[]}
+ * @returns {{name: string, path: string}[]}
  */
 function toArray (callback, config, options) {
   return Object
     .keys(config.paths)
-    .map(key => {
-      return callback(key, {
+    .map(name => {
+      return callback(name, {
         rootUrl: config.rootUrl,
         baseUrl: config.baseUrl,
-        paths: config.paths[key],
+        paths: config.paths[name],
       }, options)
     })
 }
@@ -30,8 +30,8 @@ function toArray (callback, config, options) {
 function toObject (callback, config, options) {
   return toArray(callback, config, options)
     .reduce((output, entry) => {
-      if (!output[entry.alias]) {
-        output[entry.alias] = entry.path
+      if (!output[entry.name]) {
+        output[entry.name] = entry.path
       }
       return output
     }, {})

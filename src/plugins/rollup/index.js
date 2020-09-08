@@ -1,21 +1,21 @@
 const { toArray, toObject, resolve, join } = require('../../utils')
 
 // @see https://github.com/rollup/plugins/tree/master/packages/alias
-function callback (alias, config, options) {
+function callback (name, config, options) {
   const { rootUrl, baseUrl } = config
-  alias = alias
+  name = name
     .replace(/\/\*$/, '')
   let path = config.paths[0]
     .replace(/\/\*$/, '')
   path = resolve(rootUrl, baseUrl, path)
   if (options.format === 'object') {
     return {
-      alias,
+      name,
       path,
     }
   }
   return {
-    find: alias,
+    find: name,
     replacement: path,
   }
 }

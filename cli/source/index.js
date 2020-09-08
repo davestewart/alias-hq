@@ -5,15 +5,16 @@ const Path = require('path')
 const assert = require('assert').strict
 const inquirer = require('inquirer')
 const runner = require('jscodeshift/src/Runner')
-const hq = require('../../../src')
+const hq = require('../../src')
 const { makeObjectBullets } = require('../common')
-const { inspect } = require('../../utils')
-const { getLongestStringLength } = require('../../utils/text')
-const { getAliases, numAliases, saveSettings } = require('../../utils/config')
-const { cleanPathsInfo } = require('../../utils/paths')
-const { makeChoices } = require('../../utils/inquirer')
-const { para } = require('../../utils/text')
+const { inspect } = require('../utils')
+const { getLongestStringLength, makeHeader } = require('../utils/text')
+const { getAliases, numAliases, saveSettings } = require('../utils/config')
+const { getPathInfo, cleanPathsInfo } = require('../utils/paths')
+const { makeChoices } = require('../utils/inquirer')
+const { para } = require('../utils/text')
 const { showConfig, checkPaths, makeItemsBullets, makePathsBullets } = require('../common')
+const { TransformMode } = require('./paths')
 const stats = require('./stats')
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -42,7 +43,7 @@ const actions = {
       })
       .then(answer => {
         // variables
-        const folders = answer.folders
+        const folders = answer.folders.trim()
         const { infos, valid, input } = checkPaths(folders)
 
         // check paths
@@ -82,11 +83,11 @@ const actions = {
   getModules () {
     // choices
     const aliases = getAliases()
-    const maxLength = getLongestStringLength(aliases.keys)
-    const choices = aliases.keys
+    const maxLength = getLongestStringLength(aliases.names)
+    const choices = aliases.names
       .map(key => {
-        const item = aliases.get(key)
-        const { alias, relPath } = item
+        const item = aliases.forName(key)
+        const { name: alias, relPath } = item
         const label = alias + ' '.repeat(maxLength - alias.length)
         const name = label + '  ' + `- ${relPath}`.grey
         return {
@@ -111,20 +112,17 @@ const actions = {
       .then(answer => {
         answers.modules = answer.modules
           .map(answer => answer.match(/\S+/).toString())
-          .map(alias => aliases.get(alias))
+          .map(name => aliases.forName(name))
       })
   },
 
   confirmChoices () {
-    if (answers.mode === 'relative') {
-      console.log('Choices\n')
-    }
-    else {
-      console.log('')
+    if (answers.mode === TransformMode.ALIASED) {
+      console.log()
     }
     console.log(`  Paths:\n` + makePathsBullets(answers.paths))
-    if (answers.modules.length) {
-      console.log(`  Module roots:\n` + makeItemsBullets(answers.modules, 'alias', 'relPath'))
+    if (answers.mode === TransformMode.ALIASED && answers.modules.length) {
+      console.log(`  Module roots:\n` + makeItemsBullets(answers.modules, 'name', 'relPath'))
     }
     console.log(`  Options:\n` + makeObjectBullets({
       extensions: csOptions.extensions,
@@ -140,7 +138,7 @@ const actions = {
     }
     const newSettings = {
       folders: answers.paths.map(path => path.relPath),
-      modules: answers.modules.map(alias => alias.alias),
+      modules: answers.modules.map(alias => alias.name),
     }
     // inspect({ oldSettings, newSettings })
 
@@ -156,45 +154,11 @@ const actions = {
         .then(answer => {
           if (answer.save) {
             saveSettings(newSettings)
+            Object.assign(hq.settings, newSettings)
           }
+          console.log()
         })
     }
-  },
-
-  getAction () {
-    const choices = {
-      config: 'Show config',
-      restart: 'Change settings',
-      preview: 'Preview updates',
-      proceed: 'Update files ' + '- no further confirmation!'.red,
-      back: 'Back',
-    }
-    return inquirer
-      .prompt({
-        type: 'list',
-        name: 'action',
-        message: `Next step:`,
-        choices: makeChoices(choices),
-        default: choices.preview,
-      })
-      .then(answer => {
-        const action = answer.action
-        if (action === choices.back) {
-          return
-        }
-
-        if (action === choices.config) {
-          showConfig()
-          return actions.getAction()
-        }
-
-        if (action === choices.restart) {
-          return updateSource()
-        }
-
-        const dry = action === choices.preview
-        return actions.process(dry)
-      })
   },
 
   process (dry = true) {
@@ -208,7 +172,7 @@ const actions = {
 
     // modules
     const modules = answers.modules
-      .map(module => module.alias)
+      .map(module => module.name)
 
     // options
     const options = {
@@ -225,16 +189,31 @@ const actions = {
     stats.reset()
 
     // do it
-    if (aliases.keys.length) {
+    if (aliases.names.length) {
       console.log()
       const file = __dirname + '/transformer.js'
       return runner
         .run(file, paths, { ...options, aliases, modules })
-        .then(results => {
-          stats.present(results)
-          return actions.getAction()
-        })
+        .then(results => stats.present(results))
     }
+  }
+}
+
+actions.getOptions = function () {
+  if (answers.mode === TransformMode.ALIASED) {
+    return Promise.resolve()
+      .then(actions.getPaths)
+      .then(actions.checkForVue)
+      .then(actions.getModules)
+      .then(actions.confirmChoices)
+      .then(actions.saveSettings)
+  }
+
+  else {
+    return Promise.resolve()
+      .then(actions.getPaths)
+      .then(actions.checkForVue)
+      .then(actions.confirmChoices)
   }
 }
 
@@ -292,7 +271,7 @@ function getAnswers () {
   return {
     paths: [],
     modules: [],
-    mode: 'aliased',
+    mode: TransformMode.ALIASED,
   }
 }
 
@@ -300,6 +279,8 @@ function getAnswers () {
  * @type {SourceAnswers}
  */
 let answers
+
+const previous = {}
 
 /**
  * Options for JSCodeShift
@@ -311,41 +292,105 @@ let answers
  */
 let csOptions
 
-// main function
-function updateSource (toAliases = true) {
+// main run function
+function run () {
+  const choices = {
+    config: 'Show config',
+    showOptions: 'Show options',
+    chooseOptions: 'Configure options',
+    preview: 'Preview updates',
+    proceed: 'Update files ' + '- no further confirmation!'.red,
+    back: 'Back',
+  }
+
+  // no paths - limit choices
+  const hasPaths = hq.settings.folders.length || answers.paths.length
+  if (!hasPaths) {
+    delete choices.showOptions
+    delete choices.preview
+    delete choices.proceed
+  }
+
+  let header = 'Source Code Menu'
+  if (answers.mode === TransformMode.RELATIVE) {
+    header += ' (Reverting files)'.red
+  }
+  makeHeader(header)
+  return inquirer
+    .prompt({
+      type: 'list',
+      name: 'action',
+      message: `What do you want to do?:`,
+      choices: makeChoices(choices),
+      default: previous.action
+    })
+    .then(answer => {
+      const action = answer.action
+      if (action !== choices.back) {
+        previous.action = answer.action
+      }
+
+      switch (action) {
+        case choices.config:
+          return showConfig()
+
+        case choices.showOptions:
+          return actions.confirmChoices()
+
+        case choices.chooseOptions:
+          return actions.getOptions()
+
+        case choices.preview:
+          return actions.process(true)
+
+        case choices.proceed:
+          return actions.process(false)
+
+        case choices.back:
+          return 'back'
+      }
+    })
+    .then(result => {
+      return result === 'back'
+        ? null
+        : run()
+    })
+}
+
+function setup (aliased = true) {
   // setup
   hq.load()
   answers = getAnswers()
   csOptions = getCsOptions()
 
-  // check
-  if (!numAliases()) {
+  // aliases
+  const aliases = getAliases()
+  if (aliases.names.length === 0) {
     para('No aliases configured: skipping source code update!'.red)
     return
   }
 
-  // actions
-  if (toAliases) {
-    return Promise.resolve()
-      .then(actions.getPaths)
-      .then(actions.checkForVue)
-      .then(actions.getModules)
-      .then(actions.confirmChoices)
-      .then(actions.saveSettings)
-      .then(actions.getAction)
-  }
+  // get settings
+  answers.paths = hq.settings.folders
+    .map(folder => getPathInfo(hq.config.rootUrl, folder))
+  answers.modules = hq.settings.modules
+    .map(name => aliases.forName(name))
 
-  else {
-    answers.mode = 'relative'
-    return Promise.resolve()
-      .then(actions.getPaths)
-      .then(actions.checkForVue)
-      .then(actions.confirmChoices)
-      .then(actions.getAction)
-  }
+  // previous
+  previous.action = "Show config"
+
+  // actions
+  answers.mode = aliased
+    ? TransformMode.ALIASED
+    : TransformMode.RELATIVE
+}
+
+// main function
+function updateSource (aliased = true) {
+  setup(aliased)
+  return run()
 }
 
 module.exports = {
-  updateSource,
-  getAliases,
+  updateSource
 }

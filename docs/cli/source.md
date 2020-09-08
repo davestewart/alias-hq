@@ -1,111 +1,22 @@
-# CLI
+# Update source code
 
-> Create or maintain paths configuration and rewrite source code
+> Update source code to use your configured aliases
 
-![alias cli](./assets/cli-source.png)
+![alias cli](../assets/cli-source.png)
 
-The Setup menu allows you to: 
-
-- [Create config](#create-config) - create a new `ts/jsconfig` file from scratch
-- [Update config](#update-config) - update your config file with new paths
-- [Update source code](#update-source-code) - update your source code with new aliases
-
-*Note that on first run, Alias HQ will reveal menu options as you complete sections.*
-
-## Create config
-
-If you do not already have a `ts/jsconfig.json` file, Alias HQ can create one for you.
-
-Follow the prompts and you will end up with a basic file like this:
-
-```json
-{
-  "compilerOptions": {
-    "baseUrl": "",
-    "paths": {}
-  }
-}
-```
-
-## Update config
-
-The next menu option allows you to configure your project's path aliases.
-
-It has three steps: **Base Url**, **Paths** and **Alias Prefix**.
-
-### Base URL
-
-The `baseUrl` is folder from which all `paths` will start from, and is generally either:
-
--  your `src/` folder (pre-filled if this folder exists)
-- your root folder (just enter `.` )
-
-### Folders
-
-Your `paths` config is the physical map of alias names to file system folders.
-
-You have various ways to enter them:
-
-- type relative paths, relative to your `baseUrl` folder
-- drag-and-drop folders from your Finder / Explorer
-- copy/paste relative or absolute paths. 
-
-Note that:
-
-- the paste limit is often 1024 characters
-- line breaks do not seem to be supported (separate paths with spaces instead, quote if necessary)
-
-Alias HQ will process your input then show you a preview of valid paths (those that exist, and are below the project root):
-
-```
-? Folders [ drag here / type paths ]: ../packages app foo
-
-    ✔ packages      - /Volumes/Data/AliasHQ/demos/alias-hq-demo/packages
-    ✔ app           - /Volumes/Data/AliasHQ/demos/alias-hq-demo/src/app
-    ✘ foo           - /Volumes/Data/AliasHQ/demos/alias-hq-demo/src/foo
-```
-
-You cannot continue with invalid paths; they will be removed and you will have to repeat the step.
-
-### Alias prefix
-
-Finally, you will want to *prefix* your aliases.
-
-The convention is `@` and is the default suggestion.
-
-### Preview config
-
-Once you complete these steps, Alias HQ will show you a preview of the new configuration and give you the option to save it:
-
-```js
-{
-  "rootUrl": "/Volumes/Data/AliasHQ/demos/alias-hq-demo",
-  "baseUrl": "src",
-  "paths": {
-    "@packages/*": [ "../packages/*" ],
-    "@/*": [ "/*" ],
-    "@app/*": [ "app/*" ],
-    "@data/*": [ "app/data/*" ],
-    ...
-  }
-}
-```
-
-## Update source code
-
-Alias HQ's killer feature is **the ability to rewrite your source code** with your shiny new aliases.
+One of Alias HQ's best features is **the ability to update your source code** with your shiny new aliases.
 
 There are two configuration steps:
 
 - **Folders** and **Module roots**
 
-Followed by options to
+Followed by options to:
 
 - **Change settings**, **Preview updates** or **Update files**
 
 ### Folders
 
-This step asks you for the paths **relative to your *project's root***, that you would like to process.
+This step asks you for the paths **relative to your project's *root***, that you would like to process.
 
 As before, you can type, drag-and-drop or paste relative or absolute paths here:
 
@@ -173,9 +84,10 @@ Note that:
 The final menu shows five options:
 
 ```
-? Next step:
+? What do you want to do?: (Use arrow keys)
   - Show config
-  - Change settings
+  - Show options
+  - Configure options
 ❯ - Preview updates
   - Update files - no further confirmation!
   - Back
@@ -250,9 +162,4 @@ The question-based interface remembers your choices between steps, but projects 
 
 When new answers are given in the CLI, you will be prompted if you want to save.
 
-
-
----
-
-> » Next: [Integrations](./integrations.md)
 

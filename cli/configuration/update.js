@@ -7,7 +7,7 @@ const { inspect } = require('../utils')
 const { makeChoices } = require('../utils/inquirer')
 const { saveSettings } = require('../utils/config')
 const { indent, makeJson } = require('../utils/text')
-const { checkPath, checkPaths } = require('./common')
+const { checkPath, checkPaths } = require('../common')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // helpers
@@ -31,28 +31,28 @@ function makePaths (folders, config, answers) {
     let absPath = Path.resolve(rootUrl, input)
     let relPath = Path.relative(rootUrl, absPath)
 
-    // alias
+    // name
     const prefix = answers.prefix
     let name = Path.basename(absPath)
     if (rootUrl === absPath && prefix === '@') {
       name = ''
     }
-    let alias = prefix + name
+    name = prefix + name
 
     // folder
     const ext = Path.extname(absPath)
     if (!ext) {
       relPath += '/*'
-      alias += '/*'
+      name += '/*'
     }
 
     // file
     else {
-      alias = alias.replace(ext, '')
+      name = name.replace(ext, '')
     }
 
     // assign
-    output[alias] = [relPath]
+    output[name] = [relPath]
     return output
   }, paths)
 }
@@ -68,13 +68,13 @@ function makeConfig (answers, options = undefined) {
   // variables
   const baseUrl = answers.baseUrl
 
-  // paths
-  let paths = answers.paths
+  // folders
+  const folders = answers.paths
     .filter(info => info.valid)
     .map(info => info.relPath)
 
   // json
-  paths = makePaths(paths, hq.config, answers)
+  const paths = makePaths(folders, hq.config, answers)
 
   // config
   const config = {
@@ -97,7 +97,7 @@ const actions = {
     const numAliases = Object.keys(hq.config.paths).length
     if (numAliases) {
       const choices = {
-        add: 'Add folders',
+        add: 'Add paths',
         replace: 'Reconfigure',
       }
       return inquirer
@@ -143,11 +143,11 @@ const actions = {
       })
   },
 
-  getFolders () {
+  getPaths () {
     // default folders
-    let folders = previous.folders
-    if (!folders && answers.action === 'replace') {
-      folders = Object
+    let paths = previous.paths
+    if (!paths && answers.action === 'replace') {
+      paths = Object
         .values(hq.config.paths)
         .map(paths => {
           const path = paths[0].replace(/[\/]\*$/, '')
@@ -162,36 +162,34 @@ const actions = {
     return inquirer
       .prompt({
         type: 'input',
-        name: 'folders',
-        default: folders,
-        message: `Folders [ ${'drag here / type paths'.red} ]:`,
+        name: 'paths',
+        default: paths,
+        message: `Paths [ ${'type folders / drag from filesystem'.red} ]:`,
       })
       .then((answer) => {
         // variables
-        const folders = answer.folders.trim()
-        if (folders === '') {
-          return actions.getFolders()
+        const paths = answer.paths.trim()
+        if (paths === '') {
+          return actions.getPaths()
         }
 
         // TODO
         // trim leading slash
         // find way to prevent newline from stopping paste of multiple lines
-        // find way past 1024 character limit
         // check input return is working
-        // add docs about all this
 
         // variables
         const rootUrl = Path.join(hq.config.rootUrl, answers.baseUrl)
-        const { infos, valid, input } = checkPaths(folders, rootUrl)
+        const { infos, valid, input } = checkPaths(paths, rootUrl)
 
         // if invalid paths
         if (!valid) {
-          previous.folders = input
-          return actions.getFolders()
+          previous.paths = input
+          return actions.getPaths()
         }
 
         // otherwise...
-        previous.folders = folders
+        previous.paths = paths
         answers.paths = infos
       })
   },
@@ -257,7 +255,7 @@ const actions = {
 
     // log
     console.log()
-    console.log(indent(json) + '\n')
+    console.log(indent(json))
   },
 
   saveSettings () {
@@ -342,7 +340,7 @@ function updateConfig () {
   return Promise.resolve()
     .then(actions.getChoice)
     .then(actions.getBaseUrl)
-    .then(actions.getFolders)
+    .then(actions.getPaths)
     .then(actions.getPrefix)
     .then(actions.showConfig)
     .then(actions.saveSettings)

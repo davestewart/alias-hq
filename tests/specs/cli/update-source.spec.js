@@ -1,7 +1,7 @@
 const hq = require('../../../src')
 const { abs, inspect } = require('../../../src/utils')
-const { getAliases } = require('../../../cli/setup/update-source')
-const { toAlias } = require('../../../cli/setup/update-source/paths')
+const { getAliases } = require('../../../cli/utils/config')
+const { toAlias } = require('../../../cli/source/paths')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // helpers
@@ -12,8 +12,8 @@ let modules = [
   '@packages'
 ]
 
-function test (file, rel, expected = undefined) {
-  const actual = toAlias(abs(file), rel, { aliases, modules })
+function test (relSourceFile, targetPath, expected = undefined) {
+  const actual = toAlias(abs(relSourceFile), targetPath, { aliases, modules })
   expect(actual).toBe(expected)
 }
 
@@ -66,17 +66,17 @@ describe('core transforms', function () {
   })
 
   describe('modules', function () {
-    it('should retain upstream paths within the current module ', function () {
+    // @packages is marked as a module root
+    it('should retain paths within the current module ', function () {
       test('../packages/fetch/data/index.js', '../settings.js')
       test('../packages/fetch/foo/bar/baz/index.js', '../settings.js')
       test('../packages/fetch/foo/bar/baz/index.js', '../../../settings.js')
     })
 
-    it('should take module alias above current module', function () {
+    it('should take module alias outside current module', function () {
       test('../packages/fetch/index.js', '../services/foo.js', '@packages/services/foo.js')
       test('../packages/fetch/data/index.js', '../../services/foo.js', '@packages/services/foo.js')
     })
-
   })
 
   describe('existing aliases', function () {

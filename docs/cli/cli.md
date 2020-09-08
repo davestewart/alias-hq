@@ -1,8 +1,8 @@
-# CLI
+# Alias HQ CLI
 
 > Command line tool to generate configuration, rewrite source code, and debug plugins
 
-![alias cli](./assets/cli-source.png)
+![alias cli](../assets/cli-preview.png)
 
 ## Overview
 
@@ -14,22 +14,11 @@ In the terminal, run the following code:
 alias-hq
 ```
 
-You will see (depending on the configured state of your project):
-
-```
-? What do you want to do?
-❯ - Setup         - update config and source code
-  - Integrations  - configure and debug library integrations
-  - Help          - read the docs
-  - Exit
-```
-
 Choose from the available options:
 
-- [Setup](./cli-setup.md) - update config and source code
-- [Integrations](cli-integrations.md) - configure and debug library integrations
-
-*If the CLI does not run at all, see the [troubleshooting](#troubleshooting) section.*
+- [Configure paths](./paths.md) - create or configure your project's path aliases
+- [Setup integrations](./integrations.md) - configure and debug integrations for Webpack, Jest, etc
+- [Update source code](./source.md) - refactor source code with your configured aliases
 
 ## Troubleshooting
 
@@ -45,9 +34,4 @@ If you still can't get the path setup working, you can just call the CLI directl
 ./node_modules/.bin/alias-hq
 ```
 
-
-
----
-
-> » Next: [CLI - Setup](./cli-setup.md) or [API](./api.md)
 

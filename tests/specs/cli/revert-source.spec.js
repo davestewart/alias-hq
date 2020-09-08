@@ -1,7 +1,7 @@
 const hq = require('../../../src')
 const { abs, inspect } = require('../../../src/utils')
-const { getAliases } = require('../../../cli/setup/update-source')
-const { toRelative } = require('../../../cli/setup/update-source/paths')
+const { getAliases } = require('../../../cli/utils/config')
+const { toRelative } = require('../../../cli/source/paths')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // helpers
@@ -12,8 +12,8 @@ let modules = [
   '@packages'
 ]
 
-function test (file, path, expected) {
-  const actual = toRelative(abs(file), path, { aliases, modules })
+function test (relSourceFile, targetPath, expected) {
+  const actual = toRelative(abs(relSourceFile), targetPath, { aliases, modules })
   expect(actual).toBe(expected)
 }
 
