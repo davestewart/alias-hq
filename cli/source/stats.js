@@ -33,8 +33,9 @@ function log (from, to) {
  * @return  {boolean}
  */
 function dump (path) {
-  // title
-  const title = current.updated.length
+  // variables
+  const didUpdate = current.updated.length > 0
+  const title = didUpdate
     ? path.cyan
     : path.grey
   let text = `\n${ title }\n\n`
@@ -50,11 +51,11 @@ function dump (path) {
   })
 
   // text
-  if (skipped.length) {
+  if (skipped.length && options.skippedLines) {
     text += skipped.join('\n') + '\n'
   }
   if (updated.length) {
-    if (skipped.length) {
+    if (skipped.length && options.skippedLines) {
       text += '\n'
     }
     text += updated.join('\n')
@@ -66,10 +67,11 @@ function dump (path) {
   totals.total += updated.length + skipped.length
 
   // console
-  console.log(text.replace(/\n$/, ''))
+  if (didUpdate || options.skippedFiles) {
+    console.log(text.replace(/\n$/, ''))
+  }
 
   // return
-  const didUpdate = !!(updated.length || skipped.length)
   current.updated = []
   current.skipped = []
   return didUpdate
@@ -81,9 +83,9 @@ function present (results) {
   console.log(`- ${'Stats'.red} `)
   console.log('--------------------------------------------------------')
   console.log(`\n  Lines:\n`)
-  console.log('    › ' + `Total      : ${totals.total}`.blue)
   console.log('    › ' + `Updated    : ${totals.updated}`.cyan)
   console.log('    › ' + `Skipped    : ${totals.skipped}`.grey)
+  console.log('    › ' + `Total      : ${totals.total}`.blue)
   console.log(`\n  Files:\n`)
   console.log('    › ' + `Updated    : ${results.ok}`.cyan)
   console.log('    › ' + `Unmodified : ${results.nochange}`.grey)
@@ -104,6 +106,12 @@ const totals = {
   updated: 0,
   skipped: 0,
   total: 0,
+}
+
+// options
+const options = {
+  skippedLines: false,
+  skippedFiles: false,
 }
 
 // export
