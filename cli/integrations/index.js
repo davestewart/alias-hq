@@ -7,7 +7,7 @@ const { numAliases } = require('../utils/config')
 
 // modules
 const { showConfig } = require('../common')
-const { configureIntegration } = require('./configure')
+const { setupIntegration } = require('./setup')
 const { debugConfiguration } = require('./debug')
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -23,7 +23,7 @@ function setupIntegrations () {
   // choices
   const choices = {
     show: 'View config',
-    configure: 'Configure integration',
+    setup: 'Setup integration',
     debug: 'Debug integration',
     back: 'Back'
   }
@@ -51,8 +51,8 @@ function setupIntegrations () {
         case choices.show:
           return showConfig()
 
-        case choices.configure:
-          return configureIntegration()
+        case choices.setup:
+          return setupIntegration()
 
         case choices.debug:
           return debugConfiguration()

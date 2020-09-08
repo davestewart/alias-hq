@@ -68,13 +68,13 @@ function makeConfig (answers, options = undefined) {
   // variables
   const baseUrl = answers.baseUrl
 
-  // paths
-  let paths = answers.paths
+  // folders
+  const folders = answers.paths
     .filter(info => info.valid)
     .map(info => info.relPath)
 
   // json
-  paths = makePaths(paths, hq.config, answers)
+  const paths = makePaths(folders, hq.config, answers)
 
   // config
   const config = {
@@ -97,7 +97,7 @@ const actions = {
     const numAliases = Object.keys(hq.config.paths).length
     if (numAliases) {
       const choices = {
-        add: 'Add folders',
+        add: 'Add paths',
         replace: 'Reconfigure',
       }
       return inquirer
@@ -143,11 +143,11 @@ const actions = {
       })
   },
 
-  getFolders () {
+  getPaths () {
     // default folders
-    let folders = previous.folders
-    if (!folders && answers.action === 'replace') {
-      folders = Object
+    let paths = previous.paths
+    if (!paths && answers.action === 'replace') {
+      paths = Object
         .values(hq.config.paths)
         .map(paths => {
           const path = paths[0].replace(/[\/]\*$/, '')
@@ -162,15 +162,15 @@ const actions = {
     return inquirer
       .prompt({
         type: 'input',
-        name: 'folders',
-        default: folders,
-        message: `Folders [ ${'drag here / type paths'.red} ]:`,
+        name: 'paths',
+        default: paths,
+        message: `Paths [ ${'type folders / drag from filesystem'.red} ]:`,
       })
       .then((answer) => {
         // variables
-        const folders = answer.folders.trim()
-        if (folders === '') {
-          return actions.getFolders()
+        const paths = answer.paths.trim()
+        if (paths === '') {
+          return actions.getPaths()
         }
 
         // TODO
@@ -180,16 +180,16 @@ const actions = {
 
         // variables
         const rootUrl = Path.join(hq.config.rootUrl, answers.baseUrl)
-        const { infos, valid, input } = checkPaths(folders, rootUrl)
+        const { infos, valid, input } = checkPaths(paths, rootUrl)
 
         // if invalid paths
         if (!valid) {
-          previous.folders = input
-          return actions.getFolders()
+          previous.paths = input
+          return actions.getPaths()
         }
 
         // otherwise...
-        previous.folders = folders
+        previous.paths = paths
         answers.paths = infos
       })
   },
@@ -255,7 +255,7 @@ const actions = {
 
     // log
     console.log()
-    console.log(indent(json) + '\n')
+    console.log(indent(json))
   },
 
   saveSettings () {
@@ -340,7 +340,7 @@ function updateConfig () {
   return Promise.resolve()
     .then(actions.getChoice)
     .then(actions.getBaseUrl)
-    .then(actions.getFolders)
+    .then(actions.getPaths)
     .then(actions.getPrefix)
     .then(actions.showConfig)
     .then(actions.saveSettings)

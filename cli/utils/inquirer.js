@@ -1,10 +1,12 @@
 const inquirer = require('inquirer')
 
 function makeChoice (text = '', value = undefined) {
+  if (!text || text.startsWith('  ')) {
+    text = text || '  ----'
+    return new inquirer.Separator(text.grey)
+  }
   return {
-    name: text
-      ? '- ' + text
-      : new inquirer.Separator(' '),
+    name: '- ' + text,
     short: text.replace(/\s+-.+/, ''),
     value: value || text,
   }

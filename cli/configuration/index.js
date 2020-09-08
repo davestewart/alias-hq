@@ -25,7 +25,7 @@ function configurePaths () {
   let choices = {
     create: 'Create config',
     view: 'View config',
-    update: `Update config`,
+    update: 'Update config',
     back: 'Back',
   }
 

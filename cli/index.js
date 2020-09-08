@@ -5,7 +5,7 @@ const hq = require('../src')
 // utils
 const { para, makeHeader } = require('./utils/text')
 const { makeChoices } = require('./utils/inquirer')
-const { openDocs } = require('./integrations/configure')
+const { openDocs } = require('./integrations/setup')
 
 // actions
 const { configurePaths } = require('./configuration')
