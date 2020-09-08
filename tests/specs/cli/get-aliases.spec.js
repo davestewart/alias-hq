@@ -8,8 +8,8 @@ beforeAll(function () {
 
 describe('cli alias configuration', function () {
 
-  it('alias keys should be in file order ', function () {
-    const { keys } = getAliases()
+  it('alias names should be in file order ', function () {
+    const { names } = getAliases()
     const expected = [
       '@',
       '@packages',
@@ -19,7 +19,7 @@ describe('cli alias configuration', function () {
       '@services',
       '@views',
     ]
-    expect(keys).toEqual(expected)
+    expect(names).toEqual(expected)
   })
 
   it('alias lookups should be in reverse path order', function () {
@@ -27,37 +27,37 @@ describe('cli alias configuration', function () {
     const { lookup } = getAliases()
     const expected = [
       {
-        alias: '@classes',
+        name: '@classes',
         absPath: abs('classes'),
         relPath: 'src/classes',
       },
       {
-        alias: '@views',
+        name: '@views',
         absPath: abs('app/views'),
         relPath: 'src/app/views',
       },
       {
-        alias: '@services',
+        name: '@services',
         absPath: abs('app/services'),
         relPath: 'src/app/services',
       },
       {
-        alias: '@data',
+        name: '@data',
         absPath: abs('app/data'),
         relPath: 'src/app/data',
       },
       {
-        alias: '@app',
+        name: '@app',
         absPath: abs('app'),
         relPath: 'src/app',
       },
       {
-        alias: '@',
+        name: '@',
         absPath: abs(''),
         relPath: 'src',
       },
       {
-        alias: '@packages',
+        name: '@packages',
         absPath: abs('../packages'),
         relPath: 'packages',
       }

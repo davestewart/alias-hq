@@ -7,9 +7,9 @@ const hq = require('../../../src')
 function plugin (config, options = null) {
   const { paths } = config
   return Object.keys(paths).reduce((output, key) => {
-    const alias = key.substring(1).replace('/*', '')
+    const name = key.substring(1).replace('/*', '')
     const path = paths[key][0].replace('/*', '')
-    output[alias] = { path }
+    output[name] = { path }
     return output
   }, {})
 }

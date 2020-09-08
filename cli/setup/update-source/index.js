@@ -82,11 +82,11 @@ const actions = {
   getModules () {
     // choices
     const aliases = getAliases()
-    const maxLength = getLongestStringLength(aliases.keys)
-    const choices = aliases.keys
+    const maxLength = getLongestStringLength(aliases.names)
+    const choices = aliases.names
       .map(key => {
-        const item = aliases.get(key)
-        const { alias, relPath } = item
+        const item = aliases.forName(key)
+        const { name: alias, relPath } = item
         const label = alias + ' '.repeat(maxLength - alias.length)
         const name = label + '  ' + `- ${relPath}`.grey
         return {
@@ -111,7 +111,7 @@ const actions = {
       .then(answer => {
         answers.modules = answer.modules
           .map(answer => answer.match(/\S+/).toString())
-          .map(alias => aliases.get(alias))
+          .map(name => aliases.forName(name))
       })
   },
 
@@ -124,7 +124,7 @@ const actions = {
     }
     console.log(`  Paths:\n` + makePathsBullets(answers.paths))
     if (answers.modules.length) {
-      console.log(`  Module roots:\n` + makeItemsBullets(answers.modules, 'alias', 'relPath'))
+      console.log(`  Module roots:\n` + makeItemsBullets(answers.modules, 'name', 'relPath'))
     }
     console.log(`  Options:\n` + makeObjectBullets({
       extensions: csOptions.extensions,
@@ -140,7 +140,7 @@ const actions = {
     }
     const newSettings = {
       folders: answers.paths.map(path => path.relPath),
-      modules: answers.modules.map(alias => alias.alias),
+      modules: answers.modules.map(alias => alias.name),
     }
     // inspect({ oldSettings, newSettings })
 
@@ -157,6 +157,7 @@ const actions = {
           if (answer.save) {
             saveSettings(newSettings)
           }
+          console.log()
         })
     }
   },
@@ -208,7 +209,7 @@ const actions = {
 
     // modules
     const modules = answers.modules
-      .map(module => module.alias)
+      .map(module => module.name)
 
     // options
     const options = {
@@ -225,7 +226,7 @@ const actions = {
     stats.reset()
 
     // do it
-    if (aliases.keys.length) {
+    if (aliases.names.length) {
       console.log()
       const file = __dirname + '/transformer.js'
       return runner

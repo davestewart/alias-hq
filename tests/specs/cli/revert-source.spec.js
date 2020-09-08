@@ -12,8 +12,8 @@ let modules = [
   '@packages'
 ]
 
-function test (file, path, expected) {
-  const actual = toRelative(abs(file), path, { aliases, modules })
+function test (relSourceFile, targetPath, expected) {
+  const actual = toRelative(abs(relSourceFile), targetPath, { aliases, modules })
   expect(actual).toBe(expected)
 }
 

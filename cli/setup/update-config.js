@@ -31,28 +31,28 @@ function makePaths (folders, config, answers) {
     let absPath = Path.resolve(rootUrl, input)
     let relPath = Path.relative(rootUrl, absPath)
 
-    // alias
+    // name
     const prefix = answers.prefix
     let name = Path.basename(absPath)
     if (rootUrl === absPath && prefix === '@') {
       name = ''
     }
-    let alias = prefix + name
+    name = prefix + name
 
     // folder
     const ext = Path.extname(absPath)
     if (!ext) {
       relPath += '/*'
-      alias += '/*'
+      name += '/*'
     }
 
     // file
     else {
-      alias = alias.replace(ext, '')
+      name = name.replace(ext, '')
     }
 
     // assign
-    output[alias] = [relPath]
+    output[name] = [relPath]
     return output
   }, paths)
 }
@@ -176,9 +176,7 @@ const actions = {
         // TODO
         // trim leading slash
         // find way to prevent newline from stopping paste of multiple lines
-        // find way past 1024 character limit
         // check input return is working
-        // add docs about all this
 
         // variables
         const rootUrl = Path.join(hq.config.rootUrl, answers.baseUrl)

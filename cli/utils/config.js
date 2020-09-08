@@ -40,22 +40,22 @@ function getPlugins () {
 function getAliases () {
   const rootUrl = hq.config.rootUrl
   const aliases = hq.get('webpack')
-  const keys = Object.keys(aliases)
+  const names = Object.keys(aliases)
 
   // lookup
-  const lookup = keys
-    .map(alias => {
-      const absPath = String(aliases[alias])
+  const lookup = names
+    .map(name => {
+      const absPath = String(aliases[name])
       const relPath = Path.relative(rootUrl, absPath)
 
       /**
        * @typedef   {object}  Alias
-       * @property  {string}  alias
-       * @property  {string}  absPath
-       * @property  {string}  relPath
+       * @property  {string}  name      The name of the alias, i.e @data
+       * @property  {string}  absPath   The absolute path of the alias, i.e. /projects/project/src/services/data
+       * @property  {string}  relPath   The relative path of the alias, i.e. src/services/data
        */
       return {
-        alias,
+        name,
         absPath,
         relPath,
       }
@@ -69,14 +69,22 @@ function getAliases () {
 
   /**
    * @typedef   {object}    Aliases
-   * @property  {string[]}  keys
+   * @property  {string[]}  names
    * @property  {Alias[]}   lookup
-   * @property  {(function(string): Alias)}   get
+   * @property  {(function(string): Alias)}   forName   Returns the alias for the exact alias @name
+   * @property  {(function(string): Alias)}   fromName  Returns the first alias matching the partial @aliased path
+   * @property  {(function(string): Alias)}   forPath   Returns the first alias matching the partial /absolute path
    */
   return {
-    keys,
+    names,
     lookup,
-    get: key => lookup.find(item => item.alias === key)
+    forName: name => lookup.find(item => name === item.name),
+    fromName (path) {
+      const reversed = names.sort().reverse()
+      const name = reversed.find(name => path.startsWith(name))
+      return this.forName(name)
+    },
+    forPath: absPath => lookup.find(item => absPath.startsWith(item.absPath)),
   }
 }
 

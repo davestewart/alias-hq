@@ -1,9 +1,9 @@
 const { toObject, join } = require('../../utils')
 
 // @see https://jestjs.io/docs/en/configuration#modulenamemapper-objectstring-string--arraystring
-function callback (alias, config) {
+function callback (name, config) {
   const { baseUrl, paths } = config
-  alias = alias
+  name = name
     .replace(/\*/, '(.*)')
   let path = paths.map(path => {
     path = path
@@ -15,7 +15,7 @@ function callback (alias, config) {
     path = path[0]
   }
   return {
-    alias: `^${alias}$`,
+    name: `^${name}$`,
     path,
   }
 }
