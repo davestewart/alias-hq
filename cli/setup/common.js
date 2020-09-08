@@ -142,7 +142,7 @@ function checkPath (text, rootUrl = undefined, exists = true) {
 function showConfig () {
   hq.load()
   console.log()
-  console.log(indent(makeJson(hq.config, true, true)) + '\n')
+  console.log(indent(makeJson(hq.config)) + '\n')
 }
 
 module.exports = {

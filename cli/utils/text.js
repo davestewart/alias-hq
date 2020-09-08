@@ -1,4 +1,5 @@
 require('colors')
+const { isObject } = require('./index')
 
 /**
  * Utility function to get the max length of a series of strings
@@ -90,21 +91,53 @@ function makeFileBullet (info, state) {
   return makeBullet(`${relText} ${absText}`, state)
 }
 
-function makeJson (data, colorize = false, compact = false) {
-  let json = JSON
-    .stringify(data, null, 2)
-  if (compact) {
+/**
+ * Make JSON to save to disk
+ *
+ * @param   {object}                data    The data to convert to JSON
+ * @param   {JsonFormat|boolean}   options  An optional options object, or false to skip formatting
+ * @return  {string}
+ */
+function makeJson (data, options = {}) {
+  /**
+   * @typedef    {object}     JsonFormat  Options to format JSON
+   * @property   {boolean}   [compact]    Compact single arrays into one line
+   * @property   {boolean}   [padding]    Pad any compacted single arrays with spaces
+   * @property   {string}    [color]      Colorize any text in quotes
+   */
+  const defaults = {
+    compact: true,
+    padding: true,
+    color: 'cyan',
+  }
+
+  // options
+  options = isObject(options)
+    ? { ...defaults, ...options }
+    : { compact: true }
+
+  // convert
+  let json = JSON.stringify(data, null, 2)
+
+  // compact
+  if (options.compact) {
     json = json
       .replace(/\[([\s\S]+?)\]/g, function (text) {
         const elements = text.match(/".+?"/g)
+        const p = options.padding ? ' ' : ''
         return elements.length === 1
-          ? `[ ${ elements[0] } ]`
+          ? `[${p}${ elements[0] }${p}]`
           : text
       })
   }
-  return colorize
-    ? json.replace(/"(.+?)"/g, (matches, text) => `"${text.cyan}"`)
-    : json + '\n'
+
+  // color
+  if (options.color) {
+    json = json.replace(/"(.+?)"/g, (matches, text) => `"${text[options.color]}"`)
+  }
+
+  // return
+  return json + '\n'
 }
 
 module.exports = {

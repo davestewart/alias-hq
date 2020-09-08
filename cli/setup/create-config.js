@@ -51,7 +51,7 @@ const actions = {
     // output
     console.log('')
     console.log(`  File:\n` + makeFileBullet(fileInfo, !fileInfo.exists))
-    console.log(`  JSON:\n` + indent(makeJson(json, true, true)))
+    console.log(`  JSON:\n` + indent(makeJson(json)))
     console.log()
   },
 
@@ -68,7 +68,7 @@ const actions = {
         }
 
         // data
-        const data = makeJson(answers.json)
+        const data = makeJson(answers.json, false)
 
         // write
         try {
