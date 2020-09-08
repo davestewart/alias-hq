@@ -5,14 +5,14 @@ const Path = require('path')
 const assert = require('assert').strict
 const inquirer = require('inquirer')
 const runner = require('jscodeshift/src/Runner')
-const hq = require('../../../src')
+const hq = require('../../src')
 const { makeObjectBullets } = require('../common')
-const { inspect } = require('../../utils')
-const { getLongestStringLength } = require('../../utils/text')
-const { getAliases, numAliases, saveSettings } = require('../../utils/config')
-const { cleanPathsInfo } = require('../../utils/paths')
-const { makeChoices } = require('../../utils/inquirer')
-const { para } = require('../../utils/text')
+const { inspect } = require('../utils')
+const { getLongestStringLength, makeHeader } = require('../utils/text')
+const { getAliases, numAliases, saveSettings } = require('../utils/config')
+const { getPathInfo, cleanPathsInfo } = require('../utils/paths')
+const { makeChoices } = require('../utils/inquirer')
+const { para } = require('../utils/text')
 const { showConfig, checkPaths, makeItemsBullets, makePathsBullets } = require('../common')
 const stats = require('./stats')
 
@@ -162,42 +162,6 @@ const actions = {
     }
   },
 
-  getAction () {
-    const choices = {
-      config: 'Show config',
-      restart: 'Change settings',
-      preview: 'Preview updates',
-      proceed: 'Update files ' + '- no further confirmation!'.red,
-      back: 'Back',
-    }
-    return inquirer
-      .prompt({
-        type: 'list',
-        name: 'action',
-        message: `Next step:`,
-        choices: makeChoices(choices),
-        default: choices.preview,
-      })
-      .then(answer => {
-        const action = answer.action
-        if (action === choices.back) {
-          return
-        }
-
-        if (action === choices.config) {
-          showConfig()
-          return actions.getAction()
-        }
-
-        if (action === choices.restart) {
-          return updateSource()
-        }
-
-        const dry = action === choices.preview
-        return actions.process(dry)
-      })
-  },
-
   process (dry = true) {
     // aliases
     const aliases = getAliases()
@@ -231,11 +195,26 @@ const actions = {
       const file = __dirname + '/transformer.js'
       return runner
         .run(file, paths, { ...options, aliases, modules })
-        .then(results => {
-          stats.present(results)
-          return actions.getAction()
-        })
+        .then(results => stats.present(results))
     }
+  }
+}
+
+actions.getOptions = function () {
+  if (answers.mode === 'aliases') {
+    return Promise.resolve()
+      .then(actions.getPaths)
+      .then(actions.checkForVue)
+      .then(actions.getModules)
+      .then(actions.confirmChoices)
+      .then(actions.saveSettings)
+  }
+
+  else {
+    return Promise.resolve()
+      .then(actions.getPaths)
+      .then(actions.checkForVue)
+      .then(actions.confirmChoices)
   }
 }
 
@@ -302,6 +281,8 @@ function getAnswers () {
  */
 let answers
 
+const previous = {}
+
 /**
  * Options for JSCodeShift
  *
@@ -312,41 +293,105 @@ let answers
  */
 let csOptions
 
-// main function
-function updateSource (toAliases = true) {
+// main run function
+function run () {
+  const choices = {
+    config: 'Show config',
+    showOptions: 'Show options',
+    chooseOptions: 'Configure options',
+    preview: 'Preview updates',
+    proceed: 'Update files ' + '- no further confirmation!'.red,
+    back: 'Back',
+  }
+
+  const hasPaths = hq.settings.folders.length || answers.paths.length
+  if (!hasPaths) {
+    delete choices.showOptions
+    delete choices.preview
+    delete choices.proceed
+  }
+
+  if (answers.mode !== 'aliases') {
+    delete choices.showOptions
+    delete choices.chooseOptions
+  }
+
+  makeHeader('Source Code Menu')
+  return inquirer
+    .prompt({
+      type: 'list',
+      name: 'action',
+      message: `What do you want to do?:`,
+      choices: makeChoices(choices),
+      default: previous.action
+    })
+    .then(answer => {
+      const action = answer.action
+      if (action !== choices.back) {
+        previous.action = answer.action
+      }
+
+      switch (action) {
+        case choices.config:
+          return showConfig()
+
+        case choices.showOptions:
+          return actions.confirmChoices()
+
+        case choices.chooseOptions:
+          return actions.getOptions()
+
+        case choices.preview:
+          return actions.process(true)
+
+        case choices.proceed:
+          return actions.process(false)
+
+        case choices.back:
+          return 'back'
+      }
+    })
+    .then(result => {
+      return result === 'back'
+        ? null
+        : run()
+    })
+}
+
+function setup (toAliases = true) {
   // setup
   hq.load()
   answers = getAnswers()
   csOptions = getCsOptions()
 
-  // check
-  if (!numAliases()) {
+  // aliases
+  const aliases = getAliases()
+  if (aliases.names.length === 0) {
     para('No aliases configured: skipping source code update!'.red)
     return
   }
 
-  // actions
-  if (toAliases) {
-    return Promise.resolve()
-      .then(actions.getPaths)
-      .then(actions.checkForVue)
-      .then(actions.getModules)
-      .then(actions.confirmChoices)
-      .then(actions.saveSettings)
-      .then(actions.getAction)
-  }
+  // get settings
+  answers.paths = hq.settings.folders
+    .map(folder => getPathInfo(hq.config.rootUrl, folder))
+  answers.modules = hq.settings.modules
+    .map(name => aliases.forName(name))
 
-  else {
-    answers.mode = 'relative'
-    return Promise.resolve()
-      .then(actions.getPaths)
-      .then(actions.checkForVue)
-      .then(actions.confirmChoices)
-      .then(actions.getAction)
-  }
+  // previous
+  previous.action = "Show config"
+
+  // actions
+  answers.mode = toAliases
+    ? 'aliases'
+    : 'relative'
+}
+
+// main function
+function updateSource (toAliases = true) {
+  setup(toAliases)
+  return run()
 }
 
 module.exports = {
-  updateSource,
-  getAliases,
+  updateSource
 }

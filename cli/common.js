@@ -1,7 +1,7 @@
 require('colors')
-const hq = require('../../src')
-const { getPathsInfo, isPathValid, getPathString } = require('../utils/paths')
-const { indent, makeBullet, makeJson, getLongestStringLength } = require('../utils/text')
+const hq = require('../src')
+const { getPathsInfo, isPathValid, getPathString } = require('./utils/paths')
+const { indent, makeBullet, makeJson, getLongestStringLength } = require('./utils/text')
 
 /**
  * Make a single bullet item with icon, label and note
@@ -142,7 +142,7 @@ function checkPath (text, rootUrl = undefined, exists = true) {
 function showConfig () {
   hq.load()
   console.log()
-  console.log(indent(makeJson(hq.config)) + '\n')
+  console.log(indent(makeJson(hq.config)))
 }
 
 module.exports = {

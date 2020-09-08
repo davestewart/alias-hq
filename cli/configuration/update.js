@@ -7,7 +7,7 @@ const { inspect } = require('../utils')
 const { makeChoices } = require('../utils/inquirer')
 const { saveSettings } = require('../utils/config')
 const { indent, makeJson } = require('../utils/text')
-const { checkPath, checkPaths } = require('./common')
+const { checkPath, checkPaths } = require('../common')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // helpers

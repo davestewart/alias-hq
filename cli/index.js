@@ -2,13 +2,15 @@ require('colors')
 const inquirer = require('inquirer')
 const hq = require('../src')
 
+// utils
 const { para, makeHeader } = require('./utils/text')
 const { makeChoices } = require('./utils/inquirer')
-const { numAliases } = require('./utils/config')
-
-const setup = require('./setup')
-const debug = require('./integrations')
 const { openDocs } = require('./integrations/configure')
+
+// actions
+const { configurePaths } = require('./configuration')
+const { setupIntegrations } = require('./integrations')
+const { updateSource } = require('./source')
 
 let previous = {}
 
@@ -22,14 +24,28 @@ function index () {
 
   // options
   const choices = {
-    setup: 'Setup        ' + ' - update config and source code'.grey,
-    debug: 'Integrations ' + ' - configure and debug library integrations'.grey,
-    help: 'Help         ' + ' - read the docs'.grey,
-    exit: 'Exit',
+    config: 'Configure paths',
+    debug:  'Setup integrations',
+    update: 'Update source code',
+    revert: 'Revert source code (to relative paths)',
+    help:   'Help',
+    exit:   'Exit',
   }
 
-  if (!numAliases()) {
+  const numAliases = Object.keys(hq.config.paths).length
+
+  if (numAliases === 0) {
     delete choices.debug
+    delete choices.update
+    delete choices.revert
+  }
+
+  // special "revert" mode shows option to rewrite project to relative paths
+  if (process.argv.includes('revert')) {
+    choices.update += ' (to aliased paths)'
+  }
+  else {
+    delete choices.revert
   }
 
   // questions
@@ -45,11 +61,17 @@ function index () {
     .then((answer) => {
       previous.choice = answer.choice
       switch (answer.choice) {
-        case choices.setup:
-          return setup()
+        case choices.config:
+          return configurePaths()
+
+        case choices.update:
+          return updateSource(true)
+
+        case choices.revert:
+          return updateSource(false)
 
         case choices.debug:
-          return debug()
+          return setupIntegrations()
 
         case choices.help:
           return openDocs()
@@ -68,6 +90,4 @@ function index () {
 }
 
 intro()
-process.argv.includes('setup')
-  ? setup()
-  : index()
+index()

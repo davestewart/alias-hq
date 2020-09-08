@@ -1,38 +1,45 @@
+require('colors')
 const inquirer = require('inquirer')
 const hq = require('../../src')
-
-const { makeHeader } = require('../utils/text')
+const { makeHeader, para, indent, makeBullet } = require('../utils/text')
 const { makeChoices } = require('../utils/inquirer')
-const { numAliases } = require('../utils/config')
 
 // modules
 const { showConfig } = require('../common')
-const { configureIntegration } = require('./configure')
-const { debugConfiguration } = require('./debug')
+const { createConfig } = require('./create')
+const { updateConfig } = require('./update')
 
 // ---------------------------------------------------------------------------------------------------------------------
-// setup
+// helpers
 // ---------------------------------------------------------------------------------------------------------------------
 
 const previous = {}
 
-function setupIntegrations () {
-  // setup
+function configurePaths () {
   hq.load()
 
+  // variables
+  const hasConfig = !!hq.settings.configFile
+
   // choices
-  const choices = {
-    show: 'View config',
-    configure: 'Configure integration',
-    debug: 'Debug integration',
-    back: 'Back'
-  }
-  if (!numAliases()) {
-    delete choices.configure
-    delete choices.debug
+  let choices = {
+    create: 'Create config',
+    view: 'View config',
+    update: `Update config`,
+    back: 'Back',
   }
 
-  makeHeader('Integrations Menu')
+  if (hasConfig) {
+    delete choices.create
+  }
+  else {
+    choices = {
+      create: choices.create
+    }
+  }
+
+  // start
+  makeHeader('Paths Menu')
   return inquirer
     .prompt({
       type: 'list',
@@ -47,15 +54,17 @@ function setupIntegrations () {
         previous.choice = answer.choice
       }
 
-      switch (answer.choice) {
-        case choices.show:
+      let result
+      switch (choice) {
+
+        case choices.create:
+          return createConfig()
+
+        case choices.view:
           return showConfig()
 
-        case choices.configure:
-          return configureIntegration()
-
-        case choices.debug:
-          return debugConfiguration()
+        case choices.update:
+          return updateConfig()
 
         case choices.back:
           return 'back'
@@ -64,10 +73,10 @@ function setupIntegrations () {
     .then(result => {
       return result === 'back'
         ? null
-        : setupIntegrations()
+        : configurePaths()
     })
 }
 
 module.exports = {
-  setupIntegrations
+  configurePaths
 }
