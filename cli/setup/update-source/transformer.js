@@ -17,7 +17,7 @@ function transform (fileInfo, api, options) {
   // quote style
   let quote
   const setQuote = value => {
-    if (typeof quote === 'undefined') {
+    if (typeof quote === 'undefined' && value) {
       quote = value.startsWith('"')
         ? 'double'
         : 'single'
@@ -50,7 +50,7 @@ function transform (fileInfo, api, options) {
       const oldPath = source.value
       const newPath = to(path, oldPath, options)
       stats.log(oldPath, newPath)
-      setQuote(source.raw)
+      setQuote(source.extra.raw)
       if (newPath) {
         source.value = newPath
       }
