@@ -193,7 +193,7 @@ function load (value = undefined) {
  */
 function get (plugin, options = {}) {
   // load defaults if not loaded
-  if (!config.paths) {
+  if (!settings.configFile) {
     load()
   }
 
