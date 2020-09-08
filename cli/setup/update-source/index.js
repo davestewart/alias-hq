@@ -185,7 +185,7 @@ const actions = {
 
         if (action === choices.config) {
           showConfig()
-          return actions.process()
+          return actions.getAction()
         }
 
         if (action === choices.restart) {

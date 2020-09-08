@@ -60,11 +60,11 @@ function makePaths (folders, config, answers) {
 /**
  * Make the config to be saved to disk or shown in the terminal
  *
- * @param   {Answers}    answers
- * @param   {boolean}   colorize
+ * @param   {Answers}       answers
+ * @param   {JsonFormat}   [options]
  * @returns {string}
  */
-function makeConfig (answers, colorize = false) {
+function makeConfig (answers, options = undefined) {
   // variables
   const baseUrl = answers.baseUrl
 
@@ -85,7 +85,7 @@ function makeConfig (answers, colorize = false) {
   }
 
   // json
-  return makeJson(config, colorize, true)
+  return makeJson(config, options)
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -219,7 +219,43 @@ const actions = {
   },
 
   showConfig () {
-    const json = makeConfig(answers, true)
+    let json
+
+    // add - format only added paths in cyan
+    if (answers.action === 'add') {
+      // options
+      const options = { color: 'grey' }
+
+      // get complete json in grey
+      json = makeConfig(answers, options)
+
+      // get strings of partial json in grey
+      const parts = makeConfig({ ...answers, action: '' }, options)
+        .split(/\n/).slice(4).join('\n')
+        .match(/".+?"/g)
+        .reverse()
+
+      // get start and end formatting codes for grey
+      const [fStart, fEnd] = '|'.grey.split('|')
+
+      // loop over and replace / reformat
+      parts.forEach(part => {
+        const replacement = part
+          .replace(fStart, '')
+          .replace(fEnd, '')
+          .replace(/"([^"]+)"/, function (match, part) {
+            return `"${part.cyan}"`
+          })
+        json = json.replace(part, replacement)
+      })
+    }
+
+    // new / replace - format whole json in cyan
+    else {
+      json = makeConfig(answers)
+    }
+
+    // log
     console.log()
     console.log(indent(json) + '\n')
   },
@@ -255,7 +291,7 @@ const actions = {
         }
 
         // data
-        const json = makeConfig(answers)
+        const json = makeConfig(answers, null)
         try {
           return Fs.writeFileSync(hq.settings.configFile, json, 'utf8')
         } catch (err) {

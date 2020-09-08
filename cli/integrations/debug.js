@@ -9,7 +9,7 @@ const { indent, makeJson } = require('../utils/text')
 
 function printConfig (data) {
   console.log()
-  console.log(indent(makeJson(data, true)) + '\n')
+  console.log(indent(makeJson(data)) + '\n')
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
