@@ -37,6 +37,7 @@
   },
   "homepage": "https://github.com/davestewart/alias-hq#readme",
   "devDependencies": {
+    "ghooks": "^2.0.4",
     "jest": "^26.4.1"
   },
   "dependencies": {
@@ -47,6 +48,11 @@
     "node-fetch": "^2.6.0",
     "opn": "^6.0.0",
     "vue-jscodeshift-adapter": "^2.1.0"
+  },
+  "config": {
+    "ghooks": {
+      "pre-commit": "npm run test"
+    }
   },
   "alias-hq": {
     "root": "./demo",
