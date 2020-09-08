@@ -14,6 +14,7 @@ const { getPathInfo, cleanPathsInfo } = require('../utils/paths')
 const { makeChoices } = require('../utils/inquirer')
 const { para } = require('../utils/text')
 const { showConfig, checkPaths, makeItemsBullets, makePathsBullets } = require('../common')
+const { TransformMode } = require('./paths')
 const stats = require('./stats')
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -42,7 +43,7 @@ const actions = {
       })
       .then(answer => {
         // variables
-        const folders = answer.folders
+        const folders = answer.folders.trim()
         const { infos, valid, input } = checkPaths(folders)
 
         // check paths
@@ -116,14 +117,11 @@ const actions = {
   },
 
   confirmChoices () {
-    if (answers.mode === 'relative') {
-      console.log('Choices\n')
-    }
-    else {
-      console.log('')
+    if (answers.mode === TransformMode.ALIASED) {
+      console.log()
     }
     console.log(`  Paths:\n` + makePathsBullets(answers.paths))
-    if (answers.modules.length) {
+    if (answers.mode === TransformMode.ALIASED && answers.modules.length) {
       console.log(`  Module roots:\n` + makeItemsBullets(answers.modules, 'name', 'relPath'))
     }
     console.log(`  Options:\n` + makeObjectBullets({
@@ -202,7 +200,7 @@ const actions = {
 }
 
 actions.getOptions = function () {
-  if (answers.mode === 'aliases') {
+  if (answers.mode === TransformMode.ALIASED) {
     return Promise.resolve()
       .then(actions.getPaths)
       .then(actions.checkForVue)
@@ -273,7 +271,7 @@ function getAnswers () {
   return {
     paths: [],
     modules: [],
-    mode: 'aliased',
+    mode: TransformMode.ALIASED,
   }
 }
 
@@ -305,6 +303,7 @@ function run () {
     back: 'Back',
   }
 
+  // no paths - limit choices
   const hasPaths = hq.settings.folders.length || answers.paths.length
   if (!hasPaths) {
     delete choices.showOptions
@@ -312,12 +311,11 @@ function run () {
     delete choices.proceed
   }
 
-  if (answers.mode !== 'aliases') {
-    delete choices.showOptions
-    delete choices.chooseOptions
+  let header = 'Source Code Menu'
+  if (answers.mode === TransformMode.RELATIVE) {
+    header += ' (Reverting files)'.red
   }
-
-  makeHeader('Source Code Menu')
+  makeHeader(header)
   return inquirer
     .prompt({
       type: 'list',
@@ -359,7 +357,7 @@ function run () {
     })
 }
 
-function setup (toAliases = true) {
+function setup (aliased = true) {
   // setup
   hq.load()
   answers = getAnswers()
@@ -382,14 +380,14 @@ function setup (toAliases = true) {
   previous.action = "Show config"
 
   // actions
-  answers.mode = toAliases
-    ? 'aliases'
-    : 'relative'
+  answers.mode = aliased
+    ? TransformMode.ALIASED
+    : TransformMode.RELATIVE
 }
 
 // main function
-function updateSource (toAliases = true) {
-  setup(toAliases)
+function updateSource (aliased = true) {
+  setup(aliased)
   return run()
 }
 

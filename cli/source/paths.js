@@ -121,7 +121,7 @@ function toAlias (absSourceFile, targetPath, { aliases, modules }) {
  * @param   {Aliases}   aliases         The Aliases model with data and methods to resolve aliases
  * @returns {string|void}               A relative path string if found, or void if not
  */
-function toRelative2 (absSourceFile, targetPath, { aliases }) {
+function toRelative (absSourceFile, targetPath, { aliases }) {
   // get alias
   const alias = aliases.fromName(targetPath)
 
@@ -136,7 +136,13 @@ function toRelative2 (absSourceFile, targetPath, { aliases }) {
   }
 }
 
+const TransformMode = {
+  ALIASED: 'aliased',
+  RELATIVE: 'relative',
+}
+
 module.exports = {
   toAlias,
-  toRelative: toRelative2,
+  toRelative,
+  TransformMode,
 }

@@ -1,6 +1,6 @@
 require('colors')
 const adapt = require('vue-jscodeshift-adapter');
-const { toAlias, toRelative } = require('./paths')
+const { TransformMode, toAlias, toRelative } = require('./paths')
 const stats = require('./stats')
 
 function transform (fileInfo, api, options) {
@@ -10,7 +10,7 @@ function transform (fileInfo, api, options) {
   const root = j(source)
 
   // options
-  const to = options.mode === 'relative'
+  const to = options.mode === TransformMode.RELATIVE
     ? toRelative
     : toAlias
 

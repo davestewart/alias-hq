@@ -99,7 +99,7 @@ function checkPaths (text, rootUrl = undefined, exists = true) {
   // return
   return {
     infos,
-    valid: clean.length === infos.length,
+    valid: (clean.length === infos.length) && infos.length !== 0,
     input: clean.map(info => getPathString(info.relPath)).join(' '),
   }
 }
