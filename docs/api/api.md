@@ -55,9 +55,3 @@ const config = hq.get('foo')
 
 *If you want to submit a custom format as a plugin to the repository, post an issue or PR.*
 
-
-
----
-
-> » Next: [CLI - Integrations](./cli-integrations.md) or [Plugins](./plugins.md)
-

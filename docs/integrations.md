@@ -4,7 +4,7 @@
 
 ## VS Code
 
-Follow the instructions in the [setup](./setup.md) document and VS Code should pick up your paths.
+Follow the instructions in the [Configure paths](cli/paths.md) document and VS Code should pick up your paths.
 
 See the VS Code [documentation](https://code.visualstudio.com/docs/languages/jsconfig#_using-webpack-aliases) for more information.
 
@@ -141,16 +141,11 @@ This short React guide is *not meant to be exhaustive*; for issues, use your com
 
 ## JSON-only
 
-For libraries or setups that require JSON, you can use the [CLI](./cli.md):
+For libraries or setups that require JSON, you can use the [CLI](cli/cli.md):
 
 - Run the CLI by typing `alias-hq` in the terminal
 - Choose "Dump plugin output (JSON)"
 - Choose the required format 
 - Copy / paste the JSON where you need it
 
-
-
----
-
-> » Next: [API](./api.md) or [CLI - Integrations](./cli-integrations.md)
 

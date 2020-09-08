@@ -4,7 +4,7 @@
 
 ## Overview
 
-Whilst writing a [conversion function](./api.md#as-a-custom-format) is fairly simple, packaging it as a plugin takes just a little more work.
+Whilst writing a [conversion function](api.md#as-a-custom-format) is fairly simple, packaging it as a plugin takes just a little more work.
 
 Alias HQ uses a simple plugin architecture, where:
 
@@ -30,7 +30,7 @@ Begin your plugin by:
 
 The `index.js` file should export a single function.
 
-The following example is from the [`custom.spec.js`](../blob/master/tests/specs/custom.spec.js) file:
+The following example is from the [`custom.spec.js`](../blob/master/tests/specs/plugins/custom.spec.js) file:
 
 ```js
 module.exports = function (config, options = null) {
@@ -140,8 +140,8 @@ The function MUST:
 
 Note:
 
--  the `label` and `options` values are required **only** if you need to test multiple configurations (see the [Rollup](./src/plugins/rollup/tests.js) plugin for an example).
-- any returned `options` will be used in both **tests** and relevant [CLI](./cli.md) commands.
+-  the `label` and `options` values are required **only** if you need to test multiple configurations (see the [Rollup](../../src/plugins/rollup/tests.js) plugin for an example).
+- any returned `options` will be used in both **tests** and relevant [CLI](../cli/cli.md) commands.
 
 ### Running the tests
 
@@ -163,7 +163,7 @@ available plugins...
         ✓ should correctly convert example paths
 ```
 
-You can view the actual test code in [`tests/specs/plugins.spec.js`](https://github.com/davestewart/alias-hq/blob/master/tests/specs/plugins.spec.js).
+You can view the actual test code in [`tests/specs/plugins/core.spec.js`](https://github.com/davestewart/alias-hq/blob/master/tests/specs/plugins/core.spec.js).
 
 ## Using utilities
 
@@ -191,16 +191,16 @@ module.exports = function (config) {
 
 The `toArray` and `toObject` utilities simplify the unwrapping and re-wrapping of the `paths` config.
 
-This simplifies the writing of the overall conversion function, allowing you to concentrate on each `alias => paths` pair in turn:
+This simplifies the writing of the overall conversion function, allowing you to concentrate on each `name => paths` pair in turn:
 
 ```js 
 const { toArray } = require('../../utils')
 
-// process a single `alias => paths` entry
-function callback (alias, config, options) {
+// process a single `name => paths` entry
+function callback (name, config, options) {
   const { rootUrl, baseUrl, paths } = config // note, these are the *alias* paths!
   return {
-    alias: alias.replace('/*', ''),
+    name: name.replace('/*', ''),
     path: paths[0].replace('/*', '')
   }
 }
@@ -211,7 +211,7 @@ module.exports = function (config, options) {
 }
 ```
 
-Note that `callback` functions MUST return an object of the form `{ alias: '', path: * }` in order to be correctly mapped back into arrays or objects. 
+Note that `callback` functions MUST return an object of the form `{ name, path }` in order to be correctly mapped back into arrays or objects. 
 
 ### Test utilities
 
@@ -260,8 +260,8 @@ npm run test:coverage
 
 If you add a plugin, please also update the docs:
 
-- add the name of the plugin to the main [readme](../README.md)
-- add a simple example to the [integrations](./integrations.md) document 
+- add the name of the plugin to the main [readme](../../README.md)
+- add a simple example to the [integrations](../integrations.md) document 
 
 For the integrations example, follow the existing format, and include:
 
@@ -276,9 +276,4 @@ If it looks like it's a good idea, fork the library, update the code and submit 
 
 Thanks :)
 
-
-
----
-
-> » Next: [API](./api.md) or [CLI - Integrations](./cli-integrations.md)
 

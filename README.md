@@ -40,8 +40,8 @@ They are widely supported in the JavaScript ecosystem, but:
 
 Alias HQ solves these problems by:
 
-- using your project's `js/tsconfig`'s `paths` as the [single source of truth](./docs/setup.md)
-- providing a user-friendly [CLI](docs/cli.md) to generate `config` *and* refactor `src/*` code
+- using your project's `js/tsconfig`'s `paths` as the [single source of truth](docs/quick-start.md)
+- providing a user-friendly [CLI](docs/cli/cli.md) to generate `config` *and* refactor `src/*` code
 - providing a one-liner [API](docs//api.md) for [Webpack](docs/integrations.md#webpack), [Jest](docs/integrations.md#jest), [Rollup](docs/integrations.md#rollup) and [more](docs/plugins.md)
 
 ## Getting started
@@ -50,16 +50,23 @@ You can configure and refactor any sized project *from scratch* in **under 30 se
 
 ![cli](docs/assets/cli-preview.png)
 
-For full instructions, see:
+Install via your package manager of choice:
 
-- [Setup](docs/setup.md)
-- [CLI](docs/cli.md)
-- [Integrations](docs/integrations.md)
+```bash
+npm i --save-dev alias-hq
+```
 
-For information about the API, see:
+```bash
+yarn add -D alias-hq
+```
 
-- [API](docs/api.md)
-- [Plugins](docs/plugins.md)
+For quick-start instructions, see:
+
+- [Setup](docs/quick-start.md)
+
+For full instructions, see the docs index:
+
+- [Documentation](docs/README.md)
 
 To see a short video:
 
