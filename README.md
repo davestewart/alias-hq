@@ -10,13 +10,15 @@
 
 ## TL;DR
 
+**Using aliases in your projects makes your code easier to read and maintain.**
+
 If you are *considering* using aliases:
 
 - Alias HQ **writes the config for you** then **refactors your project's imports** 
 
 if you are *already* use aliases:
 
-- Alias HQ **uses only your jsconfig** file with **one-liner conversion** to Jest, Webpack, Rollup, etc
+- Alias HQ **reads your ts/jsconfig's paths** with **one-liner conversion** to Jest, Webpack, Rollup, etc
 
 ## Abstract
 
@@ -29,8 +31,6 @@ import { fooify } from '../../../core/services/foo'
 // to this
 import { fooify } from '@services/foo' 
 ```
-
-**Using aliases in your projects makes your code easier to read and maintain.**
 
 They are widely supported in the JavaScript ecosystem, but:
 
@@ -46,11 +46,11 @@ Alias HQ solves these problems by:
 
 ## Getting started
 
-![cli](docs/assets/cli.png)
+You can configure and refactor any sized project *from scratch* in **under 30 seconds** by installing the package, running the CLI, and answering the prompts:
 
-You can configure and refactor any sized project *from scratch* in **under 30 seconds** by installing the package, running the CLI, and answering the prompts.
+![cli](docs/assets/cli-preview.png)
 
-For more detailed instructions, see:
+For full instructions, see:
 
 - [Setup](docs/setup.md)
 - [CLI](docs/cli.md)
@@ -61,4 +61,7 @@ For information about the API, see:
 - [API](docs/api.md)
 - [Plugins](docs/plugins.md)
 
+To see a short video:
+
+- [Click here](https://twitter.com/i/status/1298592287266611205)
 

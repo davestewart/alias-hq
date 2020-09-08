@@ -1,6 +1,6 @@
 # Plugins
 
-> Package custom transforms as plugins to easily convert to specific formats
+> Package custom path transforms as plugins
 
 ## Overview
 
@@ -36,9 +36,9 @@ The following example is from the [`custom.spec.js`](../blob/master/tests/specs/
 module.exports = function (config, options = null) {
   const paths = config.paths
   return Object.keys(paths).reduce((output, key) => {
-    const alias = key.substring(1).replace('/*', '')
+    const name = key.substring(1).replace('/*', '')
     const path = paths[key][0].replace('/*', '')
-    output[alias] = { path }
+    output[name] = { path }
     return output
   }, {})
 }
@@ -275,3 +275,10 @@ To save any wasted effort, create an issue to discuss any proposed plugin first.
 If it looks like it's a good idea, fork the library, update the code and submit a PR.
 
 Thanks :)
+
+
+
+---
+
+> » Next: [API](./api.md) or [CLI - Integrations](./cli-integrations.md)
+

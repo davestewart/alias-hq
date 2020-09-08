@@ -1,6 +1,6 @@
 # Integrations
 
-> Use configured aliases in a variety of IDEs, libraries and frameworks
+> Use configured path aliases in a variety of IDEs, libraries and frameworks
 
 ## VS Code
 
@@ -147,4 +147,10 @@ For libraries or setups that require JSON, you can use the [CLI](./cli.md):
 - Choose "Dump plugin output (JSON)"
 - Choose the required format 
 - Copy / paste the JSON where you need it
+
+
+
+---
+
+> » Next: [API](./api.md) or [CLI - Integrations](./cli-integrations.md)
 

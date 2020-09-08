@@ -1,6 +1,6 @@
 # Setup
 
-> Configure your project to use aliases in your application code and toolchain
+> Configure your project to use path aliases in your toolchain
 
 ## Installation
 
@@ -15,24 +15,47 @@ yarn add -D alias-hq
 
 ## Configuration
 
-> Alias HQ piggybacks `tsconfig.json` and `jsconfig.js` which are Microsoft-designed configuration files, that can be used in your project **whether or not** you are running VS Code or TypeScript. 
+### Background
 
-Locate (or create) your `tsconfig.json` or `jsconfig.js` in your project's root folder, and configure using the example below as a guide:
+Alias HQ piggybacks the Microsoft-designed `ts/jsconfig.json` configuration files.
 
-```json
-{
-  "compilerOptions": {
-    "baseUrl": "src",
-    "paths": {
-      "@api/*": ["api/*"],
-      "@app/*": ["app/*"],
-      "@config/*": ["app/config/*"],
-      "@services/*": ["app/services/*"],
-      "@utils/*": ["common/utils/*"]
-    }
-  }
-}
-```
+These describe a wide variety of options designed for JavaScript and TypeScript projects, and will be familiar to VS Code users, though you do not have to use VS Code to use Alias HQ.
+
+### Get started
+
+From version 3.1, you can generate the config via the [Alias CLI](./cli.md):
+
+![alias cli](./assets/cli-config.png)
+
+#### Run the CLI
+
+In the terminal:
+
+- From your project root, type and run `alias-hq`
+
+*If this doesn't work, see the [troublshooting](./cli.md#troubleshooting) section in the CLI docs.*
+
+#### Create a new config file
+
+If you don't yet have a config file:
+
+- Choose "Setup > Create config"
+- Choose "JavaScript" or "TypeScript" as required
+- Choose to save the file
+
+#### Add paths to an existing config file
+
+To add or update paths in your config file: 
+
+- Choose "Setup > Update config"
+- Choose your "Base URL"
+- Choose "Folders" by typing relative paths, or dragging in folders from Finder / Explorer
+- Choose an "Alias prefix"
+- Choose to save the config
+
+See the [CLI](./cli.md) document for more info / troubleshooting.
+
+## Notes
 
 The configuration requires:
 
@@ -47,18 +70,9 @@ Note that:
 - You may add non-TypeScript paths (such as assets) here; TypeScript will ignore them but Alias HQ will use them
 - You don't *have* to use a `@` character, but the convention is to use one
 
-## Auto-generation
 
-New in 3.1, you can automatically generate the config using the [Alias CLI](./cli.md):
 
-![alias cli](./assets/cli.png)
+---
 
-In the terminal:
+> » Next : [CLI](./cli.md)
 
-- From your project root, type and run `alias-hq`
-- Choose "Make paths JSON"
-- Choose the prompts that suit you
-- Drag in folders from Finder / Explorer (or manually type relative paths, separating with spaces)
-- Copy the resulting JSON to the config file
-
-See the [CLI](./cli.md) document for more info / troubleshooting.

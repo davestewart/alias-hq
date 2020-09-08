@@ -1,6 +1,6 @@
 # API
 
-> Manage configured aliases using JavaScript code 
+> Read and transform path aliases using JavaScript  
 
 ## Get paths
 
@@ -55,7 +55,9 @@ const config = hq.get('foo')
 
 *If you want to submit a custom format as a plugin to the repository, post an issue or PR.*
 
-## CLI
 
-Note that the [CLI](./cli.md) provides an alternative prompt-driven interface to do all of the above, and more.
+
+---
+
+> » Next: [CLI - Integrations](./cli-integrations.md) or [Plugins](./plugins.md)
 
