@@ -4,10 +4,10 @@
 
 Get started:
 
-- [Setup](docs/setup.md)
+- [Setup](./setup.md)
   <br>Configure your project's paths
   
-- [Integrations](docs/integrations.md)
+- [Integrations](./integrations.md)
   <br>Configure your IDE, frameworks or libraries
 
 CLI:
@@ -20,10 +20,10 @@ CLI:
 
 API:
 
-- [API](docs/api.md)
+- [API](./api.md)
   <br>Short guide to Alias HQ's simple API
 
-- [Plugins](docs/plugins.md)
+- [Plugins](./plugins.md)
   <br>Detailed guide on transforms and packaging them as plugins
 
 Appendix:
