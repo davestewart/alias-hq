@@ -53,7 +53,7 @@ describe('core plugins:', function () {
                 expect(result && typeof result === 'object' && Object.keys(result).length > 0).toBeTruthy()
               })
 
-              it('should receive a "expected" value', function () {
+              it('should receive an "expected" value', function () {
                 expect(result.expected).toBeTruthy()
               })
 
