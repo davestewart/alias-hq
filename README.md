@@ -20,7 +20,7 @@ If you are *already* using aliases:
 
 - The Alias API **simplifies** your tooling with a single [config file](docs/cli/paths.md) and [one-liner integrations](docs/integrations.md)
 
-With Alias HQ, aliases are as easy as:
+With Alias HQ, keeping your IDE, framework and toolchain in sync is as easy as:
 
 ```js
 const aliases = hq.get('webpack') // or any supported library
