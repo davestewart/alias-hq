@@ -145,7 +145,7 @@ function load (value = undefined) {
       loadConfig(path)
     }
     else {
-      throw new Error(`No such file "${path}"`)
+      throw new Error(`[Alias HQ] No such file "${path}"`)
     }
   }
 
@@ -177,7 +177,7 @@ function load (value = undefined) {
 
   // any other value
   else {
-    throw new Error('Invalid parameter "value"')
+    throw new Error('[Alias HQ] Invalid parameter "value"')
   }
 
   // return
@@ -216,11 +216,11 @@ function get (plugin, options = {}) {
       const callback = require(path)
       return callback(config, options)
     }
-    throw new Error(`No such plugin "${plugin}"`)
+    throw new Error(`[Alias HQ] No such plugin "${plugin}"`)
   }
 
   // invalid
-  throw new Error(`Invalid "plugin" parameter`)
+  throw new Error(`[Alias HQ] Invalid "plugin" parameter`)
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
