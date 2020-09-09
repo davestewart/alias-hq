@@ -101,7 +101,10 @@ function loadConfig (path) {
   const text = Fs.readFileSync(path, 'utf8')
   if (text) {
     try { json = JSON.parse(text) }
-    catch (err) {}
+    catch (err) {
+      console.warn(new Error(err))
+      console.warn('Warning! tsconfig.json is not valid! ')
+    }
   }
 
   // config
