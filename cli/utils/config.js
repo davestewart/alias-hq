@@ -1,6 +1,7 @@
 const Path = require ('path')
 const Fs = require ('fs')
 const hq = require('../../src')
+const { compactJson } = require('./text')
 
 /**
  * Returns all plugins as a 2D hash of plugins and their options
@@ -109,7 +110,7 @@ function loadJson (filename, asText = false) {
   }
 }
 
-function saveJson (filename, data) {
+function saveJson (filename, data, compact = false) {
   // path
   const path = Path.resolve(filename)
 
@@ -118,23 +119,26 @@ function saveJson (filename, data) {
   const match = text.match(/^(\s+)"\w/)
   const spacing = match ? match[1] : '  '
 
-  // save new file
-  try {
-    const json = JSON.stringify(data, null, spacing)
-    return Fs.writeFileSync(path, json, 'utf8')
+  // get text
+  let json = JSON.stringify(data, null, spacing)
+
+  // compact arrays
+  if (compact) {
+    json = compactJson(json)
   }
-  catch (err) {
-    console.warn(`Could not save "${filename}"`, err)
-    return null
-  }
+
+  // save
+  return saveText(path, json)
 }
 
-function loadSettings () {
-  const data = loadJson('./package.json')
-  const key = 'alias-hq'
-  return data
-    ? data[key] || {}
-    : {}
+function saveText (path, text) {
+  try {
+    return Fs.writeFileSync(path, text, 'utf8')
+  }
+  catch (err) {
+    console.warn(`Could not save "${Path.basename(text)}"`, err)
+    return null
+  }
 }
 
 function saveSettings (newSettings) {
@@ -152,6 +156,7 @@ module.exports = {
   getPlugins,
   getAliases,
   numAliases,
-  loadSettings,
   saveSettings,
+  loadJson,
+  saveJson,
 }
