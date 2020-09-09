@@ -8,27 +8,11 @@
   <img src="https://raw.githubusercontent.com/davestewart/alias-hq/master/docs/assets/logo.png" alt="Alias HQ logo">
 </p>
 
-## TL;DR
-
-**Using path aliases in your projects makes your code easier to read and maintain.**
-
-If you are *considering* using aliases:
-
-- The Alias CLI **migrates** your project by [configuring your paths](docs/cli/paths.md) and [rewriting your imports](docs/cli/source.md) 
-
-If you are *already* using aliases:
-
-- The Alias API **simplifies** your tooling with a single [config file](docs/cli/paths.md) and [one-liner integrations](docs/integrations.md)
-
-With Alias HQ, keeping your IDE, framework and toolchain in sync is as easy as:
-
-```js
-const aliases = hq.get('webpack') // or any supported library
-```
-
 ## Abstract
 
-Path "aliases" are `@identifiers` that simplify unwieldy or lengthy file `imports`:
+Path "aliases" are `@identifiers` that simplify unwieldy or lengthy file `imports`.
+
+Using them in your projects makes your code easier to read and maintain:
 
 ```js
 // from this
@@ -38,23 +22,63 @@ import { fooify } from '../../../core/services/foo'
 import { fooify } from '@services/foo' 
 ```
 
-They are widely supported in the JavaScript ecosystem, but:
+They are widely supported in the JavaScript ecosystem, *however*:
 
 - libraries have incompatible formats so require separate configurations  
 - maintaining duplicate configurations is fiddly and error-prone 
 - migrating source code is laborious and long-winded
 
-Alias HQ solves these problems by:
+## TL;DR
 
-- using your project's `js/tsconfig`'s `paths` as the [single source of truth](docs/cli/paths.md)
-- providing a user-friendly [CLI](docs/cli/cli.md) to generate `config` *and* refactor `src/*` code
-- providing a one-liner [API](docs/api/api.md) for [Webpack](docs/integrations.md#webpack), [Jest](docs/integrations.md#jest), [Rollup](docs/integrations.md#rollup) and [more](docs/api/plugins.md)
+If you are *thinking about* using aliases:
+
+- The Alias CLI **migrates** your project by [configuring your paths](docs/cli/paths.md) and [rewriting your imports](docs/cli/source.md) 
+
+If you are *already* using aliases:
+
+- The Alias API **simplifies** your tooling with a single [config file](docs/cli/paths.md) and [one-liner integrations](docs/integrations.md)
+
+You can **configure and migrate any project** in less than a minute by:
+
+- installing the package
+- running the CLI
+- following the prompts
+
+## Overview
+
+Alias HQ is configured using your project's `ts/jsconfig.json`:
+
+```js
+{
+  "baseUrl": "src",
+  "paths": {
+    "@packages/*": [ "../packages/*" ],
+    "@/*": [ "/*" ],
+    "@app/*": [ "/app/*" ],
+    "@services/*": [ "/app/services/*" ],
+    ...
+  }
+}
+```
+
+The API makes sure your IDE, framework and toolchain are always in sync:
+
+```js
+const aliases = hq.get('webpack') // choose any plugin; jest, rollup, etc
+```
+
+The CLI makes sure your code is always up-to-date:
+
+```
+? What do you want to do?
+  - Configure paths
+  - Setup integrations
+❯ - Update source code
+  - Help
+  - Exit
+```
 
 ## Getting started
-
-You can configure and refactor any sized project in **less than a minute** by installing the package, running the CLI, and answering some prompts:
-
-![cli](docs/assets/cli-preview.png)
 
 Install via your package manager of choice:
 
@@ -66,15 +90,16 @@ npm i --save-dev alias-hq
 yarn add -D alias-hq
 ```
 
-To jump in without much reading, see:
+To jump in without much reading:
 
 - [Quick start](docs/quick-start.md)
 
-For step-by-step instructions, see the docs index:
+For step-by-step instructions:
 
 - [Documentation](docs/README.md)
 
-To see a short video:
+For a short video:
 
 - [Click here](https://twitter.com/i/status/1298592287266611205)
+
 
