@@ -12,6 +12,9 @@ const { configurePaths } = require('./configuration')
 const { setupIntegrations } = require('./integrations')
 const { updateSource } = require('./source')
 
+// set global flag
+global['ALIAS_CLI'] = true
+
 let previous = {}
 
 function intro () {
