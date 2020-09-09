@@ -50,7 +50,7 @@ function transform (fileInfo, api, options) {
       const oldPath = source.value
       const newPath = to(path, oldPath, options)
       stats.log(oldPath, newPath)
-      setQuote(source.extra && source.extra.raw)
+      setQuote(source.raw || source.extra && source.extra.raw)
       if (newPath) {
         source.value = newPath
       }
