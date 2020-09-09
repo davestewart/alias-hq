@@ -6,7 +6,7 @@
 
 ### Using available plugins
 
-To grab paths using available formats / plugins, call `get()` with the plugin name:
+To grab paths using [available plugins](../integrations.md) call `get()` with the plugin name:
 
 ```js
 import hq from 'alias-hq'
