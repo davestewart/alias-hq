@@ -269,7 +269,7 @@ const plugins = {
    */
   get names () {
     const path = Path.resolve(__dirname, 'plugins')
-    const items = Fs.readdirSync(path).map(file => file.replace('.js', ''))
+    const items = Fs.readdirSync(path)
     Object.keys(this.custom).forEach(key => {
       if (!items.includes(key)) {
         items.push(key)

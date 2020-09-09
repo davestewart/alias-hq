@@ -1,3 +1,4 @@
+const Fs = require('fs')
 const hq = require('../../src')
 const { rootUrl, config } = require('../globals')
 
@@ -25,9 +26,10 @@ describe('config', function () {
 
   describe('plugins', function () {
     it('should return plugin names', function () {
+      const names = Fs.readdirSync(__dirname + '/../../src/plugins/')
       hq.plugins.add('xyz', function () {})
+      const expected = [...names, 'xyz'].sort()
       const received = hq.plugins.names
-      const expected = ['jest', 'node', 'rollup', 'webpack', 'xyz']
       expect(received).toEqual(expected)
     })
   })
