@@ -25,6 +25,16 @@ module.exports = {
 }
 ```
 
+## Node
+
+Although Node [doesn't support](https://arunmichaeldsouza.com/blog/aliasing-module-paths-in-node-js) path aliases natively, the [module-alias](https://www.npmjs.com/package/module-alias) package modifies Node's `require()` to add support for path aliases. There are some [caveats](https://github.com/ilearnio/module-alias#using-within-another-npm-package) but Alias HQ supports it via a plugin.
+
+Setup is simple; add the following line in your application's main file, before requiring any `@aliased` paths:
+
+```js
+require('alias-hq').get('module-alias')
+```
+
 ## Webpack
 
 If bundling using Webpack, you can [add the aliases](https://webpack.js.org/configuration/resolve/#resolvealias) using the `resolve.alias` configuration option:
