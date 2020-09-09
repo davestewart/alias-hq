@@ -46,7 +46,7 @@ You can **configure and migrate any project** in less than a minute by:
 
 ## Overview
 
-Alias HQ is configured using your project's `ts/jsconfig.json`:
+Alias HQ is [configured](./docs/cli/paths.md) using your project's `ts/jsconfig.json`:
 
 ```js
 {
@@ -61,13 +61,13 @@ Alias HQ is configured using your project's `ts/jsconfig.json`:
 }
 ```
 
-The API makes sure your IDE, framework and toolchain are always in sync:
+The [API](./docs/api/api.md) makes sure your IDE, framework and toolchain are always in sync:
 
 ```js
 const aliases = hq.get('webpack') // choose any plugin; jest, rollup, etc
 ```
 
-The CLI makes sure your code is always up-to-date:
+The [CLI](./docs/cli/cli.md) makes sure your code is always up-to-date:
 
 ```
 ? What do you want to do?
