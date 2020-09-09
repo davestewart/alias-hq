@@ -16,9 +16,15 @@ If you are *considering* using aliases:
 
 - Alias HQ **writes the config for you** then **refactors your project's imports** 
 
-if you are *already* use aliases:
+If you are *already* using aliases:
 
 - Alias HQ **reads your ts/jsconfig's paths** with **one-liner conversion** to Jest, Webpack, Rollup, etc
+
+With Alias HQ, using aliases in your toolchain is as simple as:
+
+```js
+const aliases = hq.get('webpack')
+```
 
 ## Abstract
 
