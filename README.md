@@ -10,20 +10,20 @@
 
 ## TL;DR
 
-**Using aliases in your projects makes your code easier to read and maintain.**
+**Using path aliases in your projects makes your code easier to read and maintain.**
 
 If you are *considering* using aliases:
 
-- Alias HQ **writes the config for you** then **refactors your project's imports** 
+- The Alias CLI **migrates** your project by [configuring your paths](docs/cli/paths.md) and [rewriting your imports](docs/cli/source.md) 
 
 If you are *already* using aliases:
 
-- Alias HQ **reads your ts/jsconfig's paths** with **one-liner conversion** to Jest, Webpack, Rollup, etc
+- The Alias API **simplifies** your tooling with a single [config file](docs/cli/paths.md) and [one-liner integrations](docs/integrations.md)
 
-With Alias HQ, using aliases in your toolchain is as simple as:
+With Alias HQ, aliases are as easy as:
 
 ```js
-const aliases = hq.get('webpack')
+const aliases = hq.get('webpack') // or any supported library
 ```
 
 ## Abstract
@@ -46,9 +46,9 @@ They are widely supported in the JavaScript ecosystem, but:
 
 Alias HQ solves these problems by:
 
-- using your project's `js/tsconfig`'s `paths` as the [single source of truth](docs/quick-start.md)
+- using your project's `js/tsconfig`'s `paths` as the [single source of truth](docs/cli/paths.md)
 - providing a user-friendly [CLI](docs/cli/cli.md) to generate `config` *and* refactor `src/*` code
-- providing a one-liner [API](docs//api.md) for [Webpack](docs/integrations.md#webpack), [Jest](docs/integrations.md#jest), [Rollup](docs/integrations.md#rollup) and [more](docs/plugins.md)
+- providing a one-liner [API](docs/api/api.md) for [Webpack](docs/integrations.md#webpack), [Jest](docs/integrations.md#jest), [Rollup](docs/integrations.md#rollup) and [more](docs/api/plugins.md)
 
 ## Getting started
 
