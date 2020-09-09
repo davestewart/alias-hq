@@ -373,8 +373,10 @@ function setup (aliased = true) {
   // get settings
   answers.paths = hq.settings.folders
     .map(folder => getPathInfo(hq.config.rootUrl, folder))
+    .filter(info => info)
   answers.modules = hq.settings.modules
     .map(name => aliases.forName(name))
+    .filter(module => module)
 
   // previous
   previous.action = "Show config"
