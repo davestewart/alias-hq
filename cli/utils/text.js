@@ -121,14 +121,7 @@ function makeJson (data, options = {}) {
 
   // compact
   if (options.compact) {
-    json = json
-      .replace(/\[([\s\S]+?)\]/g, function (text) {
-        const elements = text.match(/".+?"/g)
-        const p = options.padding ? ' ' : ''
-        return elements.length === 1
-          ? `[${p}${ elements[0] }${p}]`
-          : text
-      })
+    json = compactJson(json, options.padding)
   }
 
   // color
@@ -140,9 +133,21 @@ function makeJson (data, options = {}) {
   return json + '\n'
 }
 
+function compactJson (text, padding = false) {
+  return text
+    .replace(/\[([\s\S]+?)\]/g, function (text) {
+      const elements = text.match(/".+?"/g)
+      const p = padding ? ' ' : ''
+      return elements.length === 1
+        ? `[${p}${ elements[0] }${p}]`
+        : text
+    })
+}
+
 module.exports = {
   getLongestStringLength,
   makeFileBullet,
+  compactJson,
   makeColumns,
   makeHeader,
   makeBullet,

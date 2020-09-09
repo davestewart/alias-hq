@@ -5,7 +5,7 @@ const Fs = require('fs')
 const hq = require('../../src')
 const { inspect } = require('../utils')
 const { makeChoices } = require('../utils/inquirer')
-const { saveSettings } = require('../utils/config')
+const { saveSettings, loadJson, saveJson } = require('../utils/config')
 const { indent, makeJson } = require('../utils/text')
 const { checkPath, checkPaths } = require('./common')
 
@@ -58,33 +58,43 @@ function makePaths (folders, config, answers) {
 }
 
 /**
- * Make the config to be saved to disk or shown in the terminal
+ * Make the config to be saved to disk
+ *
+ * @param   {Answers}       answers
+ * @returns {object}
+ */
+function getConfigData (answers) {
+  // variables
+  const baseUrl = answers.baseUrl
+
+  // folders
+  const folders = answers.paths
+    .filter(info => info.valid)
+    .map(info => info.relPath)
+
+  // paths
+  const paths = makePaths(folders, hq.config, answers)
+
+  // config
+  return {
+    baseUrl,
+    paths
+  }
+}
+
+/**
+ * Make the config to be shown in the terminal
  *
  * @param   {Answers}       answers
  * @param   {JsonFormat}   [options]
  * @returns {string}
  */
 function makeConfig (answers, options = undefined) {
-  // variables
-  const baseUrl = answers.baseUrl
-
-  // paths
-  let paths = answers.paths
-    .filter(info => info.valid)
-    .map(info => info.relPath)
-
-  // json
-  paths = makePaths(paths, hq.config, answers)
-
-  // config
   const config = {
     compilerOptions: {
-      baseUrl,
-      paths
+      ...getConfigData(answers)
     }
   }
-
-  // json
   return makeJson(config, options)
 }
 
@@ -279,23 +289,21 @@ const actions = {
   },
 
   saveConfig () {
+    const configFile = hq.settings.configFile
     return inquirer
       .prompt({
         type: 'confirm',
         name: 'confirm',
-        message: `Update "${ Path.basename(hq.settings.configFile)}" now?`.red,
+        message: `Update "${ Path.basename(configFile)}" now?`.red,
       })
       .then(answer => {
-        if (!answer.confirm) {
-          return
-        }
-
-        // data
-        const json = makeConfig(answers, null)
-        try {
-          return Fs.writeFileSync(hq.settings.configFile, json, 'utf8')
-        } catch (err) {
-          return false
+        if (answer.confirm) {
+          const data = getConfigData(answers)
+          const config = loadJson(configFile)
+          if (config) {
+            Object.assign(config.compilerOptions, data)
+            saveJson(configFile, config, true)
+          }
         }
       })
   }
