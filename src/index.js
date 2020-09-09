@@ -71,22 +71,51 @@ function makeConfig () {
 // ---------------------------------------------------------------------------------------------------------------------
 
 /**
+ * Load JSON file and handle errors in a helpful manner
+ *
+ * @param   {string}  path
+ * @return  {object}  The loaded JSON
+ * @throws            An error if the JSON could not be parsed
+ */
+function loadJson (path) {
+  const text = Fs.readFileSync(path, 'utf8')
+  if (text) {
+    try {
+      return JSON.parse(text)
+    }
+    catch (err) {
+      require('colors')
+      const file = Path.basename(path)
+      const message = (
+        '\n  Error! ' + err.message.replace('JSON', `"${file}"`)
+        + '\n\n  Edit the file to fix this, then try again'
+        + '\n').red
+
+      // CLI
+      if (global['ALIAS_CLI']) {
+        console.warn(message)
+        process.exit(0)
+      }
+
+      // API
+      console.warn(`\n  [Alias HQ]\n${message}\n`.red)
+      throw(err)
+    }
+  }
+}
+
+/**
  * Load user settings from package.json
  */
 function loadSettings () {
-  try {
-    const json = JSON.parse(Fs.readFileSync('package.json', 'utf8'))
-    const data = json['alias-hq']
-    if (data) {
-      if (data.root) {
-        config.rootUrl = Path.resolve(data.root)
-      }
-      Object.assign(settings, makeSettings(), data)
-      return true
+  const json = loadJson('package.json')
+  const data = json['alias-hq']
+  if (data) {
+    if (data.root) {
+      config.rootUrl = Path.resolve(data.root)
     }
-  }
-  catch (err) {
-    return false
+    Object.assign(settings, makeSettings(), data)
+    return true
   }
 }
 
@@ -97,15 +126,7 @@ function loadSettings () {
  */
 function loadConfig (path) {
   // load
-  let json
-  const text = Fs.readFileSync(path, 'utf8')
-  if (text) {
-    try { json = JSON.parse(text) }
-    catch (err) {
-      console.warn(new Error(err))
-      console.warn('Warning! tsconfig.json is not valid! ')
-    }
-  }
+  const json = loadJson(path)
 
   // config
   const compilerOptions = json && json.compilerOptions
