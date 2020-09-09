@@ -61,10 +61,12 @@ Alias HQ is [configured](./docs/cli/paths.md) using your project's `ts/jsconfig.
 }
 ```
 
+*Note that you **do not have to use TypeScript or VS Code** to use Alias HQ.*
+
 The [API](./docs/api/api.md) makes sure your IDE, framework and toolchain are always in sync:
 
 ```js
-const aliases = hq.get('webpack') // choose any plugin; jest, rollup, etc
+config.resolve.aliases = hq.get('webpack') // choose any plugin; jest, rollup, etc
 ```
 
 The [CLI](./docs/cli/cli.md) makes sure your code is always up-to-date:
