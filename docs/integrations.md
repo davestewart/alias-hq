@@ -92,7 +92,9 @@ module.exports = {
 
 ## Vue
 
-If using Vue CLI, you can [add the aliases](https://cli.vuejs.org/guide/webpack.html#simple-configuration) using the `configureWebpack` option:
+If using Vue CLI, you can [add the aliases](https://cli.vuejs.org/guide/webpack.html#simple-configuration) using the `configureWebpack` or `chainWebpack` option.
+
+Decide which one to use, then update as appropriate:
 
 ```js
 // vue.config.js

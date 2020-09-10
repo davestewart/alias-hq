@@ -22,16 +22,34 @@ Choose from the available options:
 
 ## Troubleshooting
 
-If you can't get the CLI to run, ensure that local `node_modules` executables are in your `~/.bash_profile` or equivalent: 
+### Running the CLI
+
+If typing `alias-hq` does not run the CLI, you'll need to add `node_modules/.bin` to your system path.
+
+#### Mac
+
+Add the following line to `~/.bash_profile` or equivalent (note: `~/.zshrc` on the latest OSX!):
 
 ```bash
 export PATH=./node_modules/.bin:$PATH
 ```
 
-If you still can't get the path setup working, you can just call the CLI directly:
+#### Windows
+
+Follow the Instructions [here](https://www.computerhope.com/issues/ch000549.htm).
+
+#### Last resort
+
+If you are unable to modify your system path, just call the CLI directly:
 
 ```bash
 ./node_modules/.bin/alias-hq
 ```
 
+### Clickable links
 
+The following plugin enables clickable links in WebStorm (useful when [updating source code](./source.md)):
+
+- https://plugins.jetbrains.com/plugin/7677-awesome-console/
+
+VS Code displays them by default.
