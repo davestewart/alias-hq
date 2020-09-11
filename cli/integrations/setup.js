@@ -13,11 +13,11 @@ const urls = {
 }
 
 function openIntegration (hash = '') {
-  require('opn')(urls.markdowm + '#' + hash)
+  require('open')(urls.markdowm + '#' + hash)
 }
 
 function openDocs (hash = '') {
-  require('opn')(docsUrl + 'cli.md')
+  require('open')(docsUrl + 'cli/cli.md')
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

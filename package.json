@@ -1,6 +1,6 @@
 {
   "name": "alias-hq",
-  "version": "5.1.3",
+  "version": "5.1.4",
   "description": "The end-to-end solution for configuring, refactoring, maintaining and using path aliases",
   "main": "src/index.js",
   "bin": "bin/alias-hq",
@@ -47,7 +47,7 @@
     "jscodeshift": "^0.10.0",
     "module-alias": "^2.2.2",
     "node-fetch": "^2.6.0",
-    "opn": "^6.0.0",
+    "open": "^7.0.0",
     "vue-jscodeshift-adapter": "^2.1.0"
   },
   "config": {
