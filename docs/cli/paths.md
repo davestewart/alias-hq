@@ -94,15 +94,22 @@ Once you complete these steps, Alias HQ will show you a preview of the new confi
 
 ## Notes
 
-The configuration requires:
+These notes provide some practical and conceptual advice about Microsoft's [configuration](https://code.visualstudio.com/docs/languages/jsconfig#_using-webpack-aliases) format.
 
-- The `baseUrl` to provide a relative entry point such as  `"."` or `"src"`
-- The `paths` to be specified using Microsoft's [somewhat verbose](https://code.visualstudio.com/docs/languages/jsconfig#_using-webpack-aliases) wildcard and array format
+Folders:
 
-Note that:
+- The `baseUrl` is a *relative* folder path to the project's *absolute* `rootUrl` such as  `"."` or `"src"`
+- Any `paths` **must** resolve from the `baseUrl`, so if you need to go up a level from `src`, something like this is fine: `../packages`
+- The format supports [multiple paths](https://www.typescriptlang.org/tsconfig#paths), though
+     - the CLI will only write a single path
+     - Jest is the only library to utilise this
 
-- All `paths` should resolve from the `baseUrl`, so something like this is fine: `../node_modules/`
-- To resolve folder content, wildcards are required in both `alias` and `path` components
-- The format supports [multiple paths](https://www.typescriptlang.org/tsconfig#paths), though currently Jest is the only conversion format to utilise this
-- You may add non-TypeScript paths (such as assets) here; TypeScript will ignore them but Alias HQ will use them
-- You don't *have* to use a `@` character, but the convention is to use one
+Content:
+
+- You may add non-TypeScript paths (such as assets, for use in Webpack) here; TypeScript will ignore them but Alias HQ will use them
+- Aliases also support **files**, so you can enter something like this: `core/config/settings.js` and it will be aliased to `@settings`
+
+Naming:
+
+- Alias `name`s can be any valid folder name; you don't *have* to use a `@` character, but the convention is to use one to make them recognisable
+- To resolve **folder** content, both the alias `name` and `path` components require trailing wildcards 

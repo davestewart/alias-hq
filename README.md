@@ -66,9 +66,14 @@ Alias HQ is [configured](./docs/cli/paths.md) using your project's `ts/jsconfig.
 The [API](./docs/api/api.md) makes sure your IDE, framework and toolchain are always in sync:
 
 ```js
-config.resolve.aliases = hq.get('webpack') // choose any plugin; jest, rollup, etc
-```
+// webpack.config.js
+config.resolve.alias = hq.get('webpack')
 
+// jest.config.js
+config.moduleNameMapper = hq.get('jest')
+
+// etc...
+```
 The [CLI](./docs/cli/cli.md) makes sure your code is always up-to-date:
 
 ```
@@ -104,4 +109,6 @@ For a short video:
 
 - [Click here](https://twitter.com/i/status/1298592287266611205)
 
+Wanna support the project?
 
+- Tweet or [retweet](https://twitter.com/dave_stewart/status/1297906829868109825) about it :)
