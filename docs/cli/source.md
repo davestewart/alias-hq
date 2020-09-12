@@ -6,13 +6,61 @@
 
 One of Alias HQ's best features is **the ability to update your source code** with your shiny new aliases.
 
-There are two configuration steps:
+There are five main options:
 
-- **Folders** and **Module roots**
+```
+? What do you want to do?: (Use arrow keys)
+  - Show config
+  - Show options
+  - Configure options
+  - Preview updates
+❯ - Update files - no further confirmation!
+```
 
-Followed by options to:
+## Show config
 
-- **Change settings**, **Preview updates** or **Update files**
+The first menu option simply prints your current source folders and [paths](./paths.md) config:
+
+```js
+{
+  "rootUrl": "/Volumes/Data/AliasHQ/demos/alias-hq-demo",
+  "baseUrl": "src",
+  "paths": {
+    "@packages/*": [ "../packages/*" ],
+    ...
+  }
+}
+```
+
+You should run this before continuing, just to have something to refer to as you set further options or update your source code.
+
+## Show options
+
+This menu option shows your currently configured options for updating source code.
+
+It shows a brief confirmation of previous choices, as well as which extensions will be processed and what parser will be used:
+
+```
+  Paths:
+    ✔ packages    - /Volumes/Data/AliasHQ/demos/alias-hq-demo/packages
+    ✔ src         - /Volumes/Data/AliasHQ/demos/alias-hq-demo/src
+  Module roots:
+    › @packages   - packages
+  Options:
+    › extensions  - js, jsx, vue
+    › parser      - default
+```
+
+Note that:
+
+- JavaScript / TypeScript is detected based on your `ts/jsconfig.json` file
+- Vue's `.vue` files are automatically detected and included if they exist
+
+You can set up permanent suggestions for these settings using the [Advanced configuration](#advanced-configuration) options.
+
+## Configure options
+
+This menu lets you make some simple choices about how to update your source code, and has two steps.
 
 ### Folders
 
@@ -28,6 +76,8 @@ As before, you can type, drag-and-drop or paste relative or absolute paths here:
 ```
 
 ### Module Roots
+
+#### Background
 
 "Module roots" is Alias HQ's way of determining how to correctly write paths when you have "self-contained" units of code.
 
@@ -56,42 +106,15 @@ import { settings } from './settings'
 
 This setting affects **immediate children** of any alias – in this case `@plugins/*`. 
 
-Pick your module roots from your configured aliases, save the options (to your `package.json`) if you like, and continue.
+#### Choose module roots
 
-### Confirmation
+The UI will show you your existing configured path aliases (from the [Configure paths](./paths.md) menu) as a checklist.
 
-The final step will show a brief confirmation of your choices, as well as which extensions will be processed and what parser will be used:
+Pick which aliases should be configured as module roots, choose to save the options if you like, then continue.
 
-```
-  Paths:
-    ✔ packages    - /Volumes/Data/AliasHQ/demos/alias-hq-demo/packages
-    ✔ src         - /Volumes/Data/AliasHQ/demos/alias-hq-demo/src
-  Module roots:
-    › @packages   - packages
-  Options:
-    › extensions  - js, jsx, vue
-    › parser      - default
-```
+If you choose to save, options will be saved to your `package.json` under the `"alias-hq"` node, for next time.
 
-Note that:
-
-- JavaScript / TypeScript is detected based on your `ts/jsconfig.json` file
-
-- Vue's `.vue` files are handled if they exist
-
-### Preview updates / update files
-
-The final menu shows five options:
-
-```
-? What do you want to do?: (Use arrow keys)
-  - Show config
-  - Show options
-  - Configure options
-❯ - Preview updates
-  - Update files - no further confirmation!
-  - Back
-```
+## Preview updates / update files
 
 The Preview and Update options are identical, apart from one updates your files and one doesn't:
 
@@ -116,6 +139,8 @@ The Preview and Update options are identical, apart from one updates your files 
 
 If you choose to update – **make sure you have committed the files** – because they will be overwritten.
 
+Paths should be clickable, so you can double-check changes. If not, see the [troubleshooting](cli.md#clickable-links) section.
+
 ## Undoing changes
 
 The easiest way to undo changes is to revert files using source control.
@@ -137,7 +162,7 @@ This will show the following Setup menu:
   - Back
 ```
 
-Choosing "Revert source code" will rewrite all aliased paths (assuming those aliases exist in your configuration file) to relative paths.
+Choosing "Revert source code" will rewrite all **aliased** paths (assuming those aliases exist in your configuration file) to **relative** paths.
 
 This can be useful if you want to create a new set of aliases and need paths in their un-aliased state.
 
