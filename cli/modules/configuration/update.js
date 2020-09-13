@@ -3,11 +3,11 @@ const inquirer = require('inquirer')
 const Path = require('path')
 const Fs = require('fs')
 const hq = require('../../src')
+const { saveSettings, loadJson, saveJson } = require('../services/config')
 const { inspect } = require('../utils')
 const { makeChoices } = require('../utils/inquirer')
-const { saveSettings, loadJson, saveJson } = require('../utils/config')
 const { indent, makeJson } = require('../utils/text')
-const { checkPath, checkPaths } = require('../common')
+const { checkPath, checkPaths } = require('../services/common')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // helpers

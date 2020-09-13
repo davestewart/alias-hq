@@ -1,6 +1,6 @@
 const inquirer = require('inquirer')
 const hq = require('../../src')
-const { getPlugins } = require('../utils/config')
+const { getPlugins } = require('../services/config')
 const { indent, makeJson } = require('../utils/text')
 
 // ---------------------------------------------------------------------------------------------------------------------
