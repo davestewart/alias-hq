@@ -1,7 +1,7 @@
 const hq = require('../../../src')
 const { abs, inspect } = require('../../../src/utils')
 const { getAliases } = require('../../../cli/services/config')
-const { toAlias } = require('../../../cli/modules/source/transformer/paths')
+const { toAlias } = require('../../../cli/services/source/paths')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // helpers

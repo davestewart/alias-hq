@@ -1,18 +1,15 @@
 require('colors')
 const glob = require('glob')
-const Fs = require('fs')
-const Path = require('path')
 const assert = require('assert').strict
 const inquirer = require('inquirer')
-const runner = require('jscodeshift/src/Runner')
 const hq = require('../../../src')
+const { getCsOptions, rewriteSource } = require('../../services/source')
 const { checkPaths, getPathInfo, cleanPathsInfo } = require('../../services/paths')
-const { showConfig, getAliases, numAliases, saveSettings } = require('../../services/config')
+const { showConfig, getAliases, saveSettings } = require('../../services/config')
 const { getLongestStringLength, makeHeader, makeItemsBullets, makeObjectBullets, makePathsBullets, para } = require('../../utils/text')
 const { makeChoices } = require('../../utils/prompts')
+const { TransformMode } = require('../../services/source/paths')
 const { inspect } = require('../../utils')
-const { TransformMode } = require('./transformer/paths')
-const stats = require('./transformer/stats')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // actions
@@ -159,9 +156,6 @@ const actions = {
   },
 
   process (dry = true) {
-    // aliases
-    const aliases = getAliases()
-
     // paths
     const paths = answers.paths
       .filter(config => config.valid)
@@ -174,25 +168,13 @@ const actions = {
     // options
     const options = {
       ...csOptions,
+      modules,
       mode: answers.mode,
       dry,
     }
 
-    // debug
-    // inspect({ paths, modules, extensions })
-    // inspect({ options: csOptions, paths, aliases })
-
-    // track updated
-    stats.reset()
-
-    // do it
-    if (aliases.names.length) {
-      console.log()
-      const file = __dirname + '/transformer/transformer.js'
-      return runner
-        .run(file, paths, { ...options, aliases, modules })
-        .then(results => stats.present(results))
-    }
+    // rewrite
+    return rewriteSource(paths, options, dry)
   }
 }
 
@@ -216,42 +198,6 @@ actions.getOptions = function () {
 // setup
 // ---------------------------------------------------------------------------------------------------------------------
 
-function getCsOptions () {
-  // language
-  const language = Path.basename(hq.settings.configFile).slice(0, 2)
-
-  // parser
-  const parser = Fs.existsSync('.flowconfig')
-    ? 'flow'
-    : language === 'ts'
-      ? 'tsx'
-      : undefined
-
-  // extensions
-  const defaultExtensions = language === 'ts'
-    ? 'ts js tsx jsx'
-    : 'js jsx'
-  const extensions = (hq.settings.extensions || defaultExtensions)
-    .match(/\w+/g)
-    .join(', ')
-
-  // TODO add options to
-  // - ignore folders (node, vendor, etc)
-  // - force conversion to aliases ?
-
-  /**
-   * @typedef {object} Options
-   */
-  return {
-    dry: true,
-    silent: true,
-    verbose: 0,
-    runInBand: true,
-    ignorePattern: 'node_modules/*',
-    extensions,
-    parser,
-  }
-}
 
 /**
  * @returns {SourceAnswers}
