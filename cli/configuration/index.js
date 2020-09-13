@@ -8,6 +8,7 @@ const { makeChoices } = require('../utils/inquirer')
 const { showConfig } = require('../common')
 const { createConfig } = require('./create')
 const { updateConfig } = require('./update')
+const { renameAliases } = require('./rename')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // helpers
@@ -26,6 +27,7 @@ function configurePaths () {
     create: 'Create config',
     view: 'View config',
     update: 'Update config',
+    rename: 'Rename aliases',
     back: 'Back',
   }
 
@@ -65,6 +67,9 @@ function configurePaths () {
 
         case choices.update:
           return updateConfig()
+
+        case choices.rename:
+          return renameAliases()
 
         case choices.back:
           return 'back'
