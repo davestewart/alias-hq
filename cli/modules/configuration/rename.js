@@ -1,8 +1,8 @@
 require('colors')
 const inquirer = require('inquirer')
-const hq = require('../../src')
-const { getLongestStringLength, makeBullet } = require('../utils/text')
-const { makeChoices } = require('../utils/inquirer')
+const hq = require('../../../src')
+const { getLongestStringLength, makeBullet } = require('../../utils/text')
+const { makeChoices } = require('../../utils/prompts')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // actions
