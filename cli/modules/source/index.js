@@ -5,17 +5,14 @@ const Path = require('path')
 const assert = require('assert').strict
 const inquirer = require('inquirer')
 const runner = require('jscodeshift/src/Runner')
-const hq = require('../../src')
-const { makeObjectBullets } = require('../common')
-const { inspect } = require('../utils')
-const { getLongestStringLength, makeHeader } = require('../utils/text')
-const { getAliases, numAliases, saveSettings } = require('../utils/config')
-const { getPathInfo, cleanPathsInfo } = require('../utils/paths')
-const { makeChoices } = require('../utils/inquirer')
-const { para } = require('../utils/text')
-const { showConfig, checkPaths, makeItemsBullets, makePathsBullets } = require('../common')
-const { TransformMode } = require('./paths')
-const stats = require('./stats')
+const hq = require('../../../src')
+const { checkPaths, getPathInfo, cleanPathsInfo } = require('../../services/paths')
+const { showConfig, getAliases, numAliases, saveSettings } = require('../../services/config')
+const { getLongestStringLength, makeHeader, makeItemsBullets, makeObjectBullets, makePathsBullets, para } = require('../../utils/text')
+const { makeChoices } = require('../../utils/prompts')
+const { inspect } = require('../../utils')
+const { TransformMode } = require('./transformer/paths')
+const stats = require('./transformer/stats')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // actions
@@ -191,7 +188,7 @@ const actions = {
     // do it
     if (aliases.names.length) {
       console.log()
-      const file = __dirname + '/transformer.js'
+      const file = __dirname + '/transformer/transformer.js'
       return runner
         .run(file, paths, { ...options, aliases, modules })
         .then(results => stats.present(results))
@@ -207,9 +204,7 @@ actions.getOptions = function () {
       .then(actions.getModules)
       .then(actions.confirmChoices)
       .then(actions.saveSettings)
-  }
-
-  else {
+  } else {
     return Promise.resolve()
       .then(actions.getPaths)
       .then(actions.checkForVue)
@@ -379,7 +374,7 @@ function setup (aliased = true) {
     .filter(module => module)
 
   // previous
-  previous.action = "Show config"
+  previous.action = 'Show config'
 
   // actions
   answers.mode = aliased

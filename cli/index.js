@@ -4,13 +4,13 @@ const hq = require('../src')
 
 // utils
 const { para, makeHeader } = require('./utils/text')
-const { makeChoices } = require('./utils/inquirer')
-const { openDocs } = require('./integrations/setup')
+const { makeChoices } = require('./utils/prompts')
+const { openDocs } = require('./services/docs')
 
 // actions
-const { configurePaths } = require('./configuration')
-const { setupIntegrations } = require('./integrations')
-const { updateSource } = require('./source')
+const { configurePaths } = require('./modules/configuration')
+const { setupIntegrations } = require('./modules/integrations')
+const { updateSource } = require('./modules/source')
 
 // set global flag
 global['ALIAS_CLI'] = true

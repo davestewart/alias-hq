@@ -1,11 +1,11 @@
 require('colors')
 const inquirer = require('inquirer')
-const hq = require('../../src')
-const { makeHeader, para, indent, makeBullet } = require('../utils/text')
-const { makeChoices } = require('../utils/inquirer')
+const hq = require('../../../src')
+const { makeHeader } = require('../../utils/text')
+const { makeChoices } = require('../../utils/prompts')
 
 // modules
-const { showConfig } = require('../common')
+const { showConfig } = require('../../services/config')
 const { createConfig } = require('./create')
 const { updateConfig } = require('./update')
 
