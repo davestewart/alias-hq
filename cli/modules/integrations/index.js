@@ -1,12 +1,11 @@
 const inquirer = require('inquirer')
-const hq = require('../../src')
+const hq = require('../../../src')
 
-const { makeHeader } = require('../utils/text')
-const { makeChoices } = require('../utils/inquirer')
-const { numAliases } = require('../services/config')
+const { makeHeader } = require('../../utils/text')
+const { makeChoices } = require('../../utils/prompts')
+const { showConfig, numAliases } = require('../../services/config')
 
 // modules
-const { showConfig } = require('../services/common')
 const { setupIntegration } = require('./setup')
 const { debugConfiguration } = require('./debug')
 

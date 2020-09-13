@@ -1,5 +1,6 @@
 require('colors')
 const { isObject } = require('./index')
+const { isPathValid } = require('./paths')
 
 /**
  * Utility function to get the max length of a series of strings
@@ -91,6 +92,77 @@ function makeFileBullet (info, state) {
   return makeBullet(`${relText} ${absText}`, state)
 }
 
+
+/**
+ * Make a single bullet item with icon, label and note
+ *
+ * @param   {string}    label
+ * @param   {string}    note
+ * @param   {boolean}   state
+ * @param   {number}    width
+ * @returns {string}
+ */
+function makeNoteBullet (label, note, state = undefined, width = 0) {
+  const padding = ' '.repeat(Math.max(width - label.length, 0))
+  const labelText = label.cyan
+  const noteText = `- ${note}`.gray.italic
+  return makeBullet(`${labelText} ${padding} ${noteText}`, state)
+}
+
+/**
+ * Build a bulleted list of items with icon, label and note
+ *
+ * @param   {object}  item
+ * @returns {*}
+ */
+function makeObjectBullets (item) {
+  const keys = Object.keys(item)
+  const width = getLongestStringLength(keys)
+
+  return keys.map(key => {
+    const label = key
+    const note = item[key]
+    return makeNoteBullet(label, note, undefined, width)
+  }).join('\n')
+}
+
+/**
+ * Build a bulleted list of items with icon, label and note
+ *
+ * @param   {object[]}  items
+ * @param   {string}    labelProp
+ * @param   {string}    noteProp
+ * @returns {*}
+ */
+function makeItemsBullets (items, labelProp, noteProp) {
+  const width = items.length
+    ? getLongestStringLength(items, labelProp)
+    : 0
+
+  return items.map(item => {
+    const label = item[labelProp] || ''
+    const note = item[noteProp] || ''
+    return makeNoteBullet(label, note, undefined, width)
+  }).join('\n')
+}
+
+/**
+ * Build a bulleted list of paths with icon, label and note
+ *
+ * @param   {PathInfo[]}    infos
+ * @param   {boolean}      [exists]
+ * @returns {string}
+ */
+function makePathsBullets (infos, exists = true) {
+  const width = getLongestStringLength(infos, 'relPath')
+  return infos
+    .map(info => {
+      const state = isPathValid(info, exists)
+      return makeNoteBullet(info.folder, info.absPath, state, width)
+    })
+    .join('\n')
+}
+
 /**
  * Make JSON to save to disk
  *
@@ -145,14 +217,25 @@ function compactJson (text, padding = false) {
 }
 
 module.exports = {
-  getLongestStringLength,
-  makeFileBullet,
-  compactJson,
-  makeColumns,
-  makeHeader,
-  makeBullet,
-  makeJson,
+  // bullets
   bullets,
+  makeBullet,
+  makeFileBullet,
+  makeNoteBullet,
+  makeObjectBullets,
+  makeItemsBullets,
+  makePathsBullets,
+
+  // columns
+  getLongestStringLength,
+  makeColumns,
+
+  // json
+  compactJson,
+  makeJson,
+
+  // text
+  makeHeader,
   indent,
   plural,
   para,
