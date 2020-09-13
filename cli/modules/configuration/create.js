@@ -2,10 +2,10 @@ require('colors')
 const inquirer = require('inquirer')
 const Path = require('path')
 const Fs = require('fs')
-const hq = require('../../src')
-const { getPathInfo } = require('../utils/paths')
-const { makeJson, makeFileBullet, indent } = require('../utils/text')
-const { makeChoices } = require('../utils/inquirer')
+const hq = require('../../../src')
+const { getPathInfo } = require('../../services/paths')
+const { makeJson, makeFileBullet, indent } = require('../../utils/text')
+const { makeChoices } = require('../../utils/prompts')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // actions

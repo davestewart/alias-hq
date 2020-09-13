@@ -1,6 +1,6 @@
 const hq = require('../../../src')
 const { abs } = require('../../../src/utils')
-const { getAliases } = require('../../../cli/utils/config')
+const { getAliases } = require('../../../cli/services/config')
 
 beforeAll(function () {
   hq.load()

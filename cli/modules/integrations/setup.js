@@ -1,24 +1,5 @@
 const inquirer = require('inquirer')
-const fetch = require('node-fetch')
-
-// ---------------------------------------------------------------------------------------------------------------------
-// helpers
-// ---------------------------------------------------------------------------------------------------------------------
-
-const docsUrl = 'https://github.com/davestewart/alias-hq/blob/master/docs/'
-
-const urls = {
-  raw: 'https://raw.githubusercontent.com/davestewart/alias-hq/master/docs/integrations.md',
-  markdowm: docsUrl + 'integrations.md',
-}
-
-function openIntegration (hash = '') {
-  require('open')(urls.markdowm + '#' + hash)
-}
-
-function openDocs (hash = '') {
-  require('open')(docsUrl + 'cli/cli.md')
-}
+const { getIntegrations, openIntegration } = require('../../services/docs')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // actions
@@ -26,8 +7,7 @@ function openDocs (hash = '') {
 
 const actions = {
   getNames () {
-    return fetch(urls.raw)
-      .then(res => res.text())
+    return getIntegrations()
       .then(text => {
         const matches = text.match(/\n## (.+)\n/g)
         if (matches) {
@@ -89,6 +69,4 @@ function setupIntegration () {
 
 module.exports = {
   setupIntegration,
-  openIntegration,
-  openDocs,
 }

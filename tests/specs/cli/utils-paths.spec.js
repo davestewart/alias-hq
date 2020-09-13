@@ -1,6 +1,6 @@
 const Path = require('path')
 const hq = require('../../../src')
-const { getPathsInfo, cleanPathsInfo } = require('../../../cli/utils/paths')
+const { getPathsInfo, cleanPathsInfo } = require('../../../cli/services/paths')
 
 let rootUrl
 
