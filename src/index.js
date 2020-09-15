@@ -106,7 +106,7 @@ function loadConfig (path) {
 
   // config
   const compilerOptions = json && json.compilerOptions
-  if (compilerOptions && compilerOptions.paths) {
+  if (compilerOptions) {
     // config
     config.rootUrl = Path.dirname(path)
     config.baseUrl = compilerOptions.baseUrl || ''
