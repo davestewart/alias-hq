@@ -1,7 +1,12 @@
 const { toObject, join } = require('../../utils')
 
+const defaults = {
+  format: 'string'
+}
+
 // @see https://jestjs.io/docs/en/configuration#modulenamemapper-objectstring-string--arraystring
-function callback (name, config) {
+function callback (name, config, options) {
+  options = { ...defaults, ...options }
   const { baseUrl, paths } = config
   name = name
     .replace(/\*/, '(.*)')
@@ -11,7 +16,7 @@ function callback (name, config) {
       .replace(/\*/, '$1')
     return join('<rootDir>', baseUrl, path)
   })
-  if (path.length === 1) {
+  if (options.format === 'string' || path.length === 1) {
     path = path[0]
   }
   return {

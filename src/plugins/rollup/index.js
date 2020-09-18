@@ -1,7 +1,12 @@
 const { toArray, toObject, resolve, join } = require('../../utils')
 
+const defaults = {
+  format: 'object'
+}
+
 // @see https://github.com/rollup/plugins/tree/master/packages/alias
 function callback (name, config, options) {
+  options = { ...defaults, ...options }
   const { rootUrl, baseUrl } = config
   name = name
     .replace(/\/\*$/, '')
