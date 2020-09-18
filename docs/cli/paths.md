@@ -102,7 +102,7 @@ Folders:
 - Any `paths` **must** resolve from the `baseUrl`, so if you need to go up a level from `src`, something like this is fine: `../packages`
 - The format supports [multiple paths](https://www.typescriptlang.org/tsconfig#paths), though
      - the CLI will only write a single path
-     - Jest is the only library to utilise this
+     - Jest v25+ is the only library to utilise this
 
 Content:
 

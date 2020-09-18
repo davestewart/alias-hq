@@ -1,6 +1,6 @@
 {
   "name": "alias-hq",
-  "version": "5.1.5",
+  "version": "5.1.6",
   "description": "The end-to-end solution for configuring, refactoring, maintaining and using path aliases",
   "main": "src/index.js",
   "bin": "bin/alias-hq",
@@ -13,7 +13,7 @@
     "cli": "node cli",
     "setup": "node cli -- setup",
     "test": "jest --verbose",
-    "test:plugins": "jest --watch -f plugins.spec.js -t 'available plugins:'",
+    "test:plugins": "jest --watch -f plugins/core.spec.js -t 'core plugins:'",
     "test:coverage": "jest --coverage"
   },
   "repository": {

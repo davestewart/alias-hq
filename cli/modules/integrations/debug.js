@@ -9,7 +9,11 @@ const { indent, makeJson } = require('../../utils/text')
 
 function printConfig (data) {
   console.log()
-  console.log(indent(makeJson(data)))
+  const text = data === true
+    ? 'This plugin does not generate any output'.red
+    : makeJson(data)
+
+  console.log(indent(text))
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

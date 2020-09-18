@@ -53,7 +53,7 @@ module.exports = {
 
 ## Rollup
 
-If bundling using Rollup and @rollup/plugin-alias, you can [add the aliases](https://github.com/rollup/plugins/tree/master/packages/alias#usage) using the `plugins.alias` configuration option:
+If bundling using Rollup and [@rollup/plugin-alias](https://github.com/rollup/plugins/tree/master/packages/alias) you can [add the aliases](https://github.com/rollup/plugins/tree/master/packages/alias#usage) using the `plugins.alias` configuration option:
 
 ```js
 // rollup.config.js
@@ -70,10 +70,10 @@ module.exports = {
 }
 ```
 
-You can request rollup paths in `object` or  `array` (the default) format:
+You can request paths in `object` (the default) or  `array` format:
 
 ```js
-hq.get('rollup', { format: 'object' })
+hq.get('rollup', { format: 'array' })
 ```
 
 ## Jest
@@ -88,6 +88,12 @@ module.exports = {
   ...
   moduleNameMapper: hq.get('jest'),
 }
+```
+
+You can request paths in `string` (the default) or  `array` (Jest v25+) format:
+
+```js
+hq.get('rollup', { format: 'array' })
 ```
 
 ## Vue
