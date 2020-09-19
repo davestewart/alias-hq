@@ -53,7 +53,11 @@ module.exports = {
 
 ## Rollup
 
-If bundling using Rollup and [@rollup/plugin-alias](https://github.com/rollup/plugins/tree/master/packages/alias) you can [add the aliases](https://github.com/rollup/plugins/tree/master/packages/alias#usage) using the `plugins.alias` configuration option:
+#### Basic setup
+
+If bundling using Rollup you will need to use the [@rollup/plugin-alias](https://github.com/rollup/plugins/tree/master/packages/alias) plugin.
+
+Install, then [add the aliases](https://github.com/rollup/plugins/tree/master/packages/alias#usage) using the `plugins.alias` configuration option:
 
 ```js
 // rollup.config.js
@@ -75,6 +79,16 @@ You can request paths in `object` (the default) or  `array` format:
 ```js
 hq.get('rollup', { format: 'array' })
 ```
+
+#### Bundling with TypeScript
+
+If your bundle is to be consumed by other projects, you will need to set up additional plugins. This is because the TypeScript compiler (rather strangely) doesn't transform aliased paths in its generated type files.
+
+The plugin [ts-transform-paths](https://www.npmjs.com/package/@zerollup/ts-transform-paths) will rewrite aliases in the compilation step, using the [rollup-plugin-typescript2](https://github.com/ezolenko/rollup-plugin-typescript2) plugin, which is arguably the most reliable TypeScript bundling plugin for Rollup.
+
+Full instructions here:
+
+- https://www.npmjs.com/package/@zerollup/ts-transform-paths#setup-for-rollup-plugin-typescript2
 
 ## Jest
 
