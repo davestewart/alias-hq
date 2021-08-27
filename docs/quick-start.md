@@ -12,7 +12,7 @@ In the terminal:
 
 - From your project root, type and run `alias-hq`
 
-*If this doesn't work, see the [troublshooting](cli/cli.md#troubleshooting) section in the CLI docs.*
+*If this doesn't work, see the [troubleshooting](cli/cli.md#troubleshooting) section in the CLI docs.*
 
 ## Configuration
 
