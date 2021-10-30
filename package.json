@@ -1,13 +1,15 @@
 {
   "name": "alias-hq",
-  "version": "5.1.7",
+  "version": "5.2.0",
   "description": "The end-to-end solution for configuring, refactoring, maintaining and using path aliases",
   "main": "src/index.js",
   "bin": "bin/alias-hq",
+  "types": "types",
   "files": [
     "src/*",
     "cli/*",
-    "bin/*"
+    "bin/*",
+    "types.d.ts"
   ],
   "scripts": {
     "cli": "node cli",
@@ -38,7 +40,8 @@
   "homepage": "https://github.com/davestewart/alias-hq#readme",
   "devDependencies": {
     "ghooks": "^2.0.4",
-    "jest": "^26.4.1"
+    "jest": "^26.4.1",
+    "typescript": "^4.4.4"
   },
   "dependencies": {
     "colors": "^1.4.0",

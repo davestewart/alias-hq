@@ -7,9 +7,45 @@ const { resolve } = require('./utils')
 // ---------------------------------------------------------------------------------------------------------------------
 
 /**
- * The JSConfig hash of paths
+ * The jsconfig.json hash of paths
  *
  * @typedef {Object.<string, string[]>} PathsHash
+ */
+
+/**
+ * The Hash of string:function plugins
+ *
+ * @typedef {Object.<string,function>} PluginHash
+ */
+
+/**
+ * The Alias HQ user settings; loaded and saved from package.json
+ *
+ * @typedef   {Object}      HQSettings
+ * @property  {string}      root
+ * @property  {string}      configFile
+ * @property  {string}      extensions
+ * @property  {string}      prefix
+ * @property  {string[]}    folders
+ * @property  {string[]}    modules
+ */
+
+/**
+ * The core Alias HQ config; passed to plugins
+ *
+ * @typedef   {Object}      HQConfig
+ * @property  {string}      rootUrl   The absolute path to the config file folder
+ * @property  {string}      baseUrl   The relative path to the JSConfig base folder
+ * @property  {PathsHash}   paths     The loaded aliases
+ */
+
+/**
+ * The Alias HQ plugins object; used to store and load all transforms
+ *
+ * @typedef   {Object}      HQPlugins
+ * @property  {string[]}    names     The list of loaded plugin names
+ * @property  {function}    add       Method to add new plugins
+ * @property  {PluginHash} custom    The hash of plugins
  */
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -22,17 +58,6 @@ const { resolve } = require('./utils')
  * @returns {HQSettings}
  */
 function makeSettings () {
-  /**
-   * The Alias HQ user settings; loaded and saved from package.json
-   *
-   * @typedef   {object}      HQSettings
-   * @property  {string}      root
-   * @property  {string}      configFile
-   * @property  {string}      extensions
-   * @property  {string}      prefix
-   * @property  {string[]}    folders
-   * @property  {string[]}    modules
-   */
   return {
     root: '',
     configFile: '',
@@ -50,15 +75,6 @@ function makeSettings () {
  */
 function makeConfig () {
   const root = settings.root || ''
-
-  /**
-   * The core Alias HQ config; passed to plugins
-   *
-   * @typedef   {object}      HQConfig
-   * @property  {string}      rootUrl   The absolute path to the config file folder
-   * @property  {string}      baseUrl   The relative path to the JSConfig base folder
-   * @property  {PathsHash}   paths     The loaded aliases
-   */
   return {
     rootUrl: resolve(root),
     baseUrl: '',
@@ -262,12 +278,8 @@ let settings = makeSettings()
 let config = makeConfig()
 
 /**
- * The Alias HQ plugins object; used to store and load all transforms
  *
- * @typedef                 HQPlugins
- * @property  {string[]}    names     The list of loaded plugin names
- * @property  {function}    add       Method to add new plugins
- * @property  {Object.<string,function>}      custom    The hash of plugins
+ * @type {HQPlugins}
  */
 const plugins = {
   custom: {},
