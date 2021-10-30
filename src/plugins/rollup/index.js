@@ -6,7 +6,6 @@ const defaults = {
 
 // @see https://github.com/rollup/plugins/tree/master/packages/alias
 function callback (name, config, options) {
-  options = { ...defaults, ...options }
   const { rootUrl, baseUrl } = config
   name = name
     .replace(/\/\*$/, '')
@@ -26,6 +25,7 @@ function callback (name, config, options) {
 }
 
 module.exports = function (config, options) {
+  options = { ...defaults, ...options }
   return options.format === 'object'
     ? toObject(callback, config, options)
     : toArray(callback, config, options)

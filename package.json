@@ -1,6 +1,6 @@
 {
   "name": "alias-hq",
-  "version": "5.1.6",
+  "version": "5.1.7",
   "description": "The end-to-end solution for configuring, refactoring, maintaining and using path aliases",
   "main": "src/index.js",
   "bin": "bin/alias-hq",

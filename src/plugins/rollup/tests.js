@@ -1,19 +1,26 @@
 const { abs } = require('../../utils')
 
+const expected = {
+  '@': abs(''),
+  '@packages': abs('../packages'),
+  '@classes': abs('classes'),
+  '@app': abs('app'),
+  '@data': abs('app/data'),
+  '@services': abs('app/services'),
+  '@views': abs('app/views'),
+}
+
 module.exports = [
+  function () {
+    const label = 'default'
+    const options = {}
+    return { label, options, expected }
+  },
+
   function () {
     const label = 'object'
     const options = {
       format: 'object'
-    }
-    const expected = {
-      '@': abs(''),
-      '@packages': abs('../packages'),
-      '@classes': abs('classes'),
-      '@app': abs('app'),
-      '@data': abs('app/data'),
-      '@services': abs('app/services'),
-      '@views': abs('app/views'),
     }
     return { label, options, expected }
   },
