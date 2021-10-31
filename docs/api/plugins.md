@@ -256,6 +256,50 @@ npm run test:plugins
 npm run test:coverage
 ```
 
+## Terminal
+
+If you want to check your code directly in the terminal, you can test it directly from the Node console.
+
+Open a terminal at the project root, then run `node` and `require` and run your plugin:
+
+```bash
+dave@DS-MBP alias-hq % node
+
+Welcome to Node.js v14.15.5.
+Type ".help" for more information.
+
+> hq = require('./src')
+{
+  get: [Function: get],
+  load: [Function: load],
+  config: {
+    rootUrl: '/Volumes/Data/Work/OpenSource/JavaScript/AliasHQ/alias-hq',
+    baseUrl: '',
+    paths: {}
+  },
+  plugins: { custom: {}, add: [Function: add], names: [Getter] },
+  settings: {
+    root: '',
+    configFile: '',
+    extensions: '',
+    prefix: '@',
+    folders: [],
+    modules: []
+  }
+}
+
+> hq.get('jest')
+{
+  '^@/(.*)$': '<rootDir>/src/$1',
+  '^@packages/(.*)$': '<rootDir>/packages/$1',
+  '^@classes/(.*)$': '<rootDir>/src/classes/$1',
+  '^@app/(.*)$': '<rootDir>/src/app/$1',
+  '^@data/(.*)$': '<rootDir>/src/app/data/$1',
+  '^@services/(.*)$': '<rootDir>/src/app/services/$1',
+  '^@views/(.*)$': '<rootDir>/src/app/views/$1'
+}
+```
+
 ## Documentation
 
 If you add a plugin, please also update the docs:
@@ -275,5 +319,4 @@ To save any wasted effort, create an issue to discuss any proposed plugin first.
 If it looks like it's a good idea, fork the library, update the code and submit a PR.
 
 Thanks :)
-
 

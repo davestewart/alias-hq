@@ -1,6 +1,6 @@
 # Configure paths
 
-> Create and maintain your paths configuration
+> Create and maintain your `tsconfig.json`'s paths configuration
 
 ![alias cli](../assets/cli-paths.png)
 

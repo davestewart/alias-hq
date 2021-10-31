@@ -1,6 +1,6 @@
 # Setup integrations
 
-> Setup or debug paths configuration for available integrations
+> Setup or debug integration with Webpack, Jest, etc
 
 ![alias cli](../assets/cli-integrations.png)
 
@@ -20,9 +20,11 @@ This menu shows you the documented list of integrations:
   - WebStorm
   - Webpack
   - Rollup
+  - Vite
   - Jest
   - Vue
   - React
+  - Node
   - JSON-only
 ```
 
@@ -59,5 +61,4 @@ You can use this to:
 - see the raw output to debug a paths problem
 - copy and paste if you need hardcoded JSON
 - help develop and debug your own [plugins](../api/plugins.md)
-
 

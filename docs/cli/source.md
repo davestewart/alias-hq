@@ -1,10 +1,10 @@
 # Update source code
 
-> Update source code to use your configured aliases
+> Rewrite your project's source code with your configured aliases
 
 ![alias cli](../assets/cli-source.png)
 
-One of Alias HQ's best features is **the ability to update your source code** with your shiny new aliases.
+One of Alias HQ's best features is **the ability to rewrite your source code** with your shiny new aliases.
 
 There are five main options:
 
@@ -186,5 +186,4 @@ The question-based interface remembers your choices between steps, but projects 
  ```
 
 When new answers are given in the CLI, you will be prompted if you want to save.
-
 

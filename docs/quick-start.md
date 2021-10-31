@@ -8,6 +8,12 @@ From version 4.1, all configuration can be completed via the [Alias CLI](cli/cli
 
 ![alias cli](./assets/cli-preview.png)
 
+This interactive session of questions and prompts should provide everything you need to:
+
+- configure your paths and aliases for the first time
+- integrate with tools like Webpack, Jest, etc
+- update your project's source code
+
 In the terminal:
 
 - From your project root, type and run `alias-hq`
@@ -20,7 +26,7 @@ In the terminal:
 
 ### Create a new config file
 
-If you don't yet have a config file, from the main menu:
+If you don't yet have a `ts/jsconfig.json` file, from the main menu:
 
 - Choose "Configure paths > Create config"
 - Choose "JavaScript" or "TypeScript" as required
@@ -40,11 +46,13 @@ To add or update paths in your config file, from the main menu:
 
 > *For more detailed steps, see the [Setup integrations](./cli/integrations.md) document.*
 
-To set up existing integrations like Webpack and Jest, from the main menu:
+To set up tooling or frameworks like Webpack and Jest, from the main menu:
 
 - Choose "Setup integrations > Setup integration"
-- Choose an integration from the list of integrations
+- Choose an integration from the list
 - Follow the instructions
+
+If you want to do this manually, see the [Integrations](integrations.md) document
 
 ## Update source code
 
