@@ -1,6 +1,15 @@
 # Integrations
 
-> Use configured path aliases in a variety of IDEs, libraries and frameworks
+> Use configured path aliases in a variety of IDEs, tooling and frameworks
+
+Jump to:
+
+- IDEs: [VS Code](#vs-code), [WebStorm](#webstorm)
+- Tooling: [Webpack](#webpack), [Rollup](#rollup), [Vite](#vite), [Jest](#jest)
+- Frameworks: [Vue](#vue), [React](#react)
+- Other: [Node](#node), [JSON](#json)
+
+# IDEs
 
 ## VS Code
 
@@ -25,15 +34,7 @@ module.exports = {
 }
 ```
 
-## Node
-
-Although Node [doesn't support](https://arunmichaeldsouza.com/blog/aliasing-module-paths-in-node-js) path aliases natively, the [module-alias](https://www.npmjs.com/package/module-alias) package modifies Node's `require()` to add support for path aliases. There are some [caveats](https://github.com/ilearnio/module-alias#using-within-another-npm-package) but Alias HQ supports it via a plugin.
-
-Setup is simple; add the following line in your application's main file, before requiring any `@aliased` paths:
-
-```js
-require('alias-hq').get('module-alias')
-```
+# Tooling
 
 ## Webpack
 
@@ -90,6 +91,23 @@ Full instructions here:
 
 - https://www.npmjs.com/package/@zerollup/ts-transform-paths#setup-for-rollup-plugin-typescript2
 
+## Vite
+
+Vite uses Rollup under the hood, and passes some of its [configuration options](https://vitejs.dev/config/) to it.
+
+Add a `vite.config.js` file to your project's route with the following code:
+
+```ts
+import { defineConfig } from 'vite'
+import hq from 'alias-hq'
+
+export default defineConfig({
+  resolve: {
+    alias: hq.get('rollup')
+  }
+})
+```
+
 ## Jest
 
 If using Jest, you can [configure](https://jestjs.io/docs/en/configuration#modulenamemapper-objectstring-string--arraystring) the `moduleNameMapper` option:
@@ -104,11 +122,13 @@ module.exports = {
 }
 ```
 
-You can request paths in `string` (the default) or  `array` (Jest v25+) format:
+You can request the individual paths in `string` (the default) or `array` (Jest v25+) format:
 
 ```js
-hq.get('rollup', { format: 'array' })
+hq.get('jest', { format: 'array' })
 ```
+
+# Frameworks
 
 ## Vue
 
@@ -171,6 +191,18 @@ module.exports = function override(config, env) {
 
 This short React guide is *not meant to be exhaustive*; for issues, use your common sense, search Google, and see the appropriate package's issues.
 
+# Other
+
+## Node
+
+Although Node [doesn't support](https://arunmichaeldsouza.com/blog/aliasing-module-paths-in-node-js) path aliases natively, the [module-alias](https://www.npmjs.com/package/module-alias) package modifies Node's `require()` to add support for path aliases. There are some [caveats](https://github.com/ilearnio/module-alias#using-within-another-npm-package) but Alias HQ supports it via a plugin.
+
+Setup is simple; add the following line in your application's main file, before requiring any `@aliased` paths:
+
+```js
+require('alias-hq').get('module-alias')
+```
+
 ## JSON-only
 
 For libraries or setups that require JSON, you can use the [CLI](cli/cli.md):
@@ -179,5 +211,4 @@ For libraries or setups that require JSON, you can use the [CLI](cli/cli.md):
 - Choose "Dump plugin output (JSON)"
 - Choose the required format 
 - Copy / paste the JSON where you need it
-
 

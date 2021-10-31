@@ -10,9 +10,9 @@
 
 ## Abstract
 
-Path "aliases" are `@identifiers` that simplify unwieldy or lengthy file `imports`.
+Path "aliases" are special identifiers (starting with `@` or `~` ) that point to specific folders.
 
-Using them in your projects makes your code easier to read and maintain:
+Using them in your codebase makes your imports easier to read and maintain:
 
 ```js
 // from this
@@ -28,25 +28,15 @@ They are widely supported in the JavaScript ecosystem, *however*:
 - maintaining duplicate configurations is fiddly and error-prone 
 - migrating source code is laborious and long-winded
 
-## TL;DR
-
-If you are *thinking about* using aliases:
-
-- The Alias CLI **migrates** your project by [configuring your paths](docs/cli/paths.md) and [rewriting your imports](docs/cli/source.md) 
-
-If you are *already* using aliases:
-
-- The Alias API **simplifies** your tooling with a single [config file](docs/cli/paths.md) and [one-liner integrations](docs/integrations.md)
-
-You can **configure and migrate any project** in less than a minute by:
-
-- installing the package
-- running the CLI
-- following the prompts
-
 ## Overview
 
-Alias HQ is [configured](./docs/cli/paths.md) using your project's `ts/jsconfig.json`:
+Alias HQ is build-time tool which:
+
+- piggybacks your project's existing `ts/jsconfig.json` configuration 
+- provides one-liner integrations to popular bunders, frameworks and libraries
+- has a CLI for quick configuration, and even source code migration
+
+Begin by [configuring](./docs/cli/paths.md) aliases in your project's `ts/jsconfig.json`:
 
 ```js
 {
@@ -61,9 +51,7 @@ Alias HQ is [configured](./docs/cli/paths.md) using your project's `ts/jsconfig.
 }
 ```
 
-*Note that you **do not have to use TypeScript or VS Code** to use Alias HQ.*
-
-The [API](./docs/api/api.md) makes sure your IDE, framework and toolchain are always in sync:
+Use the [API](./docs/api/api.md) to sync your toolchain, frameworks, even your IDE:
 
 ```js
 // webpack.config.js
@@ -74,7 +62,7 @@ config.moduleNameMapper = hq.get('jest')
 
 // etc...
 ```
-The [CLI](./docs/cli/cli.md) makes sure your code is always up-to-date:
+Use the [CLI](./docs/cli/cli.md) to migrate or maintain your source code:
 
 ```
 ? What do you want to do?
@@ -84,6 +72,22 @@ The [CLI](./docs/cli/cli.md) makes sure your code is always up-to-date:
   - Help
   - Exit
 ```
+
+## Benefits
+
+If you are *already* using aliases:
+
+- The Alias API **simplifies** your tooling with a single [config file](docs/cli/paths.md) and [one-liner integrations](docs/integrations.md)
+
+If you are *thinking about* using aliases:
+
+- The Alias CLI **migrates** your project by [configuring your paths](docs/cli/paths.md) and [rewriting your imports](docs/cli/source.md) 
+
+You can **configure and migrate any project** in less than a minute by:
+
+- installing the package
+- running the CLI
+- following the prompts
 
 ## Getting started
 

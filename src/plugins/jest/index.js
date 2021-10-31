@@ -6,7 +6,6 @@ const defaults = {
 
 // @see https://jestjs.io/docs/en/configuration#modulenamemapper-objectstring-string--arraystring
 function callback (name, config, options) {
-  options = { ...defaults, ...options }
   const { baseUrl, paths } = config
   name = name
     .replace(/\*/, '(.*)')
@@ -26,5 +25,6 @@ function callback (name, config, options) {
 }
 
 module.exports = function (config, options) {
+  options = { ...defaults, ...options }
   return toObject(callback, config, options)
 }
