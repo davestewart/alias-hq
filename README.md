@@ -32,7 +32,7 @@ They are widely supported in the JavaScript ecosystem, *however*:
 
 Alias HQ is build-time tool which:
 
-- piggybacks your project's existing `ts/jsconfig.json` configuration 
+- uses `ts/jsconfig.json` as the single source of configuration 
 - provides one-liner integrations to popular bunders, frameworks and libraries
 - has a CLI for quick configuration, and even source code migration
 
