@@ -91,8 +91,8 @@ const answers = {
   json: '',
 }
 
-function createConfig () {
-  hq.load()
+async function createConfig () {
+  await hq.load()
   return Promise.resolve()
     .then(actions.getChoices)
     .then(actions.showConfig)

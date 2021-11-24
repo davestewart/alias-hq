@@ -352,9 +352,9 @@ function run () {
     })
 }
 
-function setup (aliased = true) {
+async function setup (aliased = true) {
   // setup
-  hq.load()
+  await hq.load()
   answers = getAnswers()
   csOptions = getCsOptions()
 

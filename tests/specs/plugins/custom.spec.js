@@ -28,21 +28,21 @@ const expected = {
 // tests
 // ---------------------------------------------------------------------------------------------------------------------
 
-beforeAll(function () {
-  hq.load()
+beforeAll(async function () {
+  await hq.load()
 })
 
 describe('custom plugins', function () {
   it('should be addable', function () {
     hq.plugins.add('test', plugin)
   })
-  it('should be callable', function () {
+  it('should be callable', async function () {
     hq.plugins.add('test', plugin)
-    const received = hq.get('test')
+    const received = await hq.get('test')
     expect(received).toEqual(expected)
   })
-  it('should convert paths correctly', function () {
-    const received = hq.load('demo/jsconfig.json').get(plugin)
+  it('should convert paths correctly', async function () {
+    const received = await (await hq.load('demo/jsconfig.json')).get(plugin)
     expect(received).toEqual(expected)
   })
 })

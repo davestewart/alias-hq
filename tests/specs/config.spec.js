@@ -9,16 +9,16 @@ const { rootUrl, config } = require('../globals')
 describe('config', function () {
 
   describe('paths', function () {
-    it('should load return the raw paths data', function () {
-      const received = hq.load('demo/jsconfig.json').config.paths
+    it('should load return the raw paths data', async function () {
+      const received = (await hq.load('demo/jsconfig.json')).config.paths
       const expected = config.js
       expect(received).toEqual(expected)
     })
   })
 
   describe('rootUrl', function () {
-    it('should return the current folder rootUrl', function () {
-      const received = hq.load().config.rootUrl
+    it('should return the current folder rootUrl', async function () {
+      const received = (await hq.load()).config.rootUrl
       const expected = rootUrl
       expect(received).toEqual(expected)
     })

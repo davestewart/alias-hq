@@ -35,9 +35,9 @@ function test (relSourceFile, targetPath, expected = undefined) {
 // tests
 // ---------------------------------------------------------------------------------------------------------------------
 
-beforeAll(function () {
-  hq.load()
-  aliases = getAliases()
+beforeAll(async function () {
+  await hq.load()
+  aliases = await getAliases()
 })
 
 describe('core transforms', function () {

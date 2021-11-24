@@ -11,8 +11,8 @@ function test (input, output, valid = true, sort = true, dedupe = true) {
   expect(final).toEqual(output)
 }
 
-beforeAll(function (){
-  hq.load()
+beforeAll(async function (){
+  await hq.load()
   rootUrl = Path.resolve(hq.config.rootUrl)
 })
 

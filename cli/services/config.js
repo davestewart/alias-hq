@@ -6,8 +6,8 @@ const { indent, makeJson} = require('../utils/text')
 /**
  * Log the current config to the terminal
  */
-function showConfig () {
-  hq.load()
+async function showConfig () {
+  await hq.load()
   console.log()
   console.log(indent(makeJson(hq.config)))
 }
@@ -47,9 +47,9 @@ function getPlugins () {
  *
  * @returns {Aliases}
  */
-function getAliases () {
+async function getAliases () {
   const rootUrl = hq.config.rootUrl
-  const aliases = hq.get('webpack')
+  const aliases = await hq.get('webpack')
   const names = Object.keys(aliases)
 
   // lookup
@@ -98,9 +98,9 @@ function getAliases () {
   }
 }
 
-function numAliases (load = false) {
+async function numAliases (load = false) {
   if (load) {
-    hq.load()
+    await hq.load()
   }
   return Object.keys(hq.config.paths).length
 }

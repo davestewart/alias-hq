@@ -4,21 +4,21 @@ const hq = require('../../../src')
 // tests
 // ---------------------------------------------------------------------------------------------------------------------
 
-beforeAll(function () {
-  hq.load()
+beforeAll(async function () {
+  await hq.load()
 })
 
 describe('a missing plugin name', function () {
   it('should throw an error', function () {
-    const received = () => hq.get('blah')
-    expect(received).toThrowError()
+    const received = async () => await hq.get('blah')
+    expect(received).rejects.toThrowError()
   })
 })
 
 describe('an invalid plugin name', function () {
   it('should throw an error', function () {
-    const received = () => hq.get(123)
-    expect(received).toThrowError()
+    const received = async () => await hq.get(123)
+    expect(received).rejects.toThrowError()
   })
 })
 
@@ -63,8 +63,8 @@ describe('core plugins:', function () {
                 })
               }
 
-              it('should correctly convert example paths', function () {
-                const received = hq.get(plugin.name, result.options)
+              it('should correctly convert example paths', async function () {
+                const received = await hq.get(plugin.name, result.options)
                 expect(received).toEqual(result.expected)
               })
             })

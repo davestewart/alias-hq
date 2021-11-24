@@ -21,9 +21,9 @@ function intro () {
   para('== Alias HQ =='.red)
 }
 
-function index () {
+async function index () {
   // setup
-  hq.load()
+  await hq.load()
 
   // options
   const choices = {

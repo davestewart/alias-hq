@@ -15,8 +15,8 @@ const { updateConfig } = require('./update')
 
 const previous = {}
 
-function configurePaths () {
-  hq.load()
+async function configurePaths () {
+  await hq.load()
 
   // variables
   const hasConfig = !!hq.settings.configFile

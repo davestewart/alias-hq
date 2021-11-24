@@ -340,9 +340,9 @@ const previous = {}
  */
 let answers
 
-function updateConfig () {
+async function updateConfig () {
   // setup
-  hq.load()
+  await hq.load()
   answers = getAnswers()
 
   // begin

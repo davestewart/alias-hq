@@ -2,14 +2,14 @@ const hq = require('../../../src')
 const { abs } = require('../../../src/utils')
 const { getAliases } = require('../../../cli/services/config')
 
-beforeAll(function () {
-  hq.load()
+beforeAll(async function () {
+  await hq.load()
 })
 
 describe('cli alias configuration', function () {
 
-  it('alias names should be in file order ', function () {
-    const { names } = getAliases()
+  it('alias names should be in file order ', async function () {
+    const { names } = await getAliases()
     const expected = [
       '@',
       '@packages',
@@ -22,9 +22,9 @@ describe('cli alias configuration', function () {
     expect(names).toEqual(expected)
   })
 
-  it('alias lookups should be in reverse path order', function () {
+  it('alias lookups should be in reverse path order', async function () {
 
-    const { lookup } = getAliases()
+    const { lookup } = await getAliases()
     const expected = [
       {
         name: '@classes',

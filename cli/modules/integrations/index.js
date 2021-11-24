@@ -15,9 +15,9 @@ const { debugConfiguration } = require('./debug')
 
 const previous = {}
 
-function setupIntegrations () {
+async function setupIntegrations () {
   // setup
-  hq.load()
+  await hq.load()
 
   // choices
   const choices = {

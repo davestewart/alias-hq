@@ -1,6 +1,7 @@
 const Path = require('path')
 const Fs = require('fs')
 const { resolve } = require('./utils')
+const { parse } = require('tsconfck');
 
 // ---------------------------------------------------------------------------------------------------------------------
 // typedefs
@@ -140,9 +141,9 @@ function loadSettings () {
  *
  * @param   {string}    path      The absolute path to the config file
  */
-function loadConfig (path) {
+async function loadConfig (path) {
   // load
-  const json = loadJson(path)
+  const { tsconfig: json } = await parse(path)
 
   // config
   const compilerOptions = json && json.compilerOptions
@@ -174,7 +175,7 @@ function loadConfig (path) {
  * @param   {string}            value     Pass an absolute path to load from alternate location
  * @returns {object}                      The Alias HQ instance
  */
-function load (value = undefined) {
+async function load (value = undefined) {
   // load settings
   loadSettings()
 
@@ -182,7 +183,7 @@ function load (value = undefined) {
   if (typeof value === 'string') {
     const path = Path.resolve(value)
     if (Fs.existsSync(path)) {
-      loadConfig(path)
+      await loadConfig(path)
     }
     else {
       throw new Error(`[Alias HQ] No such file "${path}"`)
@@ -205,7 +206,7 @@ function load (value = undefined) {
       // config.rootUrl will be an absolute folder path if loaded from package.json
       const path = Path.resolve(config.rootUrl, file)
       if (Fs.existsSync(path)) {
-        found = loadConfig(path)
+        found = await loadConfig(path)
       }
     }
 
@@ -231,10 +232,10 @@ function load (value = undefined) {
  * @param   {function}  plugin    A custom function
  * @param   {object}   [options]  Any options to pass to the plugin
  */
-function get (plugin, options = {}) {
+async function get (plugin, options = {}) {
   // load defaults if not loaded
   if (!settings.configFile) {
-    load()
+    await load()
   }
 
   // callback
