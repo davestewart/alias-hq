@@ -37,6 +37,21 @@ describe('calling load and passing', function () {
     })
   })
 
+  describe('config with comments and trailing commas', () => {
+    it('should load the config file', () => {
+      const getConfig = () => hq.load('demo/tsconfig-fancy.json')
+      expect(getConfig).not.toThrowError()
+    })
+  })
+
+  describe('config extending another config', () => {
+    it('should extract paths from the base config', () => {
+      const received = hq.load('demo/tsconfig-fancy.json')
+      const expected = config.ts
+      expect(received.config.paths).toEqual(expected)
+    })
+  })
+
   describe('any other value', function () {
     it('null should throw an error', function () {
       const received = () => hq.load(null)

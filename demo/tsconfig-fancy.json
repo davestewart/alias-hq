@@ -1,0 +1,7 @@
+{
+  // extend from a base config
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "target": "es2020", // This has a trailing comma 😱
+  }
+}

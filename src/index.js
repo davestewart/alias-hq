@@ -1,3 +1,4 @@
+const Ts = require('typescript')
 const Path = require('path')
 const Fs = require('fs')
 const { resolve } = require('./utils')
@@ -83,6 +84,35 @@ function makeConfig () {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
+// helpers
+// ---------------------------------------------------------------------------------------------------------------------
+
+/**
+ * Logs out an error resulting from parsing a json file, with some pretty colors.
+ *
+ * @param {Error} error
+ * @param {string} path
+ */
+function logJsonError (error, path) {
+  require('colors')
+  const file = Path.basename(path)
+  const message = (
+    '\n  Error! ' + error.message.replace('JSON', `"${file}"`) +
+    '\n\n  Edit the file to fix this, then try again' +
+    '\n').red
+
+  // CLI
+  if (global.ALIAS_CLI) {
+    console.warn(message)
+    process.exit(0)
+  }
+
+  // API
+  console.warn(`\n  [Alias HQ]\n${message}\n`.red)
+  throw (error)
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
 // loaders
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -94,29 +124,12 @@ function makeConfig () {
  * @throws            An error if the JSON could not be parsed
  */
 function loadJson (path) {
-  const text = Fs.readFileSync(path, 'utf8')
-  if (text) {
-    try {
-      return JSON.parse(text)
-    }
-    catch (err) {
-      require('colors')
-      const file = Path.basename(path)
-      const message = (
-        '\n  Error! ' + err.message.replace('JSON', `"${file}"`) +
-        '\n\n  Edit the file to fix this, then try again' +
-        '\n').red
-
-      // CLI
-      if (global.ALIAS_CLI) {
-        console.warn(message)
-        process.exit(0)
-      }
-
-      // API
-      console.warn(`\n  [Alias HQ]\n${message}\n`.red)
-      throw (err)
-    }
+  const text = Fs.readFileSync(path, 'utf8').toString()
+  try {
+    return JSON.parse(text)
+  }
+  catch (err) {
+    logJsonError(err, path)
   }
 }
 
@@ -142,14 +155,18 @@ function loadSettings () {
  */
 function loadConfig (path) {
   // load
-  const json = loadJson(path)
+  const text = Fs.readFileSync(path, 'utf8').toString()
+  const { config: json, error } = Ts.parseConfigFileTextToJson(path, text)
+  if (error) {
+    logJsonError(error, path)
+  }
 
-  // config
-  const compilerOptions = json && json.compilerOptions
+  // extract config
+  const compilerOptions = json && Ts.parseJsonConfigFileContent(json, Ts.sys, Path.dirname(path)).options
   if (compilerOptions) {
-    // config
-    config.rootUrl = Path.dirname(path)
-    config.baseUrl = compilerOptions.baseUrl || ''
+    config.rootUrl = compilerOptions.pathsBasePath || Path.dirname(path)
+    // compilerOptions.baseUrl is an absolute path, we want relative from root
+    config.baseUrl = Path.relative(config.rootUrl, compilerOptions.baseUrl) || ''
     config.paths = compilerOptions.paths || {}
 
     // settings
