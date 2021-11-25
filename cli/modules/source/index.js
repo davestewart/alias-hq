@@ -7,10 +7,10 @@ const inquirer = require('inquirer')
 const runner = require('jscodeshift/src/Runner')
 const hq = require('../../../src')
 const { checkPaths, getPathInfo, cleanPathsInfo } = require('../../services/paths')
-const { showConfig, getAliases, numAliases, saveSettings } = require('../../services/config')
+const { showConfig, getAliases, saveSettings } = require('../../services/config')
 const { getLongestStringLength, makeHeader, makeItemsBullets, makeObjectBullets, makePathsBullets, para } = require('../../utils/text')
 const { makeChoices } = require('../../utils/prompts')
-const { inspect } = require('../../utils')
+// const { inspect } = require('../../utils')
 const { TransformMode } = require('./transformer/paths')
 const stats = require('./transformer/stats')
 
@@ -41,7 +41,7 @@ const actions = {
       .then(answer => {
         // variables
         const folders = answer.folders.trim()
-        const { infos, valid, input } = checkPaths(folders)
+        const { infos, valid } = checkPaths(folders)
 
         // check paths
         if (!valid) {
@@ -101,7 +101,7 @@ const actions = {
       .prompt({
         type: 'checkbox',
         name: 'modules',
-        message: `Module roots:`,
+        message: 'Module roots:',
         choices: choices,
         default: defaults,
         pageSize: 20,
@@ -117,11 +117,11 @@ const actions = {
     if (answers.mode === TransformMode.ALIASED) {
       console.log()
     }
-    console.log(`  Paths:\n` + makePathsBullets(answers.paths))
+    console.log('  Paths:\n' + makePathsBullets(answers.paths))
     if (answers.mode === TransformMode.ALIASED && answers.modules.length) {
-      console.log(`  Module roots:\n` + makeItemsBullets(answers.modules, 'name', 'relPath'))
+      console.log('  Module roots:\n' + makeItemsBullets(answers.modules, 'name', 'relPath'))
     }
-    console.log(`  Options:\n` + makeObjectBullets({
+    console.log('  Options:\n' + makeObjectBullets({
       extensions: csOptions.extensions,
       parser: csOptions.parser || 'default',
     }))
@@ -141,7 +141,8 @@ const actions = {
 
     try {
       assert.deepEqual(oldSettings, newSettings)
-    } catch (err) {
+    }
+    catch (err) {
       return inquirer
         .prompt({
           type: 'confirm',
@@ -188,7 +189,7 @@ const actions = {
     // do it
     if (aliases.names.length) {
       console.log()
-      const file = __dirname + '/transformer/transformer.js'
+      const file = Path.join(__dirname, '/transformer/transformer.js')
       return runner
         .run(file, paths, { ...options, aliases, modules })
         .then(results => stats.present(results))
@@ -204,7 +205,8 @@ actions.getOptions = function () {
       .then(actions.getModules)
       .then(actions.confirmChoices)
       .then(actions.saveSettings)
-  } else {
+  }
+  else {
     return Promise.resolve()
       .then(actions.getPaths)
       .then(actions.checkForVue)
@@ -315,7 +317,7 @@ function run () {
     .prompt({
       type: 'list',
       name: 'action',
-      message: `What do you want to do?:`,
+      message: 'What do you want to do?:',
       choices: makeChoices(choices),
       default: previous.action
     })

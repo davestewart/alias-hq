@@ -6,7 +6,6 @@ const { makePaths } = require('../../../cli/modules/configuration/update')
 // ---------------------------------------------------------------------------------------------------------------------
 
 describe('path generation', function () {
-
   const folders = parsePathsFromText(`
     /projects/project/absolute_up/
     /projects/project/src/one/

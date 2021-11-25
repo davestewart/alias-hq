@@ -20,7 +20,7 @@ const actions = {
   getChoices: () => {
     // no integrations
     if (answers.names.length === 0) {
-      return openIntegration ()
+      return openIntegration()
     }
 
     // choices

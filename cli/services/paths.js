@@ -68,7 +68,6 @@ function checkPath (text, rootUrl = undefined, exists = true) {
   }
 }
 
-
 /**
  * Returns information about a path relative to a root
  *

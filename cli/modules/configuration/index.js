@@ -54,9 +54,7 @@ function configurePaths () {
         previous.choice = answer.choice
       }
 
-      let result
       switch (choice) {
-
         case choices.create:
           return createConfig()
 

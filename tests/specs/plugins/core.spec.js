@@ -23,7 +23,6 @@ describe('an invalid plugin name', function () {
 })
 
 describe('core plugins:', function () {
-
   // setup
   const plugins = hq.plugins.names.map(name => {
     return {
@@ -73,5 +72,4 @@ describe('core plugins:', function () {
       })
     })
   })
-
 })

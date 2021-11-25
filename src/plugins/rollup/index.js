@@ -1,4 +1,4 @@
-const { toArray, toObject, resolve, join } = require('../../utils')
+const { toArray, toObject, resolve } = require('../../utils')
 
 const defaults = {
   format: 'object'

@@ -103,19 +103,19 @@ function loadJson (path) {
       require('colors')
       const file = Path.basename(path)
       const message = (
-        '\n  Error! ' + err.message.replace('JSON', `"${file}"`)
-        + '\n\n  Edit the file to fix this, then try again'
-        + '\n').red
+        '\n  Error! ' + err.message.replace('JSON', `"${file}"`) +
+        '\n\n  Edit the file to fix this, then try again' +
+        '\n').red
 
       // CLI
-      if (global['ALIAS_CLI']) {
+      if (global.ALIAS_CLI) {
         console.warn(message)
         process.exit(0)
       }
 
       // API
       console.warn(`\n  [Alias HQ]\n${message}\n`.red)
-      throw(err)
+      throw (err)
     }
   }
 }
@@ -260,7 +260,7 @@ function get (plugin, options = {}) {
   }
 
   // invalid
-  throw new Error(`[Alias HQ] Invalid "plugin" parameter`)
+  throw new Error('[Alias HQ] Invalid "plugin" parameter')
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -270,12 +270,12 @@ function get (plugin, options = {}) {
 /**
  * @type {HQSettings}
  */
-let settings = makeSettings()
+const settings = makeSettings()
 
 /**
  * @type {HQConfig}
  */
-let config = makeConfig()
+const config = makeConfig()
 
 /**
  *

@@ -16,12 +16,12 @@ function plugin (config, options = null) {
 
 const expected = {
   '': { path: '' },
-  'packages': { path: '../packages' },
-  'classes': { path: 'classes' },
-  'app': { path: 'app' },
-  'data': { path: 'app/data' },
-  'services': { path: 'app/services' },
-  'views': { path: 'app/views' },
+  packages: { path: '../packages' },
+  classes: { path: 'classes' },
+  app: { path: 'app' },
+  data: { path: 'app/data' },
+  services: { path: 'app/services' },
+  views: { path: 'app/views' },
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -36,11 +36,13 @@ describe('custom plugins', function () {
   it('should be addable', function () {
     hq.plugins.add('test', plugin)
   })
+
   it('should be callable', function () {
     hq.plugins.add('test', plugin)
     const received = hq.get('test')
     expect(received).toEqual(expected)
   })
+
   it('should convert paths correctly', function () {
     const received = hq.load('demo/jsconfig.json').get(plugin)
     expect(received).toEqual(expected)

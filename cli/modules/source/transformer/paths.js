@@ -54,6 +54,7 @@ function toAlias (absSourceFile, targetPath, { aliases, modules }) {
   }
 
   // aliases data
+  // eslint-disable-next-line no-unused-vars
   const sourceAlias = aliases.forPath(absSourceFile)
   const targetAlias = aliases.forPath(absTargetFile)
 
@@ -93,8 +94,8 @@ function toAlias (absSourceFile, targetPath, { aliases, modules }) {
       }
     }
 
-      // >> short downstream paths
-      //    would be simpler to use it
+    // >> short downstream paths
+    //    would be simpler to use it
     //    don't replace
     else if (targetPath.startsWith('.') && isShort) {
       return

@@ -1,5 +1,5 @@
 const Path = require('path')
-const { abs, rel,  } = require('../../src/utils')
+const { abs } = require('../../src/utils')
 
 describe('abs()', function () {
   const get = path => Path.resolve(__dirname, '../../demo/src/' + path)

@@ -33,7 +33,8 @@ function parsePathsFromText (text) {
   text = text.trim()
   const rx = /(["'])(.+?)\1|(\S+)/g
   let match
-  let paths = []
+  const paths = []
+  // eslint-disable-next-line no-cond-assign
   while (match = rx.exec(text)) {
     const path = match[1] ? match[2] : match[0]
     paths.push(path)
