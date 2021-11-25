@@ -14,6 +14,7 @@
   "scripts": {
     "cli": "node cli",
     "setup": "node cli -- setup",
+    "lint": "eslint . --fix",
     "test": "jest --verbose",
     "test:plugins": "jest --watch -f plugins/core.spec.js -t 'core plugins:'",
     "test:coverage": "jest --coverage",
@@ -40,6 +41,12 @@
   },
   "homepage": "https://github.com/davestewart/alias-hq#readme",
   "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-jest": "^25.3.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.1",
     "ghooks": "^2.0.4",
     "jest": "^26.4.1",
     "rimraf": "^3.0.2",
@@ -57,7 +64,7 @@
   },
   "config": {
     "ghooks": {
-      "pre-commit": "npm run test"
+      "pre-commit": "npm run lint && npm run test"
     }
   },
   "alias-hq": {
