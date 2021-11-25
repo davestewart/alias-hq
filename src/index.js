@@ -1,6 +1,7 @@
 const Path = require('path')
 const Fs = require('fs')
 const { resolve } = require('./utils')
+const ts = require('typescript')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // typedefs
@@ -94,12 +95,12 @@ function makeConfig () {
  * @throws            An error if the JSON could not be parsed
  */
 function loadJson (path) {
-  const text = Fs.readFileSync(path, 'utf8')
+  const text = Fs.readFileSync(path, 'utf8').toString();
   if (text) {
-    try {
-      return JSON.parse(text)
-    }
-    catch (err) {
+    const {config, error} = ts.parseConfigFileTextToJson(path, text)
+    if (!error) {
+      return config;
+    } else {
       require('colors')
       const file = Path.basename(path)
       const message = (
@@ -115,7 +116,7 @@ function loadJson (path) {
 
       // API
       console.warn(`\n  [Alias HQ]\n${message}\n`.red)
-      throw (err)
+      throw (error)
     }
   }
 }
