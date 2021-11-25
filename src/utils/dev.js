@@ -2,7 +2,7 @@ const inspect = require('util').inspect
 
 module.exports = {
   inspect (values, depth, indent = 0) {
-    let options = {
+    const options = {
       depth,
       breakLength: 1,
       colors: true

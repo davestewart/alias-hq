@@ -1,5 +1,5 @@
 const hq = require('../../../src')
-const { abs, inspect } = require('../../../src/utils')
+const { abs } = require('../../../src/utils')
 const { getAliases } = require('../../../cli/services/config')
 const { toRelative } = require('../../../cli/modules/source/transformer/paths')
 
@@ -8,7 +8,7 @@ const { toRelative } = require('../../../cli/modules/source/transformer/paths')
 // ---------------------------------------------------------------------------------------------------------------------
 
 let aliases
-let modules = [
+const modules = [
   '@packages'
 ]
 
@@ -41,7 +41,6 @@ beforeAll(function () {
 })
 
 describe('demo code', function () {
-
   it('should resolve @packages from @services', () => {
     test('app/services/foo.js',
       '@packages/services/foo',
@@ -77,5 +76,4 @@ describe('demo code', function () {
       '@data/models/user',
       '../data/models/user')
   })
-
 })

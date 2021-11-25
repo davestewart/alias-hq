@@ -1,5 +1,5 @@
 const hq = require('../../../src')
-const { abs, inspect } = require('../../../src/utils')
+const { abs } = require('../../../src/utils')
 const { getAliases } = require('../../../cli/services/config')
 const { toAlias } = require('../../../cli/modules/source/transformer/paths')
 
@@ -8,7 +8,7 @@ const { toAlias } = require('../../../cli/modules/source/transformer/paths')
 // ---------------------------------------------------------------------------------------------------------------------
 
 let aliases
-let modules = [
+const modules = [
   '@packages'
 ]
 
@@ -62,7 +62,6 @@ describe('core transforms', function () {
     it('should take sibling alias when crossing boundaries', function () {
       test('app/data/users.js', '../services/users.js', '@services/users.js')
     })
-
   })
 
   describe('modules', function () {
@@ -106,7 +105,6 @@ describe('core transforms', function () {
 })
 
 describe('demo code', function () {
-
   it('should resolve @packages from @services', () => {
     test('app/services/foo.js',
       '../../../packages/services/foo',
@@ -142,5 +140,4 @@ describe('demo code', function () {
       '@/app/data/models/user',
       '@data/models/user')
   })
-
 })

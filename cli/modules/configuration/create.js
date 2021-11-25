@@ -50,8 +50,8 @@ const actions = {
 
     // output
     console.log('')
-    console.log(`  File:\n` + makeFileBullet(fileInfo, !fileInfo.exists))
-    console.log(`  JSON:\n` + indent(makeJson(json)))
+    console.log('  File:\n' + makeFileBullet(fileInfo, !fileInfo.exists))
+    console.log('  JSON:\n' + indent(makeJson(json)))
     console.log()
   },
 
@@ -60,7 +60,7 @@ const actions = {
       .prompt({
         type: 'confirm',
         name: 'confirm',
-        message: `Save "${ Path.basename(answers.file)}" now?`.red,
+        message: `Save "${Path.basename(answers.file)}" now?`.red,
       })
       .then((answer) => {
         if (!answer.confirm) {
@@ -73,7 +73,8 @@ const actions = {
         // write
         try {
           return Fs.writeFileSync(answers.path, data, 'utf8')
-        } catch (err) {
+        }
+        catch (err) {
           console.warn(err.message)
         }
       })

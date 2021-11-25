@@ -28,7 +28,6 @@ function getAnswer (choices, text) {
   return choice
     ? choice[0]
     : undefined
-
 }
 
 module.exports = {

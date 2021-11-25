@@ -6,7 +6,6 @@ const { rootUrl, config } = require('../globals')
 // ---------------------------------------------------------------------------------------------------------------------
 
 describe('calling load and passing', function () {
-
   describe('nothing', function () {
     it('should load the default file', function () {
       const received = hq.load().config.paths

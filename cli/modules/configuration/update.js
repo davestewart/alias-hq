@@ -8,7 +8,7 @@ const { saveSettings } = require('../../services/config')
 const { loadJson, saveJson } = require('../../utils/file')
 const { indent, makeJson } = require('../../utils/text')
 const { makeChoices } = require('../../utils/prompts')
-const { inspect } = require('../../utils')
+// const { inspect } = require('../../utils')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // helpers
@@ -29,7 +29,7 @@ function makePaths (folders, config, answers) {
     : {}
   return folders.reduce((output, input) => {
     // path
-    let absPath = Path.resolve(rootUrl, input)
+    const absPath = Path.resolve(rootUrl, input)
     let relPath = Path.relative(rootUrl, absPath)
 
     // name
@@ -143,7 +143,7 @@ const actions = {
       .then(answer => {
         // variables
         const baseUrl = answer.baseUrl.trim() || '.'
-        const { info, input, valid } = checkPath(baseUrl)
+        const { info, valid } = checkPath(baseUrl)
         if (!valid) {
           return actions.getBaseUrl()
         }
@@ -161,7 +161,7 @@ const actions = {
       paths = Object
         .values(hq.config.paths)
         .map(paths => {
-          const path = paths[0].replace(/[\/]\*$/, '')
+          const path = paths[0].replace(/[/]\*$/, '')
           return path.includes(' ')
             ? `'${path}'`
             : path
@@ -293,7 +293,7 @@ const actions = {
       .prompt({
         type: 'confirm',
         name: 'confirm',
-        message: `Update "${ Path.basename(configFile)}" now?`.red,
+        message: `Update "${Path.basename(configFile)}" now?`.red,
       })
       .then(answer => {
         if (answer.confirm) {

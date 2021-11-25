@@ -7,7 +7,6 @@ beforeAll(function () {
 })
 
 describe('cli alias configuration', function () {
-
   it('alias names should be in file order ', function () {
     const { names } = getAliases()
     const expected = [
@@ -23,7 +22,6 @@ describe('cli alias configuration', function () {
   })
 
   it('alias lookups should be in reverse path order', function () {
-
     const { lookup } = getAliases()
     const expected = [
       {

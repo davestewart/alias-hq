@@ -57,6 +57,7 @@ function para (input, width = 60, indent = 2) {
   let word
 
   // process
+  // eslint-disable-next-line no-cond-assign
   while (word = rx.exec(input)) {
     line += word
     if (line.length > width) {
@@ -91,7 +92,6 @@ function makeFileBullet (info, state) {
   const absText = `- ${absPath}`.gray.italic
   return makeBullet(`${relText} ${absText}`, state)
 }
-
 
 /**
  * Make a single bullet item with icon, label and note
@@ -211,7 +211,7 @@ function compactJson (text, padding = false) {
       const elements = text.match(/".+?"/g)
       const p = padding ? ' ' : ''
       return elements.length === 1
-        ? `[${p}${ elements[0] }${p}]`
+        ? `[${p}${elements[0]}${p}]`
         : text
     })
 }

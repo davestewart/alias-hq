@@ -1,3 +1,4 @@
+/* eslint-disable key-spacing */
 require('colors')
 const inquirer = require('inquirer')
 const hq = require('../src')
@@ -13,9 +14,9 @@ const { setupIntegrations } = require('./modules/integrations')
 const { updateSource } = require('./modules/source')
 
 // set global flag
-global['ALIAS_CLI'] = true
+global.ALIAS_CLI = true
 
-let previous = {}
+const previous = {}
 
 function intro () {
   para('== Alias HQ =='.red)
@@ -27,12 +28,12 @@ function index () {
 
   // options
   const choices = {
-    config: 'Configure paths',
-    debug:  'Setup integrations',
-    update: 'Update source code',
-    revert: 'Revert source code (to relative paths)',
-    help:   'Help',
-    exit:   'Exit',
+    config  : 'Configure paths',
+    debug   : 'Setup integrations',
+    update  : 'Update source code',
+    revert  : 'Revert source code (to relative paths)',
+    help    : 'Help',
+    exit    : 'Exit',
   }
 
   const numAliases = Object.keys(hq.config.paths).length

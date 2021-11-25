@@ -11,13 +11,12 @@ function test (input, output, valid = true, sort = true, dedupe = true) {
   expect(final).toEqual(output)
 }
 
-beforeAll(function (){
+beforeAll(function () {
   hq.load()
   rootUrl = Path.resolve(hq.config.rootUrl)
 })
 
 describe('cleanPathsInfo', function () {
-
   describe('default parameters', function () {
     it('should discard invalid paths', function () {
       test('../ / /test', [])
@@ -50,6 +49,5 @@ describe('cleanPathsInfo', function () {
       ]
       test(input, output, true, false, false)
     })
-
   })
 })

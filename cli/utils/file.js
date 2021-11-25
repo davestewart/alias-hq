@@ -1,5 +1,5 @@
-const Path = require ('path')
-const Fs = require ('fs')
+const Path = require('path')
+const Fs = require('fs')
 
 const { compactJson } = require('../utils/text')
 

@@ -1,7 +1,7 @@
-const Path = require ('path')
+const Path = require('path')
 const hq = require('../../src')
 const { loadJson, saveJson } = require('../utils/file')
-const { indent, makeJson} = require('../utils/text')
+const { indent, makeJson } = require('../utils/text')
 
 /**
  * Log the current config to the terminal
@@ -35,6 +35,7 @@ function getPlugins () {
         const { label = 'default', options } = test()
         formats[label] = options
         if (options) {
+          // do nothing for now...
         }
       }
       return formats
@@ -123,4 +124,3 @@ module.exports = {
   saveSettings,
   showConfig,
 }
-

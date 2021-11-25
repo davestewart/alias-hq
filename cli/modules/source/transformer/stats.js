@@ -38,11 +38,11 @@ function dump (path) {
   const title = didUpdate
     ? path.cyan
     : path.grey
-  let text = `\n${ title }\n\n`
+  let text = `\n${title}\n\n`
 
   // items
   const skipped = current.skipped.map(item => {
-    return `  › ` + item.from.grey
+    return '  › ' + item.from.grey
   })
 
   const updated = current.updated.map(item => {
@@ -82,16 +82,16 @@ function present (results) {
   console.log('\n--------------------------------------------------------')
   console.log(`- ${'Stats'.red} `)
   console.log('--------------------------------------------------------')
-  console.log(`\n  Lines:\n`)
+  console.log('\n  Lines:\n')
   console.log('    › ' + `Updated    : ${totals.updated}`.cyan)
   console.log('    › ' + `Skipped    : ${totals.skipped}`.grey)
   console.log('    › ' + `Total      : ${totals.total}`.blue)
-  console.log(`\n  Files:\n`)
+  console.log('\n  Files:\n')
   console.log('    › ' + `Updated    : ${results.ok}`.cyan)
   console.log('    › ' + `Unmodified : ${results.nochange}`.grey)
   console.log('    › ' + `Skipped    : ${results.skip}`.grey)
   console.log('    › ' + `Errors     : ${results.error}`.red)
-  console.log(`\n  Time:\n`)
+  console.log('\n  Time:\n')
   console.log('    › ' + `Seconds    : ${results.timeElapsed}`)
   console.log('')
   console.log('--------------------------------------------------------\n\n')
