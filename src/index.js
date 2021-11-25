@@ -1,7 +1,7 @@
+const Ts = require('typescript')
 const Path = require('path')
 const Fs = require('fs')
 const { resolve } = require('./utils')
-const ts = require('typescript')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // typedefs
@@ -89,26 +89,27 @@ function makeConfig () {
 
 /**
  * Logs out an error resulting from parsing a json file, with some pretty colors.
- * 
- * @param {Error} error 
+ *
+ * @param {Error} error
+ * @param {string} path
  */
-function logJsonError (error) {
+function logJsonError (error, path) {
   require('colors')
   const file = Path.basename(path)
   const message = (
-    '\n  Error! ' + error.message.replace('JSON', `"${file}"`)
-    + '\n\n  Edit the file to fix this, then try again'
-    + '\n').red
+    '\n  Error! ' + error.message.replace('JSON', `"${file}"`) +
+    '\n\n  Edit the file to fix this, then try again' +
+    '\n').red
 
   // CLI
-  if (global['ALIAS_CLI']) {
+  if (global.ALIAS_CLI) {
     console.warn(message)
     process.exit(0)
   }
 
   // API
   console.warn(`\n  [Alias HQ]\n${message}\n`.red)
-  throw(error)
+  throw (error)
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -124,11 +125,11 @@ function logJsonError (error) {
  */
 function loadJson (path) {
   const text = Fs.readFileSync(path, 'utf8').toString()
-  const {config, error} = ts.parseConfigFileTextToJson(path, text)
-  if (error) {
-    logJsonError(error)
-  } else {
-    return config;
+  try {
+    return JSON.parse(text)
+  }
+  catch (err) {
+    logJsonError(err, path)
   }
 }
 
@@ -155,15 +156,15 @@ function loadSettings () {
 function loadConfig (path) {
   // load
   const text = Fs.readFileSync(path, 'utf8').toString()
-  const {config: json, error} = ts.parseConfigFileTextToJson(path, text)
+  const { config: json, error } = Ts.parseConfigFileTextToJson(path, text)
   if (error) {
-    logJsonError(error)
+    logJsonError(error, path)
   }
 
   // extract config
-  const compilerOptions = json && ts.parseJsonConfigFileContent(json, ts.sys, Path.dirname(path)).options
+  const compilerOptions = json && Ts.parseJsonConfigFileContent(json, Ts.sys, Path.dirname(path)).options
   if (compilerOptions) {
-    config.rootUrl = compilerOptions.pathsBasePath || Path.dirname(path);
+    config.rootUrl = compilerOptions.pathsBasePath || Path.dirname(path)
     // compilerOptions.baseUrl is an absolute path, we want relative from root
     config.baseUrl = Path.relative(config.rootUrl, compilerOptions.baseUrl) || ''
     config.paths = compilerOptions.paths || {}
