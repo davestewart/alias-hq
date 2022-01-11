@@ -166,7 +166,7 @@ function loadConfig (path) {
   if (compilerOptions) {
     config.rootUrl = compilerOptions.pathsBasePath || Path.dirname(path)
     // compilerOptions.baseUrl is an absolute path, we want relative from root
-    config.baseUrl = Path.relative(config.rootUrl, compilerOptions.baseUrl) || ''
+    config.baseUrl = Path.relative(config.rootUrl, compilerOptions.baseUrl || '') || ''
     config.paths = compilerOptions.paths || {}
 
     // settings
