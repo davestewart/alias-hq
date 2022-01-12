@@ -187,7 +187,7 @@ function loadConfig (path) {
 /**
  * Load config
  *
- * @param   {undefined}         value     Pass no value for to determine config file automatically
+ * @param   {string}           [value]    Pass no value for to determine config file automatically
  * @param   {string}            value     Pass an absolute path to load from alternate location
  * @returns {object}                      The Alias HQ instance
  */
