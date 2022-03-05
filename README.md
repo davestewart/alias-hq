@@ -33,7 +33,7 @@ They are widely supported in the JavaScript ecosystem, *however*:
 Alias HQ is build-time tool which:
 
 - uses `ts/jsconfig.json` as the single source of configuration 
-- provides one-liner integrations to popular bunders, frameworks and libraries
+- provides one-liner integrations to popular bundlers, frameworks and libraries
 - has a CLI for quick configuration, and even source code migration
 
 Begin by [configuring](./docs/cli/paths.md) aliases in your project's `ts/jsconfig.json`:
