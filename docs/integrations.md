@@ -203,6 +203,36 @@ Setup is simple; add the following line in your application's main file, before 
 require('alias-hq').get('module-alias')
 ```
 
+Also is possible to register your paths from any package script just like [module-alias](https://www.npmjs.com/package/module-alias):
+
+```json
+{
+  "scripts": {
+    "dev": "ts-node -r alias-hq/register src/index.ts"
+  },
+}
+```
+
+For the `dist` app, update your `package.json` like:
+
+```json
+{
+  "scripts": {
+    "start": "node -r alias-hq/register src/index.js"
+  },
+}
+```
+
+If you are using nodemon:
+
+```json
+{
+  "scripts": {
+    "dev": "nodemon --exec ts-node -r alias-hq/register src/index.ts",
+  },
+}
+```
+
 ## JSON-only
 
 For libraries or setups that require JSON, you can use the [CLI](cli/cli.md):
