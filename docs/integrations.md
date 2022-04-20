@@ -197,38 +197,19 @@ This short React guide is *not meant to be exhaustive*; for issues, use your com
 
 Although Node [doesn't support](https://arunmichaeldsouza.com/blog/aliasing-module-paths-in-node-js) path aliases natively, the [module-alias](https://www.npmjs.com/package/module-alias) package modifies Node's `require()` to add support for path aliases. There are some [caveats](https://github.com/ilearnio/module-alias#using-within-another-npm-package) but Alias HQ supports it via a plugin.
 
-Setup is simple; add the following line in your application's main file, before requiring any `@aliased` paths:
+Either, add the following line in your application's main file, before requiring any `@aliased` paths:
 
 ```js
 require('alias-hq').get('module-alias')
 ```
 
-Also is possible to register your paths from any package script just like [module-alias](https://www.npmjs.com/package/module-alias):
+Or, register paths automatically using Node's [require](https://nodejs.org/api/cli.html#-r---require-module) flag and Alias's Node-specific `init` export:
 
 ```json
 {
   "scripts": {
-    "dev": "ts-node -r alias-hq/register src/index.ts"
-  },
-}
-```
-
-For the `dist` app, update your `package.json` like:
-
-```json
-{
-  "scripts": {
-    "start": "node -r alias-hq/register src/index.js"
-  },
-}
-```
-
-If you are using nodemon:
-
-```json
-{
-  "scripts": {
-    "dev": "nodemon --exec ts-node -r alias-hq/register src/index.ts",
+    "start": "node -r alias-hq/init src/index.js",
+    "watch": "nodemon --exec node -r alias-hq/init src/index.ts",
   },
 }
 ```
