@@ -5,6 +5,6 @@ import profile from './elements/profile'
 export default {
   async render () {
     const data = await user.load(settings.id)
-    return profile.replace('{{ data }}', data)
+    return profile.replace('{{ url }}', data.url)
   }
 }
