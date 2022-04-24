@@ -6,9 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.4.0] - 2022-04-22
+### Added
+- Added support to initialize Alias HQ with a Node require flag (#48) - closes #46
+
+## [5.3.0] - 2021-11-25
+### Added
+- Added support for tsconfig extends (#37) - closes #28, #30
+
 ## [5.2.0] - 2021-10-30
 ### Added
-- Added initial TypeScript type definitions
+- Added initial TypeScript type definitions (#33) - closes #29
 
 ## [5.1.7] - 2021-10-30
 ### Fixed
