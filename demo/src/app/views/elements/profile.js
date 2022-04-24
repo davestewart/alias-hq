@@ -1,5 +1,5 @@
 export default `
   <div>
-      <pre>{{ data }}</pre>
+      <output>{{ url }}</output>
   </div>
 `

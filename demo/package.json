@@ -1,0 +1,13 @@
+{
+  "name": "alias-hq-demo",
+  "description": "Demo for CLI (tests) and Node (script)",
+  "scripts": {
+    "node": "node -r alias-hq/init ./src/node.js"
+  },
+  "devDependencies": {
+    "alias-hq": "file:.."
+  },
+  "dependencies": {
+    "reify": "^0.20.12"
+  }
+}
