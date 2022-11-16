@@ -72,10 +72,10 @@ function getAliases () {
       }
     })
     .sort(function (a, b) {
-      if (a.absPath === b.absPath) {
+      if (a.relPath === b.relPath) {
         return 0
       }
-      return a.absPath > b.absPath ? -1 : 1
+      return a.relPath > b.relPath ? -1 : 1
     })
 
   /**

@@ -13,6 +13,7 @@ module.exports = [
       '^@services/(.*)$': '<rootDir>/src/app/services/$1',
       '^@views/(.*)$': '<rootDir>/src/app/views/$1',
       '^@settings$': '<rootDir>/src/app/settings.js',
+      '^@alias-hq/(.*)$': '<rootDir>/../src/$1',
     }
     return { label, options, expected }
   },
@@ -34,6 +35,7 @@ module.exports = [
       ],
       '^@views/(.*)$': '<rootDir>/src/app/views/$1',
       '^@settings$': '<rootDir>/src/app/settings.js',
+      '^@alias-hq/(.*)$': '<rootDir>/../src/$1',
     }
     return { label, options, expected }
   },

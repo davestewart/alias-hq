@@ -9,6 +9,7 @@ const expected = {
   '@settings': abs('app/settings.js'),
   '@services': abs('app/services'),
   '@views': abs('app/views'),
+  '@alias-hq': abs('../../src'),
 }
 
 module.exports = [
@@ -63,6 +64,10 @@ module.exports = [
       {
         find: '@views',
         replacement: abs('app/views')
+      },
+      {
+        find: '@alias-hq',
+        replacement: abs('../../src')
       },
     ]
     return { label, options, expected }

@@ -23,6 +23,7 @@ const expected = {
   settings: { path: 'app/settings.js' },
   services: { path: 'app/services' },
   views: { path: 'app/views' },
+  'alias-hq': { path: '../../src' },
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

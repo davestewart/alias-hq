@@ -14,7 +14,8 @@
         "app/services/*",
         "../packages/services/*"
       ],
-      "@views/*": ["app/views/*"]
+      "@views/*": ["app/views/*"],
+      "@alias-hq/*": ["../../src/*"]
     }
   }
 }
