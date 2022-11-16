@@ -1,6 +1,6 @@
 {
   "name": "alias-hq",
-  "version": "6.1.0",
+  "version": "6.1.1",
   "description": "The end-to-end solution for configuring, refactoring, maintaining and using path aliases",
   "bin": "bin/alias-hq",
   "exports": {
