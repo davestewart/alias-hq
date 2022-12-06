@@ -5,15 +5,15 @@ const defaults = {
 }
 
 // @see https://jestjs.io/docs/en/configuration#modulenamemapper-objectstring-string--arraystring
-function callback (name, config, options) {
-  const { baseUrl, paths } = config
+function callback (name, paths, config, options) {
+  const { base } = config
   name = name
     .replace(/\*/, '(.*)')
   let path = paths.map(path => {
     path = path
       .replace(/^\//, '')
       .replace(/\*/, '$1')
-    return join('<rootDir>', baseUrl, path)
+    return join('<rootDir>', base, path)
   })
   if (options.format === 'string' || path.length === 1) {
     path = path[0]
