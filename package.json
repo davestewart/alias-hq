@@ -1,11 +1,12 @@
 {
   "name": "alias-hq",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "description": "The end-to-end solution for configuring, refactoring, maintaining and using path aliases",
   "bin": "bin/alias-hq",
   "exports": {
     ".": "./src/index.js",
-    "./init": "./src/plugins/module-alias/init.js"
+    "./init": "./src/plugins/module-alias/init.js",
+    "./package.json": "./package.json"
   },
   "types": "types",
   "files": [

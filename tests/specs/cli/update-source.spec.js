@@ -80,7 +80,7 @@ describe('core transforms', function () {
 
   describe('existing aliases', function () {
     it('should take downstream aliases if available', function () {
-      test('index.js', '@/app/settings.js', '@app/settings.js')
+      test('index.js', '@/app/settings.js', '@settings')
       test('index.js', '@/app/data/users.js', '@data/users.js')
     })
 

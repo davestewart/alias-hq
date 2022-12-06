@@ -9,7 +9,8 @@ module.exports = [
       '@app': abs('app'),
       '@data': abs('app/data'),
       '@services': abs('app/services'),
-      '@views': abs('app/views')
+      '@views': abs('app/views'),
+      '@settings': abs('app/settings.js'),
     }
     return { expected }
   },

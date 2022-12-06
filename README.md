@@ -73,6 +73,8 @@ Use the [CLI](./docs/cli/cli.md) to migrate or maintain your source code:
   - Exit
 ```
 
+For a list of all supported frameworks, see the [integrations](docs/integrations.md) doc.
+
 ## Benefits
 
 If you are *already* using aliases:

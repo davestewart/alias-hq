@@ -15,6 +15,7 @@ describe('cli alias configuration', function () {
       '@classes',
       '@app',
       '@data',
+      '@settings',
       '@services',
       '@views',
     ]
@@ -33,6 +34,11 @@ describe('cli alias configuration', function () {
         name: '@views',
         absPath: abs('app/views'),
         relPath: 'src/app/views',
+      },
+      {
+        name: '@settings',
+        absPath: abs('app/settings.js'),
+        relPath: 'src/app/settings.js',
       },
       {
         name: '@services',
