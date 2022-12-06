@@ -16,7 +16,7 @@ Jump to:
 - Frameworks:
   - [Vue](#vue)
   - [React](#react)
-  - [React Native](#react-native--metro)
+  - [React Native](#react-native)
 - Other:
   - [Node](#node)
   - [JSON](#json)
@@ -225,9 +225,9 @@ module.exports = function override(config, env) {
 
 This short React guide is *not meant to be exhaustive*; for issues, use your common sense, search Google, and see the appropriate package's issues.
 
-## React Native / Metro
+## React Native
 
-[Metro](https://github.com/facebook/metro) uses [Babel](https://babeljs.io/) to transpile, so you will need to install the Babel plugin [Module Resolver](https://github.com/tleunen/babel-plugin-module-resolver) first, which can then be configured by Alias HQ:
+[React Native](https://reactnative.dev/)'s bundler [Metro](https://github.com/facebook/metro) uses [Babel](https://babeljs.io/) to transpile, so you will need to install the Babel plugin [Module Resolver](https://github.com/tleunen/babel-plugin-module-resolver) first, which can then be configured by Alias HQ:
 
 ```bash
 npm install babel-plugin-module-resolver --save-dev 
