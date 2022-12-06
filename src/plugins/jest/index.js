@@ -7,12 +7,9 @@ const defaults = {
 // @see https://jestjs.io/docs/en/configuration#modulenamemapper-objectstring-string--arraystring
 function callback (name, paths, config, options) {
   const { base } = config
-  name = name
-    .replace(/\*/, '(.*)')
+  name = name.replace('*', '(.*)')
   let path = paths.map(path => {
-    path = path
-      .replace(/^\//, '')
-      .replace(/\*/, '$1')
+    path = path.replace('*', '$1')
     return join('<rootDir>', base, path)
   })
   if (options.format === 'string' || path.length === 1) {

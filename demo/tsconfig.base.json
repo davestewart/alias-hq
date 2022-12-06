@@ -9,6 +9,7 @@
       "@classes/*": ["classes/*"],
       "@app/*": ["app/*"],
       "@data/*": ["app/data/*"],
+      "@settings": ["app/settings.js"],
       "@services/*": [
         "app/services/*",
         "../packages/services/*"

@@ -20,6 +20,7 @@ const expected = {
   classes: { path: 'classes' },
   app: { path: 'app' },
   data: { path: 'app/data' },
+  settings: { path: 'app/settings.js' },
   services: { path: 'app/services' },
   views: { path: 'app/views' },
 }

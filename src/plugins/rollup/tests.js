@@ -6,6 +6,7 @@ const expected = {
   '@classes': abs('classes'),
   '@app': abs('app'),
   '@data': abs('app/data'),
+  '@settings': abs('app/settings.js'),
   '@services': abs('app/services'),
   '@views': abs('app/views'),
 }
@@ -50,6 +51,10 @@ module.exports = [
       {
         find: '@data',
         replacement: abs('app/data')
+      },
+      {
+        find: '@settings',
+        replacement: abs('app/settings.js')
       },
       {
         find: '@services',
