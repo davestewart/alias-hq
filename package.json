@@ -1,6 +1,6 @@
 {
   "name": "alias-hq",
-  "version": "5.4.0",
+  "version": "6.0.0",
   "description": "The end-to-end solution for configuring, refactoring, maintaining and using path aliases",
   "bin": "bin/alias-hq",
   "exports": {
@@ -18,7 +18,7 @@
     "cli": "node cli",
     "setup": "node cli -- setup",
     "lint": "eslint . --fix",
-    "test": "jest --verbose",
+    "test": "jest --verbose --detectOpenHandles",
     "test:plugins": "jest --watch -f plugins/core.spec.js -t 'core plugins:'",
     "test:coverage": "jest --coverage",
     "prepare": "rimraf types && tsc"

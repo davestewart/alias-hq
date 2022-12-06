@@ -67,7 +67,7 @@ Your plugin will always receive the loaded `config` as the first parameter:
 Your plugin may receive user options (in a format of your choosing) with which you can decide how to customise the transformation:
 
 ```js
-function (config, options = 'bar') {
+function plugin (config, options = 'bar') {
   return options.format === 'foo'
     ? fooify(config.paths)
     : barify(config.paths)
@@ -196,11 +196,11 @@ This simplifies the writing of the overall conversion function, allowing you to 
 ```js 
 const { toArray } = require('../../utils')
 
-// process a single `name => paths` entry
-function callback (name, config, options) {
-  const { rootUrl, baseUrl, paths } = config // note, these are the *alias* paths!
+// process a single `alias => paths` entry
+function callback (alias, paths, urls, options) {
+  const { root, base } = urls
   return {
-    name: name.replace('/*', ''),
+    name: alias.replace('/*', ''),
     path: paths[0].replace('/*', '')
   }
 }

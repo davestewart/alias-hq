@@ -11,11 +11,12 @@ function toArray (callback, config, options) {
   return Object
     .keys(config.paths)
     .map(name => {
-      return callback(name, {
-        rootUrl: config.rootUrl,
-        baseUrl: config.baseUrl,
-        paths: config.paths[name],
-      }, options)
+      const paths = config.paths[name]
+      const urls = {
+        root: config.rootUrl,
+        base: config.baseUrl,
+      }
+      return callback(name, paths, urls, options)
     })
 }
 

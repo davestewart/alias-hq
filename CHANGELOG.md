@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.0.0] - 2022-12-06
+### Changed
+- Improve plugin utils callback signature (#59) - closes #58
+
 ## [5.4.0] - 2022-04-22
 ### Added
 - Added support to initialize Alias HQ with a Node require flag (#48) - closes #46
