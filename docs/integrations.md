@@ -4,10 +4,22 @@
 
 Jump to:
 
-- IDEs: [VS Code](#vs-code), [WebStorm](#webstorm)
-- Tooling: [Webpack](#webpack), [Rollup](#rollup), [Vite](#vite), [Jest](#jest)
-- Frameworks: [Vue](#vue), [React](#react)
-- Other: [Node](#node), [JSON](#json)
+- IDEs:
+  - [VS Code](#vs-code)
+  - [WebStorm](#webstorm)
+- Tooling:
+  - [Webpack](#webpack)
+  - [Rollup](#rollup)
+  - [Vite](#vite)
+  - [Jest](#jest)
+  - [Babel](#babel)
+- Frameworks:
+  - [Vue](#vue)
+  - [React](#react)
+  - [React Native](#react-native--metro)
+- Other:
+  - [Node](#node)
+  - [JSON](#json)
 
 # IDEs
 
@@ -128,6 +140,28 @@ You can request the individual paths in `string` (the default) or `array` (Jest 
 hq.get('jest', { format: 'array' })
 ```
 
+## Babel
+
+If using Babel, you can use the Babel plugin [Module Resolver](https://github.com/tleunen/babel-plugin-module-resolver).
+
+Open your `babel.config.js` file and configure as so:
+
+```js
+const hq = require('alias-hq')
+
+module.exports = {
+  ...
+  plugins: [
+    ['module-resolver', {
+      root: ['./'], // must match tsconfig.json srcUrl
+      alias: hq.get('babel'),
+    }],
+  ],
+}
+```
+
+For more info, check the plugin's [docs](https://github.com/tleunen/babel-plugin-module-resolver/blob/master/DOCS.md).
+
 # Frameworks
 
 ## Vue
@@ -190,6 +224,48 @@ module.exports = function override(config, env) {
 ```
 
 This short React guide is *not meant to be exhaustive*; for issues, use your common sense, search Google, and see the appropriate package's issues.
+
+## React Native / Metro
+
+[Metro](https://github.com/facebook/metro) uses [Babel](https://babeljs.io/) to transpile, so you will need to install the Babel plugin [Module Resolver](https://github.com/tleunen/babel-plugin-module-resolver) first, which can then be configured by Alias HQ:
+
+```bash
+npm install babel-plugin-module-resolver --save-dev 
+```
+```bash
+yarn add metro-react-native-babel-preset -D
+```
+
+Next modify your default `babel.config.js` configuration, adding the plugin and configuring with Alias HQ:
+
+```js
+const hq = require('alias-hq')
+
+module.exports = {
+  ...
+  plugins: [
+    ['module-resolver', {
+      root: ['./'], // must match tsconfig.json srcUrl
+      alias: hq.get('babel'),
+      extensions: [
+        '.ios.js',
+        '.android.js',
+        '.native.js',
+        '.js',
+        '.jsx',
+        '.json',
+        '.tsx',
+        '.ts',
+      ],
+    }],
+  ],
+}
+```
+
+For more information, check:
+
+- [Google](https://www.google.com/search?q=yarn+react+native+aliases)
+- [Usage with React Native](https://github.com/tleunen/babel-plugin-module-resolver/blob/master/DOCS.md#usage-with-react-native)
 
 # Other
 
