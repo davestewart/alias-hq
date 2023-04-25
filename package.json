@@ -65,6 +65,7 @@
     "glob": "^7.1.6",
     "inquirer": "^7.3.3",
     "jscodeshift": "^0.10.0",
+    "json5": "^2.2.3",
     "module-alias": "^2.2.2",
     "node-fetch": "^2.6.0",
     "open": "^7.0.0",
