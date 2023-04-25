@@ -1,6 +1,6 @@
 {
   "name": "alias-hq",
-  "version": "6.2.0",
+  "version": "6.2.1",
   "description": "The end-to-end solution for configuring, refactoring, maintaining and using path aliases",
   "bin": "bin/alias-hq",
   "exports": {
@@ -64,12 +64,11 @@
     "colors": "^1.4.0",
     "glob": "^7.1.6",
     "inquirer": "^7.3.3",
-    "jscodeshift": "^0.10.0",
+    "jscodeshift": "^0.13.0",
     "json5": "^2.2.3",
     "module-alias": "^2.2.2",
     "node-fetch": "^2.6.0",
     "open": "^7.0.0",
-    "typescript": "^4.5.2",
     "vue-jscodeshift-adapter": "^2.1.0"
   },
   "alias-hq": {
