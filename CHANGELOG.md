@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.2.0] - 2023-04-25
+### Changed
+- Replace TypeScript dependency with JSON5 (#65) - closes #41
+
 ## [6.1.0] - 2022-12-06
 ### Changed
 - Add Babel support (#60) - closes #56
