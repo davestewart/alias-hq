@@ -2,19 +2,29 @@
 
 > Read and transform path aliases using JavaScript  
 
-## Get paths
+## Overview
+
+The Alias HQ is quite simple, just three methods:
+
+- `get(name, options?)` or `get(callback)`
+- `load(path)`
+- `add(name, callback)`
+
+## `get(name, options?)`
+
+> Grab and convert paths in a particular format
 
 ### Using available plugins
 
-To grab paths using [available plugins](../integrations.md) call `get()` with the plugin name:
+To grab paths using [available plugins](../integrations.md) call `get(...)` with the plugin name:
 
 ```js
 import hq from 'alias-hq'
 
-const config = hq.get('webpack') // use any available plugin name here
+const config = hq.get('webpack')
 ```
 
-If you need to pass custom options, pass an additional hash: 
+To provide custom options, pass an additional hash: 
 
 ```js
 const config = hq.get('rollup', { format: 'object' })
@@ -39,9 +49,27 @@ const config = hq.get(fooify)
 
 See the [plugins](plugins.md) document for detailed information on writing custom transforms
 
-## Plugins
+## `load(path)`
 
-You can package custom code via `plugins.add()`, passing the `name` and `callback` function:
+> Load a custom `tsconfig.json` file
+
+Alias HQ attempts to load either `js/tsconfig.json` in the project root.
+
+However, you can load any custom config directly:
+
+```ts
+import hq from 'alias-hq'
+
+const config = hq.load('path/to/tsconfig.custom.json').get(...)
+```
+
+Note when using `extends` that TypeScript (and Alias HQ) will use the **top-most**  `paths` block – so don't place paths in separate files thinking they will be combined, as they won't.
+
+## `add(name, callback)`
+
+> Add a plugin to be called by name
+
+You can package custom code via `plugins.add()`, passing a`name` and `callback` function:
 
 ```js
 hq.plugins.add('foo', fooify)
