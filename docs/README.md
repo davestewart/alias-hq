@@ -14,7 +14,7 @@ Start here if you are short on time:
 
 ### CLI
 
-Detailed information on all steps of the CLI tool
+The CLI provides an interactive prompt to make it easy to configure or refactor your project:
 
 - [Alias HQ CLI](cli/cli.md) 
   <br>Run the CLI
@@ -30,7 +30,7 @@ Detailed information on all steps of the CLI tool
 
 ### API
 
-Further information on how to use Alias HQ 
+The API allows you to query configured paths and use them in your target framework:
 
 - [API](api/api.md)
   <br>A simple guide on Alias HQ's simple API
