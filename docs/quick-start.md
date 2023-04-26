@@ -9,7 +9,9 @@ It's a couple of simple steps to get up and running with Alias HQ:
 1. [Configure](#configuration) path aliases
 2. [Integrate](#integration) target frameworks
 
-From version 4.1, configuration can be completed using the [Alias CLI](cli/cli.md):
+More experienced TypeScript users may prefer to do this manually – as summarised in the project's [readme](../../../#overview).
+
+Or you may prefer to let the [Alias CLI](cli/cli.md) take the strain:
 
 ![alias cli](./assets/cli-preview.png)
 
