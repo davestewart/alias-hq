@@ -1,6 +1,6 @@
-const Ts = require('typescript')
-const Path = require('path')
 const Fs = require('fs')
+const Path = require('path')
+const JSON5 = require('json5')
 const { resolve } = require('./utils')
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -84,35 +84,6 @@ function makeConfig () {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-// helpers
-// ---------------------------------------------------------------------------------------------------------------------
-
-/**
- * Logs out an error resulting from parsing a json file, with some pretty colors.
- *
- * @param {Error} error
- * @param {string} path
- */
-function logJsonError (error, path) {
-  require('colors')
-  const file = Path.basename(path)
-  const message = (
-    '\n  Error! ' + error.message.replace('JSON', `"${file}"`) +
-    '\n\n  Edit the file to fix this, then try again' +
-    '\n').red
-
-  // CLI
-  if (global.ALIAS_CLI) {
-    console.warn(message)
-    process.exit(0)
-  }
-
-  // API
-  console.warn(`\n  [Alias HQ]\n${message}\n`.red)
-  throw (error)
-}
-
-// ---------------------------------------------------------------------------------------------------------------------
 // loaders
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -124,12 +95,29 @@ function logJsonError (error, path) {
  * @throws            An error if the JSON could not be parsed
  */
 function loadJson (path) {
-  const text = Fs.readFileSync(path, 'utf8').toString()
-  try {
-    return JSON.parse(text)
-  }
-  catch (err) {
-    logJsonError(err, path)
+  const text = Fs.readFileSync(path, 'utf8')
+  if (text) {
+    try {
+      return JSON5.parse(text)
+    }
+    catch (err) {
+      require('colors')
+      const file = Path.basename(path)
+      const message = (
+        '\n  Error! ' + err.message.replace('JSON', `"${file}"`) +
+        '\n\n  Edit the file to fix this, then try again' +
+        '\n').red
+
+      // CLI
+      if (global.ALIAS_CLI) {
+        console.warn(message)
+        process.exit(0)
+      }
+
+      // API
+      console.warn(`\n  [Alias HQ]\n${message}\n`.red)
+      throw (err)
+    }
   }
 }
 
@@ -154,30 +142,31 @@ function loadSettings () {
  * @param   {string}    path      The absolute path to the config file
  */
 function loadConfig (path) {
-  // load
-  const text = Fs.readFileSync(path, 'utf8').toString()
-  const { config: json, error } = Ts.parseConfigFileTextToJson(path, text)
-  if (error) {
-    logJsonError(error, path)
+  /**
+   * @type {TSConfig}
+   */
+  const json = loadJson(path)
+  if (json) {
+    const { compilerOptions } = json
+    if (compilerOptions) {
+      const { baseUrl, paths } = compilerOptions
+
+      // Note that paths in the extending file take priority over paths in the extended file
+      // https://stackoverflow.com/questions/53804566/how-to-get-compileroptions-from-tsconfig-json
+      if (paths) {
+        settings.configFile = path
+        config.rootUrl = Path.dirname(path)
+        config.baseUrl = baseUrl || ''
+        config.paths = paths
+        return true
+      }
+    }
+
+    // if no paths, check extends
+    if (json.extends) {
+      return loadConfig(resolve(Path.dirname(path), json.extends))
+    }
   }
-
-  // extract config
-  const compilerOptions = json && Ts.parseJsonConfigFileContent(json, Ts.sys, Path.dirname(path)).options
-  if (compilerOptions) {
-    config.rootUrl = compilerOptions.pathsBasePath || Path.dirname(path)
-    // compilerOptions.baseUrl is an absolute path, we want relative from root
-    config.baseUrl = Path.relative(config.rootUrl, compilerOptions.baseUrl || '') || ''
-    config.paths = compilerOptions.paths || {}
-
-    // settings
-    settings.configFile = path
-
-    // done
-    return true
-  }
-
-  // normal file
-  config.paths = {}
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -207,12 +196,11 @@ function load (value = undefined) {
   }
 
   // no value: default or configured config file
-  else if (typeof value === 'undefined') {
+  else if (value === undefined) {
     // variables
     let found = false
     const files = [
       'jsconfig.json',
-      'tsconfig.base.json',
       'tsconfig.json',
     ]
 

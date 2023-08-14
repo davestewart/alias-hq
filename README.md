@@ -38,15 +38,16 @@ Alias HQ is build-time tool which:
 
 Begin by [configuring](./docs/cli/paths.md) aliases in your project's `ts/jsconfig.json`:
 
-```js
+```json
 {
-  "baseUrl": "src",
-  "paths": {
-    "@packages/*": [ "../packages/*" ],
-    "@/*": [ "/*" ],
-    "@app/*": [ "/app/*" ],
-    "@services/*": [ "/app/services/*" ],
-    ...
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "@packages/*": [ "../packages/*" ],
+      "@/*": [ "/*" ],
+      "@app/*": [ "/app/*" ],
+      "@services/*": [ "/app/services/*" ]
+    }
   }
 }
 ```

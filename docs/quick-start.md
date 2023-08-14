@@ -2,39 +2,48 @@
 
 > Configure your project to use path aliases in your toolchain
 
-## Run the CLI
+## Overview
 
-From version 4.1, all configuration can be completed via the [Alias CLI](cli/cli.md):
+It's a couple of simple steps to get up and running with Alias HQ:
+
+1. [Configure](#configuration) path aliases
+2. [Integrate](#integration) target frameworks
+
+More experienced TypeScript users may prefer to do this manually – as summarised in the project's [readme](../../../#overview).
+
+Or you may prefer to let the [Alias CLI](cli/cli.md) take the strain:
 
 ![alias cli](./assets/cli-preview.png)
 
-This interactive session of questions and prompts should provide everything you need to:
+This interactive session of questions and prompts lets you:
 
-- configure your paths and aliases for the first time
-- integrate with tools like Webpack, Jest, etc
-- update your project's source code
+- [configure](#configuration) your paths and aliases for the first time
+- [integrate](#integration) with tools like Webpack, Jest, etc
+- [update](#update-source-code) your project's source code
 
-In the terminal:
+Open the terminal at your project root, type the following:
 
-- From your project root, type and run `alias-hq`
+```
+alias-hq
+```
 
-*If this doesn't work, see the [troubleshooting](cli/cli.md#troubleshooting) section in the CLI docs.*
+*If you have any issues, check the [troubleshooting](cli/cli.md#troubleshooting) section.*
 
-## Configuration
+## Setup
 
-> *For more detailed steps, see the full [Configure paths](./cli/paths.md) document.*
+Once up and running, follow the steps below.
 
-### Create a new config file
+### Configuration
 
-If you don't yet have a `ts/jsconfig.json` file, from the main menu:
+> *Visit [Configure paths](./cli/paths.md) for full docs*
+
+If you don't yet have a `ts/jsconfig.json` file:
 
 - Choose "Configure paths > Create config"
 - Choose "JavaScript" or "TypeScript" as required
 - Choose to save the file
 
-### Configure paths
-
-To add or update paths in your config file, from the main menu: 
+To add or update paths in your config file: 
 
 - Choose "Configure paths > Update config"
 - Choose your "Base URL"
@@ -42,11 +51,11 @@ To add or update paths in your config file, from the main menu:
 - Choose an "Alias prefix"
 - Choose to save the config
 
-## Setup integrations
+### Integration
 
-> *For more detailed steps, see the [Setup integrations](./cli/integrations.md) document.*
+> *Visit [Setup integrations](./cli/integrations.md) for full docs*
 
-To set up tooling or frameworks like Webpack and Jest, from the main menu:
+To set up tooling or frameworks like Webpack and Jest:
 
 - Choose "Setup integrations > Setup integration"
 - Choose an integration from the list
@@ -56,15 +65,13 @@ If you want to do this manually, see the [Integrations](integrations.md) documen
 
 ## Update source code
 
-> *For more detailed steps, see the [Update source code](./cli/source.md) document.*
+> *Visit [Update source code](./cli/source.md) for full docs*
 
-To update source code with your new aliases, from the main menu:
+To update source code with your new aliases:
 
 - Choose "Update source code"
 - Choose "Configure options"
 - Type the relative paths of the folders you want to update
 - Choose any [module roots](./cli/source.md#module-roots) from the list 
 - Choose to "Preview updates" or "Update files"
-
-
 
