@@ -11,6 +11,7 @@ module.exports = [
       '@services': abs('app/services'),
       '@views': abs('app/views'),
       '@settings': abs('app/settings.js'),
+      '@alias-hq': abs('../../src'),
     }
     return { expected }
   },

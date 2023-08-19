@@ -18,6 +18,7 @@ describe('cli alias configuration', function () {
       '@settings',
       '@services',
       '@views',
+      '@alias-hq',
     ]
     expect(names).toEqual(expected)
   })
@@ -64,6 +65,11 @@ describe('cli alias configuration', function () {
         name: '@packages',
         absPath: abs('../packages'),
         relPath: 'packages',
+      },
+      {
+        name: '@alias-hq',
+        absPath: abs('../../src'),
+        relPath: '../src',
       }
     ]
     expect(lookup).toEqual(expected)

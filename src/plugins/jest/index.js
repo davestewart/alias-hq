@@ -10,7 +10,7 @@ function callback (name, paths, config, options) {
   name = name.replace('*', '(.*)')
   let path = paths.map(path => {
     path = path.replace('*', '$1')
-    return join('<rootDir>', base, path)
+    return `<rootDir>/${join(base, path)}`
   })
   if (options.format === 'string' || path.length === 1) {
     path = path[0]

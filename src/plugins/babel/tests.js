@@ -9,6 +9,7 @@ module.exports = [
       '@settings': 'app/settings.js',
       '^@services/(.*)': 'app/services/\\1',
       '^@views/(.*)': 'app/views/\\1',
+      '^@alias-hq/(.*)': '../../src/\\1',
     }
     return { expected }
   },

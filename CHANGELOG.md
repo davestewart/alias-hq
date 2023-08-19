@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.2.2] - 2023-08-14
+
+Fixed:
+
+- Fixed jest plugin omitting `<rootDir>` for aliases involving parent directories (#57) - closes #45
+
 ## [6.2.1] - 2023-04-25
 
 Changed:
