@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.2.3] - 2023-09-12
+
+Fixed:
+
+- Added back support for Node.js-style resolution of the tsconfig `extends` field which had been accidentally dropped in v6.2.0 (#73) - closes #72
+
 ## [6.2.2] - 2023-08-14
 
 Fixed:
