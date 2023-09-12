@@ -62,6 +62,7 @@
   },
   "dependencies": {
     "colors": "^1.4.0",
+    "get-tsconfig": "^4.7.0",
     "glob": "^7.1.6",
     "inquirer": "^7.3.3",
     "jscodeshift": "^0.13.0",
