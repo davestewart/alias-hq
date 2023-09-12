@@ -148,7 +148,6 @@ function loadConfig (path) {
   config.rootUrl = Path.dirname(path)
   config.baseUrl = baseUrl
   config.paths = paths
-  return true
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -192,7 +191,8 @@ function load (value = undefined) {
       // config.rootUrl will be an absolute folder path if loaded from package.json
       const path = Path.resolve(config.rootUrl, file)
       if (Fs.existsSync(path)) {
-        found = loadConfig(path)
+        loadConfig(path)
+        found = true
       }
     }
 
