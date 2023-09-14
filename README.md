@@ -1,6 +1,9 @@
 # Alias HQ 
 
-![tests](https://github.com/davestewart/alias-hq/workflows/tests/badge.svg)
+![tests][tests]
+[![npm version][npm-version-src]][npm-version-href]
+[![npm downloads][npm-downloads-src]][npm-downloads-href]
+[![License][license-src]][license-href]
 
 > The end-to-end solution for configuring, refactoring, maintaining and using path aliases
 
@@ -119,3 +122,15 @@ For a short video:
 Wanna support the project?
 
 - Tweet or [retweet](https://twitter.com/dave_stewart/status/1297906829868109825) about it :)
+
+<!-- Badges -->
+[npm-version-src]: https://img.shields.io/npm/v/alias-hq/latest.svg?style=flat&colorA=18181B&colorB=2EBCDC
+[npm-version-href]: https://npmjs.com/package/alias-hq
+
+[npm-downloads-src]: https://img.shields.io/npm/dm/alias-hq.svg?style=flat&colorA=18181B&colorB=6F6A92
+[npm-downloads-href]: https://npmjs.com/package/alias-hq
+
+[license-src]: https://img.shields.io/npm/l/alias-hq.svg?style=flat&colorA=18181B&colorB=B41C64
+[license-href]: https://npmjs.com/package/alias-hq
+
+[tests]: https://github.com/davestewart/alias-hq/workflows/tests/badge.svg
