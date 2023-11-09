@@ -1,6 +1,7 @@
 const Fs = require('fs')
 const Path = require('path')
 const JSON5 = require('json5')
+const { parseTsconfig } = require('get-tsconfig')
 const { resolve } = require('./utils')
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -142,31 +143,11 @@ function loadSettings () {
  * @param   {string}    path      The absolute path to the config file
  */
 function loadConfig (path) {
-  /**
-   * @type {TSConfig}
-   */
-  const json = loadJson(path)
-  if (json) {
-    const { compilerOptions } = json
-    if (compilerOptions) {
-      const { baseUrl, paths } = compilerOptions
-
-      // Note that paths in the extending file take priority over paths in the extended file
-      // https://stackoverflow.com/questions/53804566/how-to-get-compileroptions-from-tsconfig-json
-      if (paths) {
-        settings.configFile = path
-        config.rootUrl = Path.dirname(path)
-        config.baseUrl = baseUrl || ''
-        config.paths = paths
-        return true
-      }
-    }
-
-    // if no paths, check extends
-    if (json.extends) {
-      return loadConfig(resolve(Path.dirname(path), json.extends))
-    }
-  }
+  const { compilerOptions: { baseUrl = '', paths = {} } } = parseTsconfig(path)
+  settings.configFile = path
+  config.rootUrl = Path.dirname(path)
+  config.baseUrl = baseUrl
+  config.paths = paths
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -210,7 +191,8 @@ function load (value = undefined) {
       // config.rootUrl will be an absolute folder path if loaded from package.json
       const path = Path.resolve(config.rootUrl, file)
       if (Fs.existsSync(path)) {
-        found = loadConfig(path)
+        loadConfig(path)
+        found = true
       }
     }
 

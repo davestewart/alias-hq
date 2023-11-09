@@ -1,6 +1,6 @@
 {
   "name": "alias-hq",
-  "version": "6.2.2",
+  "version": "6.2.3",
   "description": "The end-to-end solution for configuring, refactoring, maintaining and using path aliases",
   "bin": "bin/alias-hq",
   "exports": {
@@ -62,6 +62,7 @@
   },
   "dependencies": {
     "colors": "^1.4.0",
+    "get-tsconfig": "^4.7.0",
     "glob": "^7.1.6",
     "inquirer": "^7.3.3",
     "jscodeshift": "^0.13.0",
