@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.3.0] - 2024-10-29
+
+Added:
+
+- Add fallbacks support for Babel and Webpack (#80) - closes #79
+
 ## [6.2.3] - 2023-09-12
 
 Fixed:
